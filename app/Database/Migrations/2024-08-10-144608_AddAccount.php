@@ -10,11 +10,6 @@ class AddAccount extends Migration
     public function up()
     {
         $this->forge->addField([
-            'id' => [
-                'type' => 'INT',
-                'unsigned' => true,
-                'auto_increment' => true,
-            ],
             'user_id' => [
                 'type' => 'INT',
                 'unsigned' => true,
@@ -24,11 +19,13 @@ class AddAccount extends Migration
             'email' => [
                 'type' => 'VARCHAR',
                 'constraint' => 320,
+                'unique' => true,
                 'null' => false,
             ],
             'username' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
+                'unique' => true,
                 'null' => false,
             ],
             'password' => [
@@ -41,19 +38,20 @@ class AddAccount extends Migration
                 'default' => false,
                 'null' => false,
             ],
-            'time_created' => [
+            'created_at' => [
                 'type' => 'DATETIME',
-                'default' => new RawSql('CURRENT_TIMESTAMP'),
                 'null' => false,
             ],
-            'time_updated' => [
+            'updated_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
-                'default' => new RawSql('CURRENT_TIMESTAMP'),
-                'on_update' => new RawSql('CURRENT_TIMESTAMP'),
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
             ],
         ]);
-        $this->forge->addKey('id', true);
+        $this->forge->addKey('user_id', true);
         $this->forge->addForeignKey('user_id', 'User', 'id', '', '');
         $this->forge->createTable('Account');
     }

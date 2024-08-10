@@ -7,6 +7,9 @@ use CodeIgniter\Model;
 class UserModel extends Model
 {
     protected $table = 'User';
+    protected $allowedFields = [null];
+    protected bool $allowEmptyInserts = true;
+    protected $useTimestamps = true;
 
     /**
      * @param $id bool|int $id
@@ -18,5 +21,10 @@ class UserModel extends Model
             return $this->findAll();
         }
         return $this->where(['id' => $id])->first();
+    }
+
+    public function createUser(): int
+    {
+        return $this->insert([]);
     }
 }
