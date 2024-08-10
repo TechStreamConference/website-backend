@@ -15,3 +15,8 @@
   ```sh
   php spark db:seed MainSeeder
   ```
+
+## Refresh the Database
+- ```sh
+  php spark migrate:refresh
+  ```
