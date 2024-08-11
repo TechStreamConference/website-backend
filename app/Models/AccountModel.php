@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use CodeIgniter\Database\Exceptions\DatabaseException;
 use CodeIgniter\Model;
 
 class AccountModel extends Model
@@ -32,7 +33,7 @@ class AccountModel extends Model
                 'email' => $email,
             ]);
             return true;
-        } catch (\ReflectionException) {
+        } catch (DatabaseException) {
             return false;
         }
     }
