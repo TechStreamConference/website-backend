@@ -16,8 +16,7 @@ class UserModel extends Model
     {
         if ($id === false) {
             return $this->findAll();
-        } else {
-            return $this->where(['id' => $id])->first();
         }
+        return $this->where(['id' => $id])->first();
     }
 }

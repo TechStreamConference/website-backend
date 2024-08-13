@@ -20,8 +20,7 @@ class User extends BaseController
 
         if ($data) {
             return $this->response->setJSON($data);
-        } else {
-            return $this->response->setStatusCode(404);
         }
+        return $this->response->setStatusCode(404);
     }
 }
