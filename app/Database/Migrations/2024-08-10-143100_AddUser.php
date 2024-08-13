@@ -31,7 +31,7 @@ class AddUser extends Migration
                 'on_update' => new RawSql('CURRENT_TIMESTAMP'),
             ],
         ]);
-        $this->forge->addKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->createTable('User');
     }
 
