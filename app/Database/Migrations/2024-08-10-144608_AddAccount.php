@@ -51,8 +51,8 @@ class AddAccount extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addKey('user_id', true);
-        $this->forge->addForeignKey('user_id', 'User', 'id', '', '');
+        $this->forge->addPrimaryKey('user_id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
         $this->forge->createTable('Account');
     }
 
