@@ -19,16 +19,17 @@ class AddUser extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
-            'time_created' => [
+            'created_at' => [
                 'type' => 'DATETIME',
-                'default' => new RawSql('CURRENT_TIMESTAMP'),
                 'null' => false,
             ],
-            'time_updated' => [
+            'updated_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
-                'default' => new RawSql('CURRENT_TIMESTAMP'),
-                'on_update' => new RawSql('CURRENT_TIMESTAMP'),
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
             ],
         ]);
         $this->forge->addPrimaryKey('id');
