@@ -27,9 +27,4 @@ class UserModel extends Model
     {
         return $this->insert([]);
     }
-
-    public function createUser(): int
-    {
-        return $this->insert([]);
-    }
 }
