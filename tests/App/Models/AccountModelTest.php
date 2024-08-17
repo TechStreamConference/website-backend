@@ -22,6 +22,7 @@ class AccountModelTest extends CIUnitTestCase
     {
         $model = new AccountModel();
         $this->assertTrue($model->isUsernameTaken('coder2k'));
+        $this->assertTrue($model->isUsernameTaken('Gyros Geier'));
         $this->assertFalse($model->isUsernameTaken('user'));
     }
 
@@ -29,6 +30,7 @@ class AccountModelTest extends CIUnitTestCase
     {
         $model = new AccountModel();
         $this->assertTrue($model->isEmailTaken('coder2k@test-conf.de'));
+        $this->assertTrue($model->isEmailTaken('gyrosgeier@geier.horst'));
         $this->assertFalse($model->isEmailTaken('if@then.else'));
     }
 
@@ -36,8 +38,8 @@ class AccountModelTest extends CIUnitTestCase
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
-        $userId = $model->createAccount($userId, 'GyrosGeier', password_hash('stan', PASSWORD_DEFAULT), 'stan@geier.de');
-        $this->assertEquals(2, $userId);
+        $userId = $model->createAccount($userId, 'r00tifant', password_hash('Arch', PASSWORD_DEFAULT), 'i_use@arch.btw');
+        $this->assertEquals(3, $userId);
     }
 
     public function testCreateAccountFailsUponDuplicateUsernameAndEmail() {
@@ -84,8 +86,8 @@ class AccountModelTest extends CIUnitTestCase
     public function testCreateUserAndAccount()
     {
         $model = new AccountModel();
-        $userId = $model->createUserAndAccount('GyrosGeier', password_hash('stan', PASSWORD_DEFAULT), 'stan@geier.de');
-        $this->assertEquals(2, $userId);
+        $userId = $model->createUserAndAccount('cstdint', password_hash('uint32_t', PASSWORD_DEFAULT), 'cstdint@cppreference.com');
+        $this->assertEquals(3, $userId);
     }
 
     public function testCreateUserAndAccountFailsUponDuplicateUsername()
@@ -109,6 +111,6 @@ class AccountModelTest extends CIUnitTestCase
     public function testCreateUserAndAccountFailsUponDuplicateEmailDifferentCapitalization()
     {
         $model = new AccountModel();
-        $this->assertFalse($model->createUserAndAccount('GyrosGeier', password_hash('stan', PASSWORD_DEFAULT), 'codeR2k@test-conf.de'));
+        $this->assertFalse($model->createUserAndAccount('rukoto', password_hash('stan', PASSWORD_DEFAULT), 'codeR2k@test-conf.de'));
     }
 }

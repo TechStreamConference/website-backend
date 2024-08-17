@@ -10,8 +10,13 @@ class UserSeeder extends Seeder
     {
         $this->db->table('User')->insert([
             'id' => null,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
+            'created_at' => date('1985-10-21 07:28:00'),
+            'updated_at' => date('1985-10-21 07:28:00'),
+        ]);
+        $this->db->table('User')->insert([
+            'id' => null,
+            'created_at' => date('2024-08-17 13:39:35'),
+            'updated_at' => date('2024-08-17 13:39:35'),
         ]);
     }
 }
