@@ -9,8 +9,10 @@ class AccountModel extends Model
 {
     protected $table = 'Account';
     protected $primaryKey = 'user_id';
-    protected $allowedFields = ['email', 'username', 'password', 'password_change_required'];
-    protected $useAutoIncrement = false;
+    // according to the docs, the primary key should never be part of the allowedFields
+    // array, but it doesn't seem to work without having it in there (the reason could be
+    // that it is also a foreign key)
+    protected $allowedFields = ['user_id', 'email', 'username', 'password', 'password_change_required'];
     protected $useTimestamps = true;
 
     public function isUsernameTaken(string $username): bool
@@ -23,13 +25,13 @@ class AccountModel extends Model
         return $this->where(['email' => $email])->countAllResults() > 0;
     }
 
-    public function createAccount(int $user_id, string $username, string $password_hash, string $email): bool
+    public function createAccount(int $userId, string $username, string $passwordHash, string $email): bool
     {
         try {
             $this->insert([
-                'user_id' => $user_id,
+                'user_id' => $userId,
                 'username' => $username,
-                'password' => $password_hash,
+                'password' => $passwordHash,
                 'email' => $email,
             ]);
             return true;
@@ -38,20 +40,13 @@ class AccountModel extends Model
         }
     }
 
-    public function createUserAndAccount(string $username, string $password_hash, string $email): int|false
+    public function getAccountByUsernameOrEmail(string $usernameOrEmail): array|null
     {
-        $this->db->transStart();
-        $user_id = model(UserModel::class)->createUser();
-        $this->insert([
-            'user_id' => $user_id,
-            'username' => $username,
-            'password' => $password_hash,
-            'email' => $email,
-        ]);
-        $this->db->transComplete();
-        if ($this->db->transStatus() === false) {
-            return false;
-        }
-        return $user_id;
+        return $this->where('username', $usernameOrEmail)->orWhere('email', $usernameOrEmail)->first();
+    }
+
+    public function get(int $userId): array|null
+    {
+        return $this->select('username, email')->where('user_id', $userId)->first();
     }
 }

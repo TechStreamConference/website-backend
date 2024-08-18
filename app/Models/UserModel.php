@@ -27,4 +27,25 @@ class UserModel extends Model
     {
         return $this->insert([]);
     }
+
+    public function deleteUser(int $id): bool
+    {
+        return $this->delete($id);
+    }
+
+    public function getRoles(int $userId): array|null
+    {
+        // todo: Should this be part of the user model? Should there be a dedicated role(s) model?
+        $result = $this
+            ->select('id, IF(user_id IS NULL, FALSE, TRUE) AS has_account', escape: false)
+            ->join('Account', 'User.id = Account.user_id', 'left')
+            ->where('User.id', $userId)
+            ->first();
+        if ($result === null) {
+            return null;
+        }
+        return [
+            'has_account' => boolval($result['has_account']),
+        ];
+    }
 }
