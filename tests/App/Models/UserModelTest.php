@@ -18,40 +18,77 @@ class UserModelTest extends CIUnitTestCase
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
-    public function testGetUser()
+    // *************************************
+    // * getUser()
+    // *************************************
+    public function testGetUser_ValidId_ReturnsArray()
     {
         $model = new UserModel();
-        $this->assertIsArray($model->getUser());
-
         $user = $model->getUser(1);
         $this->assertNotNull($user);
         $this->assertEquals(1, $user['id']);
         $this->assertEquals('1985-10-21 07:28:00', $user['created_at']);
         $this->assertEquals('1985-10-21 07:28:00', $user['updated_at']);
         $this->assertNull($user['deleted_at']);
+    }
 
-        $user = $model->getUser(2);
-        $this->assertNotNull($user);
-        $this->assertEquals(2, $user['id']);
-        $this->assertEquals('2024-08-17 13:39:35', $user['created_at']);
-        $this->assertEquals('2024-08-17 13:39:35', $user['updated_at']);
-        $this->assertNull($user['deleted_at']);
 
-        $user = $model->getUser(3);
+    public function testGetUser_InvalidId_ReturnsNull()
+    {
+        $model = new UserModel();
+        $this->assertIsArray($model->getUser());
+        $user = $model->getUser(4);
         $this->assertNull($user);
     }
 
-    public function testCreateUser()
+    // *************************************
+    // * createUser()
+    // *************************************
+    public function testCreateUser_ReturnsId()
     {
         $model = new UserModel();
         $userId = $model->createUser();
-        $this->assertEquals(3, $userId);
+        $this->assertEquals(4, $userId);
+    }
 
-        $user = $model->getUser(3);
-        $this->assertNotNull($user);
-        $this->assertEquals(3, $user['id']);
-        $this->assertNotNull($user['created_at']);
-        $this->assertNotNull($user['updated_at']);
-        $this->assertNull($user['deleted_at']);
+    // *************************************
+    // * deleteUser()
+    // *************************************
+    public function testDeleteUser_UserExists_ReturnsTrue()
+    {
+        $model = new UserModel();
+        $this->assertTrue($model->deleteUser(3)); // can only delete a user not referenced in other tables
+    }
+
+    public function testDeleteUser_UserDoesNotExist_ReturnsTrue()
+    {
+        $model = new UserModel();
+        $this->assertTrue($model->deleteUser(40)); // deleting a non-existing user is not an error
+    }
+
+    // *************************************
+    // * getRoles()
+    // *************************************
+    public function testGetRoles_UserHasAccount_ReturnsArray()
+    {
+        $model = new UserModel();
+        $roles = $model->getRoles(1);
+        $this->assertNotNull($roles);
+        $this->assertTrue($roles['has_account']);
+    }
+
+    public function testGetRoles_UserDoesNotHaveAccount_ReturnsArray()
+    {
+        $model = new UserModel();
+        $roles = $model->getRoles(3);
+        $this->assertNotNull($roles);
+        $this->assertFalse($roles['has_account']);
+    }
+
+    public function testGetRoles_UserDoesNotExist_ReturnsNull()
+    {
+        $model = new UserModel();
+        $roles = $model->getRoles(4);
+        $this->assertNull($roles);
     }
 }
