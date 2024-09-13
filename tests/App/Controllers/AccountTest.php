@@ -131,7 +131,7 @@ class AccountTest extends CIUnitTestCase
         ]);
         $result->assertStatus(400);
         $result->assertJSONExact([
-            'password' => 'The password field must have at least one special character.'
+            'password' => 'PASSWORD_MISSING_SPECIAL_CHARACTER'
         ]);
     }
 
@@ -144,7 +144,7 @@ class AccountTest extends CIUnitTestCase
         ]);
         $result->assertStatus(400);
         $result->assertJSONExact([
-            'password' => 'The password field must be at least one uppercase letter.'
+            'password' => 'PASSWORD_MISSING_UPPERCASE_LETTER'
         ]);
     }
 
@@ -157,7 +157,7 @@ class AccountTest extends CIUnitTestCase
         ]);
         $result->assertStatus(400);
         $result->assertJSONExact([
-            'password' => 'The password field must be at least one lowercase letter.'
+            'password' => 'PASSWORD_MISSING_LOWERCASE_LETTER'
         ]);
     }
 
@@ -170,7 +170,7 @@ class AccountTest extends CIUnitTestCase
         ]);
         $result->assertStatus(400);
         $result->assertJSONExact([
-            'password' => 'The password field must have at least one number.'
+            'password' => 'PASSWORD_MISSING_NUMBER'
         ]);
     }
 
@@ -183,7 +183,7 @@ class AccountTest extends CIUnitTestCase
         ]);
         $result->assertStatus(400);
         $result->assertJSONExact([
-            'password' => 'The password field must be at least 8 characters in length.'
+            'password' => 'PASSWORD_TOO_SHORT'
         ]);
     }
 
