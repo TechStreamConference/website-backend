@@ -9,18 +9,12 @@ class PasswordRules
     public function valid_password(string $password, ?string &$error = null): bool
     {
         if ($password === '') {
-            $error = lang('Validation.missingField', ['field' => lang('Validation.password')]);
+            $error = PasswordRulesError::PasswordMissingField->value;
             return false;
         }
 
         if (mb_strlen($password) < self::PASSWORD_MIN_LENGTH) {
-            $error = lang(
-                'Validation.tooShort',
-                [
-                    'field' => lang('Validation.password'),
-                    'min_length' => self::PASSWORD_MIN_LENGTH
-                ]
-            );
+            $error = PasswordRulesError::PasswordTooShort->value;
             return false;
         }
 
@@ -30,22 +24,22 @@ class PasswordRules
         $regex_special = '/[!@#$%^&*()\-_=+{};:,<.>§~ ]/';
 
         if (preg_match_all($regex_lowercase, $password) < 1) {
-            $error = lang('Validation.missingLowercaseLetter', ['field' => lang('Validation.password')]);
+            $error = PasswordRulesError::PasswordMissingLowercaseLetter->value;
             return false;
         }
 
         if (preg_match_all($regex_uppercase, $password) < 1) {
-            $error = lang('Validation.missingUppercaseLetter', ['field' => lang('Validation.password')]);
+            $error = PasswordRulesError::PasswordMissingUppercaseLetter->value;
             return false;
         }
 
         if (preg_match_all($regex_number, $password) < 1) {
-            $error = lang('Validation.missingNumber', ['field' => lang('Validation.password')]);
+            $error = PasswordRulesError::PasswordMissingNumber->value;
             return false;
         }
 
         if (preg_match_all($regex_special, $password) < 1) {
-            $error = lang('Validation.missingSpecialCharacter', ['field' => lang('Validation.password')]);
+            $error = PasswordRulesError::PasswordMissingSpecialCharacter->value;
             return false;
         }
 
