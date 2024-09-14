@@ -14,6 +14,16 @@ class AddSpeaker extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+            'event_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
             'name' => [
                 'type' => 'VARCHAR',
                 'constraint' => 100,
@@ -29,15 +39,16 @@ class AddSpeaker extends Migration
                 'null' => false,
             ],
             'photo' => [
-                'type' => 'BLOB',
+                'type' => 'VARCHAR',
+                'constraint' => 64,
                 'null' => false,
             ],
             'photo_mime_type' => [
                 'type' => 'VARCHAR',
-                'constraint' => 100,
+                'constraint' => 64,
                 'null' => false,
             ],
-            'is_active' => [
+            'is_approved' => [
                 'type' => 'BOOLEAN',
                 'default' => false,
                 'null' => false,
@@ -60,6 +71,8 @@ class AddSpeaker extends Migration
             ],
         ]);
         $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->addForeignKey('event_id', 'Event', 'id');
         $this->forge->createTable('Speaker');
     }
 

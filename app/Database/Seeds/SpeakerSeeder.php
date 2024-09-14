@@ -12,38 +12,79 @@ class SpeakerSeeder extends Seeder
 
         $image_decoded = base64_decode($image_encoded);
 
+        file_put_contents(WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . 'coder2k.jpg', $image_decoded);
+        file_put_contents(WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . 'GyrosGeier.jpg', $image_decoded);
+        file_put_contents(WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . 'codingPurpurTentakel.jpg', $image_decoded);
+
         $this->db->table('Speaker')->insert(
             [
-                'name' => 'coder2k',
+                'name' => 'coder3k',
+                'user_id' => 1,
+                'event_id' => 1,
                 'short_bio' => 'Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner',
                 'bio' => 'Michael (coder2k) hat vor über 20 Jahren \'Turbo Pascal und Delphi für Kids\' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.',
-                'photo' => $image_decoded,
+                'photo' => 'images/coder2k.jpg',
                 'photo_mime_type' => 'image/jpeg',
-                'is_active' => true,
+                'is_approved' => true,
                 'visible_from' => date('2024-06-01 15:00:00'),
+                'updated_at' => date('2024-06-01 15:00:00'),
             ]
         );
 
         $this->db->table('Speaker')->insert(
             [
-                'name' => 'codingPurpurTentakel',
-                'short_bio' => 'Test-Conf Host, Veranstaltungstechniker, Elektroniker, Hobby-Coder',
-                'bio' => 'Martin (Purpur Tentakel) kommt aus Köln. Nach der Schule macht er eine Ausbildung zur Fachkraft für Veranstaltungstechnik. Durch Corona kann er nach der Ausbildung nicht in der Branche weiter arbeiten und macht eine 2. Ausbildung zum Elektroniker für Betriebstechnik. In der Zeit der 2. Ausblidung trifft er irgendwann mal auf den Kanal von coder2k. Tja nun muss er coden. Von Python über C# kommt er schließlich zu c++. Seither programmiert er an seinem Spiel \'Tentakels Attacking\'',
-                'photo' => $image_decoded,
+                'name' => 'coder2k',
+                'user_id' => 1,
+                'event_id' => 1,
+                'short_bio' => 'Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner',
+                'bio' => 'Michael (coder2k) hat vor über 20 Jahren \'Turbo Pascal und Delphi für Kids\' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.',
+                'photo' => 'images/coder2k.jpg',
                 'photo_mime_type' => 'image/jpeg',
-                'is_active' => true,
+                'is_approved' => true,
+                'visible_from' => date('2024-06-01 15:00:00'),
+                'updated_at' => date('2024-06-01 15:01:00'),
+            ]
+        );
+
+        $this->db->table('Speaker')->insert(
+            [
+                'name' => 'coder4k',
+                'user_id' => 1,
+                'event_id' => 1,
+                'short_bio' => 'Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner',
+                'bio' => 'Michael (coder2k) hat vor über 20 Jahren \'Turbo Pascal und Delphi für Kids\' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.',
+                'photo' => 'images/coder2k.jpg',
+                'photo_mime_type' => 'image/jpeg',
+                'is_approved' => false,
+                'visible_from' => date('2024-06-01 15:00:00'),
+                'updated_at' => date('2024-06-01 15:02:00'),
+            ]
+        );
+
+        $this->db->table('Speaker')->insert(
+            [
+                'name' => 'GyrosGeier',
+                'user_id' => 2,
+                'event_id' => 1,
+                'short_bio' => 'Embedded- und Lowlevel-Coding',
+                'bio' => 'GyrosGeier hat nicht nur einen witzigen Namen – nein – er kennt sich auch ziemlich gut im Bereich der Low-Level- bzw. Systemprogrammierung aus. Im vergangenen Jahr ist er nach Tokyo ausgewandert und arbeitet dort für eine Firma, die Mikrosatelliten ins Weltall schießt. In seinen Streams bastelt er an zahlreichen Projekten und vergisst niemals, den Yak-Stapel zu vergrößern.',
+                'photo' => 'images/GyrosGeier.jpg',
+                'photo_mime_type' => 'image/jpeg',
+                'is_approved' => true,
                 'visible_from' => date('2124-06-01 15:00:00'),
             ]
         );
 
         $this->db->table('Speaker')->insert(
             [
-                'name' => 'NECROMENZER',
-                'short_bio' => 'Test-Conf Mod, Elektrotechniker, Gamer, Bastler, C-Coding (Anfänger)',
-                'bio' => 'Ich bin Ben alias NECROMENZER oder kurz NECRO genannt. Hauptberuflich bin ich Elektroniker und versuche Technik-, Bastel-, Coding- und Gaming-Streams zu machen.',
-                'photo' => $image_decoded,
+                'name' => 'codingPurpurTentakel',
+                'user_id' => 4,
+                'event_id' => 1,
+                'short_bio' => 'Test-Conf Host, Veranstaltungstechniker, Elektroniker, Hobby-Coder',
+                'bio' => 'Martin (Purpur Tentakel) kommt aus Köln. Nach der Schule macht er eine Ausbildung zur Fachkraft für Veranstaltungstechnik. Durch Corona kann er nach der Ausbildung nicht in der Branche weiter arbeiten und macht eine 2. Ausbildung zum Elektroniker für Betriebstechnik. In der Zeit der 2. Ausblidung trifft er irgendwann mal auf den Kanal von coder2k. Tja nun muss er coden. Von Python über C# kommt er schließlich zu c++. Seither programmiert er an seinem Spiel \'Tentakels Attacking\'',
+                'photo' => 'images/codingPurpurTentakel.jpg',
                 'photo_mime_type' => 'image/jpeg',
-                'is_active' => false,
+                'is_approved' => true,
                 'visible_from' => date('2024-06-01 15:00:00'),
             ]
         );

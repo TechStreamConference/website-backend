@@ -7,21 +7,39 @@ use CodeIgniter\Model;
 class SpeakerModel extends Model
 {
     protected $table = 'Speaker';
-    protected $allowedFields = ['name', 'short_bio', 'bio', 'photo', 'photo_mime_type', 'is_active', 'visible_from'];
+    protected $allowedFields = ['name', 'user_id', 'event_id', 'short_bio', 'bio', 'photo', 'photo_mime_type', 'is_approved', 'visible_from'];
     protected $useTimestamps = true;
 
     public function get(int $id): array|null
     {
-        return $this->select('name, short_bio, bio, photo, photo_mime_type, is_active, visible_from')->where('id', $id)->first();
+        return $this->select('name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
     }
 
-    public function getPublished(): array
+    public function getPublished(int $eventId): array
     {
-        return $this->select('id, name, short_bio, bio, photo, photo_mime_type')->where('is_active', true)->where('visible_from <=', date('Y-m-d H:i:s'))->findAll();
+        $subQuery = $this->db->table('speaker')
+            ->select('id')
+            ->where('speaker.user_id = outer_speaker.user_id')
+            ->where('is_approved', true)
+            ->where('visible_from <=', date('Y-m-d H:i:s'))
+            ->orderBy('updated_at', 'DESC')
+            ->limit(1)
+            ->getCompiledSelect();
+
+        $query = $this->db->table('speaker AS outer_speaker')
+            ->select('name, short_bio, bio, photo, photo_mime_type')
+            ->where('event_id = ', $eventId)
+            ->where("id = ($subQuery)", null, false)
+            ->get()
+            ->getResultArray();
+
+        return $query;
     }
 
     public function create(
         string $name,
+        int    $userId,
+        int    $eventId,
         string $shortBio,
         string $bio,
         string $photo,
@@ -32,11 +50,13 @@ class SpeakerModel extends Model
     {
         return $this->insert([
             'name' => $name,
+            'user_id' => $userId,
+            'event_id' => $eventId,
             'short_bio' => $shortBio,
             'bio' => $bio,
             'photo' => $photo,
             'photo_mime_type' => $photoMimeType,
-            'is_active' => $isActive,
+            'is_approved' => $isActive,
             'visible_from' => $visibleFrom,
         ]);
     }
