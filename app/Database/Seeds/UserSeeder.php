@@ -28,5 +28,12 @@ class UserSeeder extends Seeder
             'created_at' => date('2024-08-17 14:00:00'),
             'updated_at' => date('2024-08-17 14:00:00'),
         ]);
+
+        // user for speaker "codingPurpurTentakel" (without account)
+        $this->db->table('User')->insert([
+            'id' => null,
+            'created_at' => date('2024-08-17 15:39:35'),
+            'updated_at' => date('2024-08-17 15:39:35'),
+        ]);
     }
 }

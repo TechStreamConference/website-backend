@@ -26,14 +26,15 @@ class SpeakerModelTest extends CIUnitTestCase
         $model = new SpeakerModel();
         $speaker = $model->get(1);
         $this->assertNotNull($speaker);
-        $this->assertEquals('coder2k', $speaker['name']);
+        $this->assertEquals('coder3k', $speaker['name']);
         $this->assertEquals('Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner', $speaker['short_bio']);
         $this->assertEquals(
             'Michael (coder2k) hat vor über 20 Jahren \'Turbo Pascal und Delphi für Kids\' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.',
             $speaker['bio'],
         );
+        $this->assertEquals('images/coder2k.jpg', $speaker['photo']);
         $this->assertEquals('image/jpeg', $speaker['photo_mime_type']);
-        $this->assertTrue(boolval($speaker['is_active']));
+        $this->assertTrue(boolval($speaker['is_approved']));
         $this->assertEquals(date('2024-06-01 15:00:00'), $speaker['visible_from']);
     }
 
@@ -50,35 +51,39 @@ class SpeakerModelTest extends CIUnitTestCase
     public function testGetPublished_ReturnsArray()
     {
         $model = new SpeakerModel();
-        $speakers = $model->getPublished();
+        $speakers = $model->getPublished(1);
         $this->assertIsArray($speakers);
-        $this->assertCount(1, $speakers);
-        $this->assertEquals(1, $speakers[0]['id']);
+        $this->assertCount(2, $speakers);
         $this->assertEquals('coder2k', $speakers[0]['name']);
         $this->assertEquals('Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner', $speakers[0]['short_bio']);
         $this->assertEquals(
             'Michael (coder2k) hat vor über 20 Jahren \'Turbo Pascal und Delphi für Kids\' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.',
             $speakers[0]['bio'],
         );
+        $this->assertEquals('images/coder2k.jpg', $speakers[0]['photo']);
         $this->assertEquals('image/jpeg', $speakers[0]['photo_mime_type']);
+        $this->assertEquals('codingPurpurTentakel', $speakers[1]['name']);
     }
 
     // *************************************
     // * create()
     // *************************************
-    public function testCreate_ReturnsTrue()
+    public function testCreate_ReturnsId()
     {
         $model = new SpeakerModel();
         $this->assertEquals(
-            4,
+            6,
             $model->create(
                 'Test Speaker',
+                4,
+                1,
                 'Test Short Bio',
                 'Test Bio',
-                'Test Photo',
+                'images/test.jpg',
                 'image/jpeg',
                 true,
                 date('Y-m-d H:i:s'),
-            ));
+            )
+        );
     }
 }
