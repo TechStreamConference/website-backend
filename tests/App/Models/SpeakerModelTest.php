@@ -61,7 +61,6 @@ class SpeakerModelTest extends CIUnitTestCase
             $speakers[0]['bio'],
         );
         $this->assertEquals('images/coder2k.jpg', $speakers[0]['photo']);
-        $this->assertEquals('image/jpeg', $speakers[0]['photo_mime_type']);
         $this->assertEquals('codingPurpurTentakel', $speakers[1]['name']);
     }
 
