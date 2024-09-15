@@ -1,6 +1,8 @@
 <?php
 
 use App\Controllers\Account;
+use App\Controllers\Event;
+use App\Controllers\Image;
 use App\Filters\AuthFilter;
 use CodeIgniter\Router\RouteCollection;
 
@@ -14,3 +16,6 @@ $routes->post('account/register', [Account::class, 'register']);
 $routes->post('account/login', [Account::class, 'login']);
 $routes->post('account/logout', [Account::class, 'logout']);
 $routes->get('account', [Account::class, 'get'], ['filter' => AuthFilter::class]);
+$routes->get('images/(:segment)', [Image::class, 'get']);
+$routes->get('events/(:num)', [Event::class, 'get']);
+$routes->get('events', [Event::class, 'get']);
