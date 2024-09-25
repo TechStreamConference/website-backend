@@ -23,6 +23,7 @@ class Event extends BaseController
         $speakers = $speakerModel->getPublished($event['id']);
 
         return $this->response->setJSON([
+            'year' => $year,
             'event' => $event,
             'speakers' => $speakers,
         ]);
