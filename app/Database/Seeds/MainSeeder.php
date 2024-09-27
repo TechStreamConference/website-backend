@@ -12,5 +12,7 @@ class MainSeeder extends Seeder
         $this->call('AccountSeeder');
         $this->call('EventSeeder');
         $this->call('SpeakerSeeder');
+        $this->call('SocialMediaTypeSeeder');
+        $this->call('SocialMediaLinkSeeder');
     }
 }

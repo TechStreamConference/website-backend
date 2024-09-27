@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\EventModel;
+use App\Models\SocialMediaLinkModel;
+use App\Models\SocialMediaTypeModel;
 use App\Models\SpeakerModel;
 
 class Event extends BaseController
@@ -21,6 +23,27 @@ class Event extends BaseController
 
         $speakerModel = new SpeakerModel();
         $speakers = $speakerModel->getPublished($event['id']);
+
+        $socialMediaTypeModel = new SocialMediaTypeModel();
+        $socialMediaTypes = $socialMediaTypeModel->all();
+
+        $socialMediaLinkModel = new SocialMediaLinkModel();
+        foreach ($speakers as &$speaker) {
+            $dbLinks = $socialMediaLinkModel->get_by_speaker_id($speaker['id']);
+            $links = [];
+            foreach ($dbLinks as $dbLink) {
+                $typeId = $dbLink['social_media_type_id'];
+                if (!isset($socialMediaTypes[$typeId])) {
+                    return $this->response->setStatusCode(500);
+                }
+                $type = $socialMediaTypes[$typeId];
+                $links[] = [
+                    'type' => $type['name'],
+                    'url' => $dbLink['url'],
+                ];
+            }
+            $speaker['social_media_links'] = $links;
+        }
 
         $event['year'] = $year;
 

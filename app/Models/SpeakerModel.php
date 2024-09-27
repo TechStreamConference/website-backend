@@ -12,7 +12,7 @@ class SpeakerModel extends Model
 
     public function get(int $id): array|null
     {
-        return $this->select('name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
+        return $this->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
     }
 
     public function getPublished(int $eventId): array
@@ -27,7 +27,7 @@ class SpeakerModel extends Model
             ->getCompiledSelect();
 
         $query = $this->db->table('Speaker AS outer_speaker')
-            ->select('name, short_bio, bio, photo')
+            ->select('id, name, short_bio, bio, photo')
             ->where('event_id = ', $eventId)
             ->where("id = ($subQuery)", null, false)
             ->get()
