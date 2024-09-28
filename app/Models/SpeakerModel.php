@@ -17,16 +17,16 @@ class SpeakerModel extends Model
 
     public function getPublished(int $eventId): array
     {
-        $subQuery = $this->db->table('speaker')
+        $subQuery = $this->db->table('Speaker')
             ->select('id')
-            ->where('speaker.user_id = outer_speaker.user_id')
+            ->where('Speaker.user_id = outer_speaker.user_id')
             ->where('is_approved', true)
             ->where('visible_from <=', date('Y-m-d H:i:s'))
             ->orderBy('updated_at', 'DESC')
             ->limit(1)
             ->getCompiledSelect();
 
-        $query = $this->db->table('speaker AS outer_speaker')
+        $query = $this->db->table('Speaker AS outer_speaker')
             ->select('name, short_bio, bio, photo')
             ->where('event_id = ', $eventId)
             ->where("id = ($subQuery)", null, false)
