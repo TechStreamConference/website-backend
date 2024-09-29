@@ -34,7 +34,7 @@ class EventModelTest extends CIUnitTestCase
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $event['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $event['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $event['presskit_url']);
-        $this->assertEquals('https://youtu.be/IW1vQAB6B18', $event['trailer_url']);
+        $this->assertEquals('IW1vQAB6B18', $event['trailer_youtube_id']);
         $this->assertEquals('Sei dabei!', $event['description_headline']);
         $this->assertEquals(
             'Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.
@@ -65,7 +65,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $event['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $event['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $event['presskit_url']);
-        $this->assertEquals('https://youtu.be/IW1vQAB6B18', $event['trailer_url']);
+        $this->assertEquals('IW1vQAB6B18', $event['trailer_youtube_id']);
         $this->assertEquals('Sei dabei!', $event['description_headline']);
         $this->assertEquals(
             'Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.
