@@ -16,7 +16,7 @@ class EventModel extends Model
         'discord_url',
         'twitch_url',
         'presskit_url',
-        'trailer_url',
+        'trailer_youtube_id',
         'description_headline',
         'description',
     ];
@@ -24,12 +24,12 @@ class EventModel extends Model
 
     public function get(int $eventId): array|null
     {
-        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_url, description_headline, description')->where('id', $eventId)->first();
+        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('id', $eventId)->first();
     }
 
     public function getByYear(int $year): array|null
     {
-        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_url, description_headline, description')->where('YEAR(start_date)', $year)->first();
+        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('YEAR(start_date)', $year)->first();
     }
 
     public function create(
@@ -40,7 +40,7 @@ class EventModel extends Model
         string $discordUrl,
         string $twitchUrl,
         string $presskitUrl,
-        string $trailerUrl,
+        string $trailerYoutubeId,
         string $descriptionHeadline,
         string $description,
     ): int
@@ -53,7 +53,7 @@ class EventModel extends Model
             'discord_url' => $discordUrl,
             'twitch_url' => $twitchUrl,
             'presskit_url' => $presskitUrl,
-            'trailer_url' => $trailerUrl,
+            'trailer_youtube_id' => $trailerYoutubeId,
             'description_headline' => $descriptionHeadline,
             'description' => $description,
         ]);
