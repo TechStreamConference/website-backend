@@ -19,7 +19,7 @@ class AddSocialMediaLink extends Migration
                 'unsigned' => true,
                 'null' => false,
             ],
-            'speaker_id' => [
+            'user_id' => [
                 'type' => 'INT',
                 'unsigned' => true,
                 'null' => false,
@@ -44,7 +44,7 @@ class AddSocialMediaLink extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('social_media_type_id', 'SocialMediaType', 'id');
-        $this->forge->addForeignKey('speaker_id', 'Speaker', 'id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
         $this->forge->createTable('SocialMediaLink');
     }
 

@@ -23,13 +23,13 @@ class Event extends BaseController
 
         $speakerModel = new SpeakerModel();
         $speakers = $speakerModel->getPublished($event['id']);
-        $speakerIds = array_column($speakers, 'id');
+        $userIds = array_column($speakers, 'user_id');
 
         $socialMediaLinkModel = new SocialMediaLinkModel();
-        $socialMediaLinks = $socialMediaLinkModel->get_by_speaker_ids($speakerIds);
+        $socialMediaLinks = $socialMediaLinkModel->get_by_user_ids($userIds);
 
         foreach ($speakers as &$speaker) {
-            $speaker['social_media_links'] = $socialMediaLinks[$speaker['id']] ?? [];
+            $speaker['social_media_links'] = $socialMediaLinks[$speaker['user_id']] ?? [];
         }
 
         $event['year'] = $year;

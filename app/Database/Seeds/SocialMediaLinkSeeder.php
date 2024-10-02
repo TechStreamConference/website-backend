@@ -12,7 +12,7 @@ class SocialMediaLinkSeeder extends Seeder
 
         $this->db->table('SocialMediaLink')->insert([
             'social_media_type_id' => 1, // Twitch
-            'speaker_id' => 2, // coder2k
+            'user_id' => 1, // coder2k
             'url' => 'https://www.twitch.tv/coder2k',
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),
@@ -20,7 +20,7 @@ class SocialMediaLinkSeeder extends Seeder
 
         $this->db->table('SocialMediaLink')->insert([
             'social_media_type_id' => 3, // GitHub
-            'speaker_id' => 2, // coder2k
+            'user_id' => 1, // coder2k
             'url' => 'https://www.github.com/mgerhold',
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),
@@ -28,7 +28,7 @@ class SocialMediaLinkSeeder extends Seeder
 
         $this->db->table('SocialMediaLink')->insert([
             'social_media_type_id' => 1, // Twitch
-            'speaker_id' => 5, // codingPurpurTentakel
+            'user_id' => 4, // codingPurpurTentakel
             'url' => 'https://www.twitch.tv/codingPurpurTentakel',
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),
@@ -36,7 +36,7 @@ class SocialMediaLinkSeeder extends Seeder
 
         $this->db->table('SocialMediaLink')->insert([
             'social_media_type_id' => 1, // Twitch
-            'speaker_id' => 5, // codingPurpurTentakel
+            'user_id' => 4, // codingPurpurTentakel
             'url' => 'https://www.twitch.tv/codingPurpurTentakelSecondChannel',
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),

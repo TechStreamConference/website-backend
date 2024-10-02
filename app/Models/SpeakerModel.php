@@ -27,7 +27,7 @@ class SpeakerModel extends Model
             ->getCompiledSelect();
 
         $query = $this->db->table('Speaker AS outer_speaker')
-            ->select('id, name, short_bio, bio, photo')
+            ->select('user_id, name, short_bio, bio, photo')
             ->where('event_id = ', $eventId)
             ->where("id = ($subQuery)", null, false)
             ->get()

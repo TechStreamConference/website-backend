@@ -10,12 +10,16 @@ class SocialMediaLinkModel extends Model
     protected $allowedFields = ['social_media_type_id', 'speaker_id', 'url'];
     protected $useTimestamps = true;
 
-    public function get_by_speaker_ids(array $speakerIds): array
+    public function get_by_user_ids(array $userIds): array
     {
-        $queryResult = $this->select('speaker_id, name, url')->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')->whereIn('speaker_id', $speakerIds)->findAll();
+        $queryResult = $this
+            ->select('user_id, name, url')
+            ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')
+            ->whereIn('user_id', $userIds)
+            ->findAll();
         $result = [];
         foreach ($queryResult as $row) {
-            $result[$row['speaker_id']][] = [
+            $result[$row['user_id']][] = [
                 'name' => $row['name'],
                 'url' => $row['url'],
             ];
