@@ -5,8 +5,8 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\EventModel;
 use App\Models\SocialMediaLinkModel;
-use App\Models\SocialMediaTypeModel;
 use App\Models\SpeakerModel;
+use App\Models\TeamMemberModel;
 
 class Event extends BaseController
 {
@@ -23,13 +23,22 @@ class Event extends BaseController
 
         $speakerModel = new SpeakerModel();
         $speakers = $speakerModel->getPublished($event['id']);
-        $userIds = array_column($speakers, 'user_id');
+        $speakerUserIds = array_column($speakers, 'user_id');
+
+        $teamMemberModel = new TeamMemberModel();
+        $teamMembers = $teamMemberModel->getPublished($event['id']);
+        $teamMemberUserIds = array_column($teamMembers, 'user_id');
 
         $socialMediaLinkModel = new SocialMediaLinkModel();
-        $socialMediaLinks = $socialMediaLinkModel->get_by_user_ids($userIds);
+        $speakersSocialMediaLinks = $socialMediaLinkModel->get_by_user_ids($speakerUserIds);
+        $teamMembersSocialMediaLinks = $socialMediaLinkModel->get_by_user_ids($teamMemberUserIds);
 
         foreach ($speakers as &$speaker) {
-            $speaker['social_media_links'] = $socialMediaLinks[$speaker['user_id']] ?? [];
+            $speaker['social_media_links'] = $speakersSocialMediaLinks[$speaker['user_id']] ?? [];
+        }
+
+        foreach ($teamMembers as &$teamMember) {
+            $teamMember['social_media_links'] = $teamMembersSocialMediaLinks[$teamMember['user_id']] ?? [];
         }
 
         $event['year'] = $year;
@@ -37,6 +46,7 @@ class Event extends BaseController
         return $this->response->setJSON([
             'event' => $event,
             'speakers' => $speakers,
+            'team_members' => $teamMembers,
         ]);
     }
 }
