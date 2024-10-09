@@ -4,17 +4,17 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddTeamMember extends Migration
+class AddMediaPartner extends Migration
 {
     public function up()
     {
-        // The Speaker table and the TeamMember table are exactly identical, except
-        // for their name. Therefore, we can reuse the Speaker table fields for the
-        // TeamMember table.
-        $speakerTableFields = $this->db->getFieldData('Speaker');
+        // The MediaPartner table and the Sponsor table are exactly identical, except
+        // for their name. Therefore, we can reuse the Sponsor table fields for the
+        // MediaPartner table.
+        $sponsorTableFields = $this->db->getFieldData('Sponsor');
 
         $fields = [];
-        foreach ($speakerTableFields as $field) {
+        foreach ($sponsorTableFields as $field) {
             $fields[$field->name] = [
                 'type' => $field->type,
                 'constraint' => $field->max_length ?? null,
@@ -27,11 +27,11 @@ class AddTeamMember extends Migration
 
         $this->forge->addField($fields);
         $this->forge->addPrimaryKey('id');
-        $this->forge->createTable('TeamMember');
+        $this->forge->createTable('MediaPartner');
     }
 
     public function down()
     {
-        $this->forge->dropTable('TeamMember');
+        $this->forge->dropTable('MediaPartner');
     }
 }
