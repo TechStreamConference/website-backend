@@ -26,7 +26,7 @@ class AddTeamMember extends Migration
         }
 
         $this->forge->addField($fields);
-        $this->forge->addKey('id', true);
+        $this->forge->addPrimaryKey('id');
         $this->forge->createTable('TeamMember');
     }
 
