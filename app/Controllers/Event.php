@@ -4,8 +4,10 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\EventModel;
+use App\Models\MediaPartnerModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
+use App\Models\SponsorModel;
 use App\Models\TeamMemberModel;
 
 class Event extends BaseController
@@ -21,12 +23,20 @@ class Event extends BaseController
             return $this->response->setStatusCode(404);
         }
 
+        $eventId = $event['id'];
+
+        $sponsorModel = new SponsorModel();
+        $sponsors = $sponsorModel->getPublished($eventId);
+
+        $mediaPartnerModel = new MediaPartnerModel();
+        $mediaPartners = $mediaPartnerModel->getPublished($eventId);
+
         $speakerModel = new SpeakerModel();
-        $speakers = $speakerModel->getPublished($event['id']);
+        $speakers = $speakerModel->getPublished($eventId);
         $speakerUserIds = array_column($speakers, 'user_id');
 
         $teamMemberModel = new TeamMemberModel();
-        $teamMembers = $teamMemberModel->getPublished($event['id']);
+        $teamMembers = $teamMemberModel->getPublished($eventId);
         $teamMemberUserIds = array_column($teamMembers, 'user_id');
 
         $socialMediaLinkModel = new SocialMediaLinkModel();
@@ -47,6 +57,8 @@ class Event extends BaseController
             'event' => $event,
             'speakers' => $speakers,
             'team_members' => $teamMembers,
+            'sponsors' => $sponsors,
+            'media_partners' => $mediaPartners,
         ]);
     }
 }
