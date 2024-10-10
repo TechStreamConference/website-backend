@@ -17,5 +17,8 @@ class MainSeeder extends Seeder
         $this->call('TeamMemberSeeder');
         $this->call('SponsorSeeder');
         $this->call('MediaPartnerSeeder');
+        $this->call('TagSeeder');
+        $this->call('TalkSeeder');
+        $this->call('TalkHasTagSeeder');
     }
 }

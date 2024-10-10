@@ -31,7 +31,7 @@ class GenericRoleModel extends Model
             ->getCompiledSelect();
 
         $query = $this->db->table("$this->table AS outer_table")
-            ->select('user_id, name, short_bio, bio, photo')
+            ->select("id, user_id, name, short_bio, bio, photo")
             ->where('event_id = ', $eventId)
             ->where("id = ($subQuery)", null, false)
             ->get()

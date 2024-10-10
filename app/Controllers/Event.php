@@ -8,6 +8,7 @@ use App\Models\MediaPartnerModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
 use App\Models\SponsorModel;
+use App\Models\TalkModel;
 use App\Models\TeamMemberModel;
 
 class Event extends BaseController
@@ -30,6 +31,9 @@ class Event extends BaseController
 
         $mediaPartnerModel = new MediaPartnerModel();
         $mediaPartners = $mediaPartnerModel->getPublished($eventId);
+
+        $talksModel = new TalkModel();
+        $talks = $talksModel->getByEventId($eventId);
 
         $speakerModel = new SpeakerModel();
         $speakers = $speakerModel->getPublished($eventId);
@@ -59,6 +63,7 @@ class Event extends BaseController
             'team_members' => $teamMembers,
             'sponsors' => $sponsors,
             'media_partners' => $mediaPartners,
+            'talks' => $talks,
         ]);
     }
 }
