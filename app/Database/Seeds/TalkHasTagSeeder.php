@@ -59,5 +59,25 @@ class TalkHasTagSeeder extends Seeder
             'talk_id' => 6,
             'tag_id' => 5,
         ]);
+
+        // Wie man eine Konferenz organisiert
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 7,
+            'tag_id' => 1, // Maker
+        ]);
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 7,
+            'tag_id' => 2, // Reverse Engineering
+        ]);
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 7,
+            'tag_id' => 3, // Hacking
+        ]);
+
+        // Ressourcenverwaltung unter C++
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 8,
+            'tag_id' => 4,
+        ]);
     }
 }
