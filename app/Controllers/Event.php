@@ -20,7 +20,6 @@ class Event extends BaseController
         }
         $eventModel = new EventModel();
         $event = $eventModel->getByYear($year);
-        $event['id'] = intval($event['id']);
         $eventId = $event['id'];
         if ($event === null) {
             return $this->response->setStatusCode(404);
@@ -58,21 +57,11 @@ class Event extends BaseController
         $event['year'] = $year;
 
         foreach ($speakers as &$speaker) {
-            $speaker['id'] = intval($speaker['id']);
             unset($speaker['user_id']);
         }
 
         foreach ($teamMembers as &$teamMember) {
-            $teamMember['id'] = intval($teamMember['id']);
             unset($teamMember['user_id']);
-        }
-
-        foreach ($talks as &$talk) {
-            $talk['speaker_id'] = intval($talk['speaker_id']);
-            $talk['duration'] = intval($talk['duration']);
-            foreach ($talk['tags'] as &$tag) {
-                $tag['color_index'] = intval($tag['color_index']);
-            }
         }
 
         return $this->response->setJSON([

@@ -16,7 +16,10 @@ class GenericRoleModel extends Model
 
     public function get(int $id): array|null
     {
-        return $this->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
+        $result = $this->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
+        $result['id'] = intval($result['id']);
+        $result['is_approved'] = boolval($result['is_approved']);
+        return $result;
     }
 
     public function getPublished(int $eventId): array
@@ -31,11 +34,16 @@ class GenericRoleModel extends Model
             ->getCompiledSelect();
 
         $query = $this->db->table("$this->table AS outer_table")
-            ->select("id, user_id, name, short_bio, bio, photo")
+            ->select('id, user_id, name, short_bio, bio, photo')
             ->where('event_id = ', $eventId)
             ->where("id = ($subQuery)", null, false)
             ->get()
             ->getResultArray();
+
+        foreach ($query as &$row) {
+            $row['id'] = intval($row['id']);
+            $row['user_id'] = intval($row['user_id']);
+        }
 
         return $query;
     }

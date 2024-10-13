@@ -29,7 +29,9 @@ class EventModel extends Model
 
     public function getByYear(int $year): array|null
     {
-        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('YEAR(start_date)', $year)->first();
+        $result = $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('YEAR(start_date)', $year)->first();
+        $result['id'] = intval($result['id']);
+        return $result;
     }
 
     public function create(

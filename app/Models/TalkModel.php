@@ -35,10 +35,14 @@ class TalkModel extends Model
 
             // remove the talk_id from the tags
             foreach ($tagsForThisTalk as &$tag) {
+                $tag['color_index'] = intval($tag['color_index']);
                 unset($tag['talk_id']);
             }
 
             $talk['tags'] = array_values($tagsForThisTalk);
+            $talk['speaker_id'] = intval($talk['speaker_id']);
+            $talk['duration'] = intval($talk['duration']);
+            $talk['is_special'] = boolval($talk['is_special']);
         }
 
         // remove the id from the talks
