@@ -65,5 +65,27 @@ class TalkSeeder extends Seeder
             'duration' => 15,
             'created_at' => '2024-03-10 19:19:55',
         ]);
+
+        // special talks
+        $this->db->table('Talk')->insert([
+            'event_id' => 1,
+            'speaker_id' => 2,
+            'title' => 'Ressourcenverwaltung unter C++',
+            'description' => 'In diesem Talk geht es darum, wie man in C++ Ressourcensicherheit erreicht.',
+            'starts_at' => '2024-06-23 19:30:00',
+            'duration' => 45,
+            'is_special' => true,
+            'created_at' => '2024-03-10 19:19:55',
+        ]);
+        $this->db->table('Talk')->insert([
+            'event_id' => 1,
+            'speaker_id' => 2,
+            'title' => 'Wie man eine Konferenz organisiert',
+            'description' => 'Das wissen wir selbst noch nicht so ganz genau Kappa',
+            'starts_at' => '2024-06-23 18:30:00',
+            'duration' => 45,
+            'is_special' => true,
+            'created_at' => '2024-03-10 19:19:55',
+        ]);
     }
 }

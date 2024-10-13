@@ -7,14 +7,14 @@ use CodeIgniter\Model;
 class TalkModel extends Model
 {
     protected $table = 'Talk';
-    protected $allowedFields = ['event_id', 'speaker_id', 'starts_at', 'duration', 'title', 'description'];
+    protected $allowedFields = ['event_id', 'speaker_id', 'starts_at', 'duration', 'title', 'description', 'is_special'];
     protected $useTimestamps = true;
 
     public function getByEventId(int $eventId): array
     {
         // get all talks for the given event
         $talks = $this->db->table('Talk')
-            ->select('id, speaker_id, starts_at, duration, title, description')
+            ->select('id, speaker_id, starts_at, duration, title, description, is_special')
             ->where('event_id', $eventId)
             ->orderBy('starts_at', 'ASC')
             ->get()

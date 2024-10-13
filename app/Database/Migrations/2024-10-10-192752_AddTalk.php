@@ -44,6 +44,11 @@ class AddTalk extends Migration
                 'type' => 'TEXT',
                 'null' => false,
             ],
+            'is_special' => [
+                'type' => 'BOOLEAN',
+                'null' => false,
+                'default' => false,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
