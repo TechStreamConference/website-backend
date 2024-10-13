@@ -8,6 +8,7 @@ use App\Models\MediaPartnerModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
 use App\Models\SponsorModel;
+use App\Models\TalkModel;
 use App\Models\TeamMemberModel;
 
 class Event extends BaseController
@@ -19,17 +20,19 @@ class Event extends BaseController
         }
         $eventModel = new EventModel();
         $event = $eventModel->getByYear($year);
+        $eventId = $event['id'];
         if ($event === null) {
             return $this->response->setStatusCode(404);
         }
-
-        $eventId = $event['id'];
 
         $sponsorModel = new SponsorModel();
         $sponsors = $sponsorModel->getPublished($eventId);
 
         $mediaPartnerModel = new MediaPartnerModel();
         $mediaPartners = $mediaPartnerModel->getPublished($eventId);
+
+        $talksModel = new TalkModel();
+        $talks = $talksModel->getByEventId($eventId);
 
         $speakerModel = new SpeakerModel();
         $speakers = $speakerModel->getPublished($eventId);
@@ -53,12 +56,21 @@ class Event extends BaseController
 
         $event['year'] = $year;
 
+        foreach ($speakers as &$speaker) {
+            unset($speaker['user_id']);
+        }
+
+        foreach ($teamMembers as &$teamMember) {
+            unset($teamMember['user_id']);
+        }
+
         return $this->response->setJSON([
             'event' => $event,
             'speakers' => $speakers,
             'team_members' => $teamMembers,
             'sponsors' => $sponsors,
             'media_partners' => $mediaPartners,
+            'talks' => $talks,
         ]);
     }
 }
