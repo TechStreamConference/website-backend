@@ -33,5 +33,31 @@ class TalkHasTagSeeder extends Seeder
             'talk_id' => 3,
             'tag_id' => 5,
         ]);
+
+        // Der Mythos „Diamond Problem“
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 4,
+            'tag_id' => 1, // Maker
+        ]);
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 4,
+            'tag_id' => 2, // Reverse Engineering
+        ]);
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 4,
+            'tag_id' => 3, // Hacking
+        ]);
+
+        // Sei nicht wie RockStar Games – lerne parsen in O(N)
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 5,
+            'tag_id' => 4,
+        ]);
+
+        // Webentwicklung mit Symfony und Vue.js
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 6,
+            'tag_id' => 5,
+        ]);
     }
 }
