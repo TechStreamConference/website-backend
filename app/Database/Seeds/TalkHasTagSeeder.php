@@ -79,5 +79,11 @@ class TalkHasTagSeeder extends Seeder
             'talk_id' => 8,
             'tag_id' => 4,
         ]);
+
+        // Ein Talk zu einem fantastischen Thema
+        $this->db->table('TalkHasTag')->insert([
+            'talk_id' => 9,
+            'tag_id' => 1, // Maker
+        ]);
     }
 }
