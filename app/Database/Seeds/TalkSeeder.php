@@ -87,5 +87,16 @@ class TalkSeeder extends Seeder
             'is_special' => true,
             'created_at' => '2024-03-10 19:19:55',
         ]);
+
+        $this->db->table('Talk')->insert([
+            'event_id' => 1,
+            'speaker_id' => 2,
+            'title' => 'Ein Talk zu einem fantastischen Thema',
+            'description' => 'Richtig gutes Zeug!',
+            'starts_at' => '2024-06-22 19:30:00',
+            'duration' => 45,
+            'is_special' => true,
+            'created_at' => '2024-03-10 19:19:55',
+        ]);
     }
 }
