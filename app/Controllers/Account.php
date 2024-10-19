@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\AccountModel;
+use App\Models\RolesModel;
 use App\Models\UserModel;
 
 class Account extends BaseController
@@ -59,17 +60,17 @@ class Account extends BaseController
 
     public function roles()
     {
-        $userId = $this->request->getGet('user_id');
-        if (empty($userId)) {
-            return $this->response->setStatusCode(400);
-        }
-        $userModel = model(UserModel::class);
-        $roles = $userModel->getRoles($userId);
+        $session = session();
+        $userId = $session->get('user_id');
+        $rolesModel = model(RolesModel::class);
+        $roles = $rolesModel->getByUserId($userId);
         if ($roles === null) {
-            // user does not exist
-            return $this->response->setStatusCode(404);
+            // There cannot be an account without the possibility to query the roles.
+            // This would only be possible for a user that has no account, but then
+            // this user wouldn't be able to log in.
+            return $this->response->setStatusCode(500);
         }
-        return $this->response->setJSON($roles)->setStatusCode(200);
+        return $this->response->setJSON($roles);
     }
 
     public function login()
@@ -106,26 +107,5 @@ class Account extends BaseController
         $session->remove('user_id');
         $session->destroy();
         return $this->response->setJSON(['logout' => 'success']);
-    }
-
-    public function get()
-    {
-        $session = session();
-        $userId = $session->get('user_id');
-        if ($userId === null) {
-            // should never happen since the route is guarded by the AuthFilter
-            // todo: This is not easily testable since we cannot get around the AuthFilter.
-            //       https://codeigniter4.github.io/CodeIgniter4/testing/controllers.html describes how to test
-            //       controllers but the needed trait clashes with the FeatureTestCase trait.
-            return $this->response->setStatusCode(401);
-        }
-
-        $accountModel = model(AccountModel::class);
-        $account = $accountModel->get($userId);
-        if ($account === null) {
-            // should never happen since the session data should never contain a user_id that does not exist
-            return $this->response->setStatusCode(500);
-        }
-        return $this->response->setJSON($account);
     }
 }

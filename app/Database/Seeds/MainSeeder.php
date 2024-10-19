@@ -20,5 +20,6 @@ class MainSeeder extends Seeder
         $this->call('TagSeeder');
         $this->call('TalkSeeder');
         $this->call('TalkHasTagSeeder');
+        $this->call('AdminSeeder');
     }
 }
