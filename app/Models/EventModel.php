@@ -21,6 +21,9 @@ class EventModel extends Model
         'description',
     ];
     protected $useTimestamps = true;
+    protected array $casts = [
+        'id' => 'int',
+    ];
 
     public function get(int $eventId): array|null
     {
@@ -29,9 +32,7 @@ class EventModel extends Model
 
     public function getByYear(int $year): array|null
     {
-        $result = $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('YEAR(start_date)', $year)->first();
-        $result['id'] = intval($result['id']);
-        return $result;
+        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('YEAR(start_date)', $year)->first();
     }
 
     public function create(
