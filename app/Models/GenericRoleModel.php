@@ -13,13 +13,15 @@ class GenericRoleModel extends Model
 
     protected $allowedFields = ['name', 'user_id', 'event_id', 'short_bio', 'bio', 'photo', 'photo_mime_type', 'is_approved', 'visible_from'];
     protected $useTimestamps = true;
+    protected array $casts = [
+        'id' => 'int',
+        'user_id' => 'int',
+        'is_approved' => 'bool',
+    ];
 
     public function get(int $id): array|null
     {
-        $result = $this->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
-        $result['id'] = intval($result['id']);
-        $result['is_approved'] = boolval($result['is_approved']);
-        return $result;
+        return $this->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
     }
 
     public function getPublished(int $eventId): array
