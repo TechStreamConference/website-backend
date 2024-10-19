@@ -3,6 +3,7 @@
 use App\Controllers\Account;
 use App\Controllers\AdminDashboard;
 use App\Controllers\Event;
+use App\Controllers\Talk;
 use App\Controllers\Globals;
 use App\Controllers\Image;
 use App\Controllers\HealthCheck;
@@ -22,6 +23,7 @@ $routes->post('account/logout', [Account::class, 'logout']);
 $routes->get('images/(:segment)', [Image::class, 'get']);
 $routes->get('events/(:num)', [Event::class, 'get']);
 $routes->get('events', [Event::class, 'get']);
+$routes->get('talks/(:num)/ics', [Talk::class, 'getICS']);
 $routes->get('health', [HealthCheck::class, 'check']);
 $routes->get('globals', [Globals::class, 'get']);
 $routes->get('dashboard/admin', [AdminDashboard::class, 'index'], ['filter' => AdminAuthFilter::class]);
