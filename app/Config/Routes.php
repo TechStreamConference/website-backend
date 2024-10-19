@@ -2,6 +2,7 @@
 
 use App\Controllers\Account;
 use App\Controllers\Event;
+use App\Controllers\Talk;
 use App\Controllers\Image;
 use App\Controllers\HealthCheck;
 use App\Filters\AuthFilter;
@@ -20,4 +21,5 @@ $routes->get('account', [Account::class, 'get'], ['filter' => AuthFilter::class]
 $routes->get('images/(:segment)', [Image::class, 'get']);
 $routes->get('events/(:num)', [Event::class, 'get']);
 $routes->get('events', [Event::class, 'get']);
+$routes->get('talks/(:num)/ics', [Talk::class, 'getICS']);
 $routes->get('health', [HealthCheck::class, 'check']);
