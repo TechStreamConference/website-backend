@@ -41,6 +41,14 @@ class EventModel extends Model
             ->first();
     }
 
+    public function getAll(): array
+    {
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
+            ->orderBy('start_date', 'DESC')
+            ->findAll();
+    }
+
     public function create(
         string $title,
         string $subtitle,
