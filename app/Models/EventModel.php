@@ -27,12 +27,18 @@ class EventModel extends Model
 
     public function get(int $eventId): array|null
     {
-        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('id', $eventId)->first();
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
+            ->where('id', $eventId)
+            ->first();
     }
 
     public function getByYear(int $year): array|null
     {
-        return $this->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')->where('YEAR(start_date)', $year)->first();
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
+            ->where('YEAR(start_date)', $year)
+            ->first();
     }
 
     public function create(
