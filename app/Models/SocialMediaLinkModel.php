@@ -12,6 +12,9 @@ class SocialMediaLinkModel extends Model
 
     public function get_by_user_ids(array $userIds): array
     {
+        if (count($userIds) === 0) {
+            return [];
+        }
         $queryResult = $this
             ->select('user_id, name, url')
             ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')

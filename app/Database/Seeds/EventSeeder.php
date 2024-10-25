@@ -24,5 +24,23 @@ class EventSeeder extends Seeder
 Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzunehmen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch "special guests" und Überraschungen. Also sei gespannt!',
             ]
         );
+        $this->db->table('Event')->insert(
+            [
+                'title' => 'Tech Stream Conference 2025',
+                'subtitle' => 'Das Imperium schlägt zurück!',
+                'start_date' => date('2025-06-22'),
+                'end_date' => date('2025-06-23'),
+                'discord_url' => 'https://discord.com/invite/tp4EnphfKb',
+                'twitch_url' => 'https://www.twitch.tv/coder2k',
+                'presskit_url' => 'https://test-conf.de/Test-Conf-Presskit.zip',
+                'schedule_visible_from' => date('2025-06-22 12:00:00'),
+                'trailer_youtube_id' => 'IW1vQAB6B18',
+                'description_headline' => 'Komm\' ran!',
+                'description' => 'In einer weit, weit entfernten Galaxis...
+Die Tech Stream Conference 2025 steht unter dem Motto "Das Imperium schlägt zurück!".
+Sei dabei, wenn wir die dunkle Seite der Macht beleuchten und uns mit den dunklen Machenschaften der Technik beschäftigen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch "special guests" und Überraschungen.
+Also sei gespannt!',
+            ]
+        );
     }
 }
