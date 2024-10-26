@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\EventModel;
+use App\Models\GlobalsModel;
 use App\Models\MediaPartnerModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
@@ -15,8 +16,9 @@ class Event extends BaseController
 {
     public function get(int|null $year = null) {
         if ($year === null) {
-            // todo: fetch the currently displayed year from the database
-            $year = 2024;
+            $globalsModel = new GlobalsModel();
+            $globals = $globalsModel->read();
+            $year = $globals['default_year'];
         }
         $eventModel = new EventModel();
         $event = $eventModel->getByYear($year);
