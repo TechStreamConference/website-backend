@@ -77,10 +77,6 @@ class Event extends BaseController
     }
 
     public function getICalendarFile(int $year) {
-        // Start output buffering
-        ob_start();
-
-        // Get event id by year
         $eventModel = new EventModel();
         $event      = $eventModel->getByYear($year);
         if ($event === null) {
@@ -88,7 +84,6 @@ class Event extends BaseController
             return $this->response->setStatusCode(404);
         }
 
-        // Get all event talks
         $talkModel = new TalkModel();
         $talks     = $talkModel->getByEventId($event['id']);
 
@@ -109,13 +104,8 @@ class Event extends BaseController
 
         $icsContent .= "END:VCALENDAR\n";
 
-        // Clean output buffer and end buffering
-        ob_end_clean();
-
-        // Set filename
         $filename = 'test-conf-' . $year . '.ics';
 
-        // Set headers and return ICS file
         return $this->response
             ->setHeader('Content-Type', 'text/calendar; charset=utf-8')
             ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
