@@ -19,6 +19,7 @@ class EventModel extends Model
         'trailer_youtube_id',
         'description_headline',
         'description',
+        'publish_date',
     ];
     protected $useTimestamps = true;
     protected array $casts = [
@@ -30,6 +31,7 @@ class EventModel extends Model
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
             ->where('id', $eventId)
+            ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->first();
     }
 
@@ -38,6 +40,7 @@ class EventModel extends Model
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
             ->where('YEAR(start_date)', $year)
+            ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->first();
     }
 
@@ -45,8 +48,18 @@ class EventModel extends Model
     {
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
+            ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->orderBy('start_date', 'DESC')
             ->findAll();
+    }
+
+    public function getLatestPublished(): array|null
+    {
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
+            ->where('publish_date <=', date('Y-m-d H:i:s'))
+            ->orderBy('start_date', 'DESC')
+            ->first();
     }
 
     public function create(
@@ -60,6 +73,7 @@ class EventModel extends Model
         string $trailerYoutubeId,
         string $descriptionHeadline,
         string $description,
+        string|null $publishDate = null,
     ): int
     {
         return $this->insert([
@@ -73,6 +87,7 @@ class EventModel extends Model
             'trailer_youtube_id' => $trailerYoutubeId,
             'description_headline' => $descriptionHeadline,
             'description' => $description,
+            'publish_date' => $publishDate,
         ]);
     }
 }
