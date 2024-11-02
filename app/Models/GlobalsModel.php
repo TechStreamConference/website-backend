@@ -10,9 +10,7 @@ class GlobalsModel extends Model
     protected $allowedFields = ['key', 'value'];
     protected $useTimestamps = true;
 
-    private const REQUIRED_INT_KEYS = [
-        "default_year",
-    ];
+    private const REQUIRED_INT_KEYS = [];
     private const REQUIRED_STRING_KEYS = [
         "footer_text",
     ];
@@ -44,12 +42,8 @@ class GlobalsModel extends Model
         return $result;
     }
 
-    public function write(
-        int    $default_year,
-        string $footer_text,
-    )
+    public function write(string $footer_text)
     {
-        $this->where('key', 'default_year')->set(['value' => $default_year])->update();
         $this->where('key', 'footer_text')->set(['value' => $footer_text])->update();
     }
 }

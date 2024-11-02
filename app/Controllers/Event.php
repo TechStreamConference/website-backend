@@ -15,17 +15,16 @@ use App\Models\TeamMemberModel;
 class Event extends BaseController
 {
     public function get(int|null $year = null) {
-        if ($year === null) {
-            $globalsModel = new GlobalsModel();
-            $globals = $globalsModel->read();
-            $year = $globals['default_year'];
-        }
         $eventModel = new EventModel();
-        $event = $eventModel->getByYear($year);
-        $eventId = $event['id'];
+        if ($year === null) {
+            $event = $eventModel->getLatestPublished();
+        } else {
+            $event = $eventModel->getByYear($year);
+        }
         if ($event === null) {
             return $this->response->setStatusCode(404);
         }
+        $eventId = $event['id'];
 
         $sponsorModel = new SponsorModel();
         $sponsors = $sponsorModel->getPublished($eventId);
