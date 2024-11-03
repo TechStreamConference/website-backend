@@ -7,26 +7,6 @@ use App\Models\GlobalsModel;
 
 class AdminDashboard extends BaseController
 {
-    public function index()
-    {
-        $session = session();
-        $userId = $session->get('user_id');
-        if ($userId === null) {
-            // should never happen since the route is guarded by the AuthFilter
-            // todo: This is not easily testable since we cannot get around the AuthFilter.
-            //       https://codeigniter4.github.io/CodeIgniter4/testing/controllers.html describes how to test
-            //       controllers but the needed trait clashes with the FeatureTestCase trait.
-            return $this->response->setStatusCode(401);
-        }
-        $globalsModel = model(GlobalsModel::class);
-        $globals = $globalsModel->read();
-        if ($globals === null) {
-            // the global settings are faulty
-            return $this->response->setStatusCode(500);
-        }
-        return $this->response->setJSON($globals);
-    }
-
     public function setGlobals() {
         $data = $this->request->getJSON(assoc: true);
 
