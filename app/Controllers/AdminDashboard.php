@@ -11,7 +11,6 @@ class AdminDashboard extends BaseController
         $data = $this->request->getJSON(assoc: true);
 
         $rules = [
-            'default_year' => 'integer|greater_than[2023]',
             'footer_text' => 'string',
         ];
 
@@ -23,7 +22,6 @@ class AdminDashboard extends BaseController
 
         $globalsModel = model(GlobalsModel::class);
         $globalsModel->write(
-            $validData['default_year'],
             $validData['footer_text'],
         );
         return $this->response->setStatusCode(204);
