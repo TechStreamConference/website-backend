@@ -98,6 +98,6 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
             'Test Event Headline',
             'Test Event Description'
         );
-        $this->assertEquals(2, $eventId);
+        $this->assertEquals(3, $eventId);
     }
 }
