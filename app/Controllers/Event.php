@@ -18,6 +18,7 @@ class Event extends BaseController
         $eventModel = new EventModel();
         if ($year === null) {
             $event = $eventModel->getLatestPublished();
+            $year = intval(date('Y', strtotime($event['start_date'])));
         } else {
             $event = $eventModel->getByYear($year);
         }
