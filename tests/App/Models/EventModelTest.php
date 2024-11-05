@@ -203,7 +203,7 @@ Also sei gespannt!',
     // *************************************
     // * updateEvent()
     // *************************************
-    public function testUpdateEvent_ValidData_Succeeds() {
+    public function testUpdateEvent() {
         $model = new EventModel();
         $model->updateEvent(
             1,
@@ -232,5 +232,38 @@ Also sei gespannt!',
         $this->assertEquals('Updated Event Headline', $event['description_headline']);
         $this->assertEquals('Updated Event Description', $event['description']);
         $this->assertEquals('2024-01-01 12:00:00', $event['publish_date']);
+    }
+
+    // *************************************
+    // * createEvent()
+    // *************************************
+    public function testCreateEvent() {
+        $model = new EventModel();
+        $eventId = $model->createEvent(
+            'Test Event',
+            'Test Event Subtitle',
+            '2026-06-22',
+            '2026-06-23',
+            'https://discord.com/invite/tp4EnphfKb',
+            'https://www.twitch.tv/coder2k',
+            'https://test-conf.de/Test-Conf-Presskit.zip',
+            'IW1vQAB6B18',
+            'Test Event Headline',
+            'Test Event Description',
+            '2026-01-01 12:00:00',
+            '2026-01-01 12:00:00'
+        );
+        $event = $model->get($eventId);
+        $this->assertEquals('Test Event', $event['title']);
+        $this->assertEquals('Test Event Subtitle', $event['subtitle']);
+        $this->assertEquals('2026-06-22', $event['start_date']);
+        $this->assertEquals('2026-06-23', $event['end_date']);
+        $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $event['discord_url']);
+        $this->assertEquals('https://www.twitch.tv/coder2k', $event['twitch_url']);
+        $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $event['presskit_url']);
+        $this->assertEquals('IW1vQAB6B18', $event['trailer_youtube_id']);
+        $this->assertEquals('Test Event Headline', $event['description_headline']);
+        $this->assertEquals('Test Event Description', $event['description']);
+        $this->assertEquals('2026-01-01 12:00:00', $event['publish_date']);
     }
 }

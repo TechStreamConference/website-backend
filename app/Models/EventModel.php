@@ -112,4 +112,35 @@ class EventModel extends Model
             ])
             ->update();
     }
+
+    public function createEvent(
+        string  $title,
+        string  $subtitle,
+        string  $startDate,
+        string  $endDate,
+        ?string $discordUrl,
+        ?string $twitchUrl,
+        ?string $presskitUrl,
+        ?string $trailerYoutubeId,
+        string  $descriptionHeadline,
+        string  $description,
+        ?string $scheduleVisibleFrom,
+        ?string $publishDate
+    ): int
+    {
+        return $this->insert([
+            'title' => $title,
+            'subtitle' => $subtitle,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'discord_url' => $discordUrl,
+            'twitch_url' => $twitchUrl,
+            'presskit_url' => $presskitUrl,
+            'trailer_youtube_id' => $trailerYoutubeId,
+            'description_headline' => $descriptionHeadline,
+            'description' => $description,
+            'schedule_visible_from' => $scheduleVisibleFrom,
+            'publish_date' => $publishDate,
+        ]);
+    }
 }
