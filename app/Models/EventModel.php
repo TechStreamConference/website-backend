@@ -26,7 +26,7 @@ class EventModel extends Model
         'id' => 'int',
     ];
 
-    public function get(int $eventId): array|null
+    public function getPublished(int $eventId): array|null
     {
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
@@ -35,7 +35,7 @@ class EventModel extends Model
             ->first();
     }
 
-    public function getByYear(int $year): array|null
+    public function getPublishedByYear(int $year): array|null
     {
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
@@ -44,7 +44,7 @@ class EventModel extends Model
             ->first();
     }
 
-    public function getAll(): array
+    public function getAllPublished(): array
     {
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')

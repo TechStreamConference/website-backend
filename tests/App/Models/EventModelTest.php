@@ -19,12 +19,12 @@ class EventModelTest extends CIUnitTestCase
     protected $basePath = 'app/Database';
 
     // *************************************
-    // * get()
+    // * getPublished()
     // *************************************
-    public function testGet_ValidId_ReturnsArray()
+    public function testGetPublished_ValidId_ReturnsArray()
     {
         $model = new EventModel();
-        $event = $model->get(1);
+        $event = $model->getPublished(1);
         $this->assertNotNull($event);
         $this->assertEquals(1, $event['id']);
         $this->assertEquals('Tech Stream Conference 2024', $event['title']);
@@ -43,19 +43,20 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         );
     }
 
-    public function testGet_InvalidId_ReturnsNull()
+    public function testGetPublished_InvalidId_ReturnsNull()
     {
         $model = new EventModel();
-        $event = $model->get(4);
+        $event = $model->getPublished(4);
         $this->assertNull($event);
     }
 
     // *************************************
-    // * getByYear()
+    // * getPublishedByYear()
     // *************************************
-    public function testGetByYear_ValidYear_ReturnsArray() {
+    public function testGetPublishedByYear_ValidYear_ReturnsArray()
+    {
         $model = new EventModel();
-        $event = $model->getByYear(2024);
+        $event = $model->getPublishedByYear(2024);
         $this->assertNotNull($event);
         $this->assertEquals(1, $event['id']);
         $this->assertEquals('Tech Stream Conference 2024', $event['title']);
@@ -74,9 +75,10 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         );
     }
 
-    public function testGetByYear_InvalidYear_ReturnsNull() {
+    public function testGetPublishedByYear_InvalidYear_ReturnsNull()
+    {
         $model = new EventModel();
-        $event = $model->getByYear(2028);
+        $event = $model->getPublishedByYear(2028);
         $this->assertNull($event);
     }
 
