@@ -113,13 +113,4 @@ class AdminDashboard extends BaseController
         $events = $eventModel->getAll();
         return $this->response->setJSON($events);
     }
-
-    public function getEvent(int $eventId) {
-        $eventModel = model(EventModel::class);
-        $event = $eventModel->get($eventId);
-        if ($event === null) {
-            return $this->response->setStatusCode(404);
-        }
-        return $this->response->setJSON($event);
-    }
 }

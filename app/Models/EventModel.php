@@ -26,14 +26,6 @@ class EventModel extends Model
         'id' => 'int',
     ];
 
-    public function get(int $eventId): array|null
-    {
-        return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, publish_date')
-            ->where('id', $eventId)
-            ->first();
-    }
-
     public function getPublished(int $eventId): array|null
     {
         return $this
