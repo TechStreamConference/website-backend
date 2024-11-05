@@ -102,4 +102,46 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         );
         $this->assertEquals(3, $eventId);
     }
+
+    // *************************************
+    // * getAll()
+    // *************************************
+    public function testGetAll_ReturnsArray()
+    {
+        $model = new EventModel();
+        $events = $model->getAll();
+        $this->assertCount(2, $events);
+
+        // newest event first
+        $this->assertEquals(2, $events[0]['id']);
+        $this->assertEquals('Tech Stream Conference 2025', $events[0]['title']);
+        $this->assertEquals('Das Imperium schlägt zurück!', $events[0]['subtitle']);
+        $this->assertEquals('2025-06-22', $events[0]['start_date']);
+        $this->assertEquals('2025-06-23', $events[0]['end_date']);
+        $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $events[0]['discord_url']);
+        $this->assertEquals('https://www.twitch.tv/coder2k', $events[0]['twitch_url']);
+        $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $events[0]['presskit_url']);
+        $this->assertEquals('IW1vQAB6B18', $events[0]['trailer_youtube_id']);
+        $this->assertEquals('Komm\' ran!', $events[0]['description_headline']);
+        $this->assertEquals(
+            'In einer weit, weit entfernten Galaxis...
+Die Tech Stream Conference 2025 steht unter dem Motto "Das Imperium schlägt zurück!".
+Sei dabei, wenn wir die dunkle Seite der Macht beleuchten und uns mit den dunklen Machenschaften der Technik beschäftigen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch "special guests" und Überraschungen.
+Also sei gespannt!',
+            $events[0]['description']
+        );
+        $this->assertNull($events[0]['publish_date']);
+
+        $this->assertEquals(1, $events[1]['id']);
+        $this->assertEquals('Tech Stream Conference 2024', $events[1]['title']);
+        $this->assertEquals('Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.', $events[1]['subtitle']);
+        $this->assertEquals('2024-06-22', $events[1]['start_date']);
+        $this->assertEquals('2024-06-23', $events[1]['end_date']);
+        $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $events[1]['discord_url']);
+        $this->assertEquals('https://www.twitch.tv/coder2k', $events[1]['twitch_url']);
+        $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $events[1]['presskit_url']);
+        $this->assertEquals('IW1vQAB6B18', $events[1]['trailer_youtube_id']);
+        $this->assertEquals('Sei dabei!', $events[1]['description_headline']);
+        $this->assertEquals('2024-01-01 12:00:00', $events[1]['publish_date']);
+    }
 }

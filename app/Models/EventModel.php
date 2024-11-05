@@ -44,6 +44,14 @@ class EventModel extends Model
             ->first();
     }
 
+    public function getAll(): array
+    {
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, publish_date')
+            ->orderBy('start_date', 'DESC')
+            ->findAll();
+    }
+
     public function getAllPublished(): array
     {
         return $this
@@ -63,16 +71,16 @@ class EventModel extends Model
     }
 
     public function create(
-        string $title,
-        string $subtitle,
-        string $startDate,
-        string $endDate,
-        string $discordUrl,
-        string $twitchUrl,
-        string $presskitUrl,
-        string $trailerYoutubeId,
-        string $descriptionHeadline,
-        string $description,
+        string      $title,
+        string      $subtitle,
+        string      $startDate,
+        string      $endDate,
+        string      $discordUrl,
+        string      $twitchUrl,
+        string      $presskitUrl,
+        string      $trailerYoutubeId,
+        string      $descriptionHeadline,
+        string      $description,
         string|null $publishDate = null,
     ): int
     {
