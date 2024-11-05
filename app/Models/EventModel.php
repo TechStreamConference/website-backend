@@ -26,7 +26,7 @@ class EventModel extends Model
         'id' => 'int',
     ];
 
-    public function get(int $eventId): array|null
+    public function getPublished(int $eventId): array|null
     {
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
@@ -35,7 +35,7 @@ class EventModel extends Model
             ->first();
     }
 
-    public function getByYear(int $year): array|null
+    public function getPublishedByYear(int $year): array|null
     {
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
@@ -45,6 +45,14 @@ class EventModel extends Model
     }
 
     public function getAll(): array
+    {
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, publish_date')
+            ->orderBy('start_date', 'DESC')
+            ->findAll();
+    }
+
+    public function getAllPublished(): array
     {
         return $this
             ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description')
@@ -62,18 +70,54 @@ class EventModel extends Model
             ->first();
     }
 
-    public function create(
-        string $title,
-        string $subtitle,
-        string $startDate,
-        string $endDate,
-        string $discordUrl,
-        string $twitchUrl,
-        string $presskitUrl,
-        string $trailerYoutubeId,
-        string $descriptionHeadline,
-        string $description,
-        string|null $publishDate = null,
+    public function updateEvent(
+        int     $eventId,
+        string  $title,
+        string  $subtitle,
+        string  $startDate,
+        string  $endDate,
+        ?string $discordUrl,
+        ?string $twitchUrl,
+        ?string $presskitUrl,
+        ?string $trailerYoutubeId,
+        string  $descriptionHeadline,
+        string  $description,
+        ?string $scheduleVisibleFrom,
+        ?string $publishDate
+    )
+    {
+        $this
+            ->where('id', $eventId)
+            ->set([
+                'title' => $title,
+                'subtitle' => $subtitle,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'discord_url' => $discordUrl,
+                'twitch_url' => $twitchUrl,
+                'presskit_url' => $presskitUrl,
+                'trailer_youtube_id' => $trailerYoutubeId,
+                'description_headline' => $descriptionHeadline,
+                'description' => $description,
+                'schedule_visible_from' => $scheduleVisibleFrom,
+                'publish_date' => $publishDate,
+            ])
+            ->update();
+    }
+
+    public function createEvent(
+        string  $title,
+        string  $subtitle,
+        string  $startDate,
+        string  $endDate,
+        ?string $discordUrl,
+        ?string $twitchUrl,
+        ?string $presskitUrl,
+        ?string $trailerYoutubeId,
+        string  $descriptionHeadline,
+        string  $description,
+        ?string $scheduleVisibleFrom,
+        ?string $publishDate
     ): int
     {
         return $this->insert([
@@ -87,6 +131,7 @@ class EventModel extends Model
             'trailer_youtube_id' => $trailerYoutubeId,
             'description_headline' => $descriptionHeadline,
             'description' => $description,
+            'schedule_visible_from' => $scheduleVisibleFrom,
             'publish_date' => $publishDate,
         ]);
     }

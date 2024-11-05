@@ -20,7 +20,7 @@ class Event extends BaseController
             $event = $eventModel->getLatestPublished();
             $year = intval(date('Y', strtotime($event['start_date'])));
         } else {
-            $event = $eventModel->getByYear($year);
+            $event = $eventModel->getPublishedByYear($year);
         }
         if ($event === null) {
             return $this->response->setStatusCode(404);
@@ -78,7 +78,7 @@ class Event extends BaseController
 
     public function getICalendarFile(int $year) {
         $eventModel = new EventModel();
-        $event      = $eventModel->getByYear($year);
+        $event      = $eventModel->getPublishedByYear($year);
         if ($event === null) {
             // the requested year doesn't have an event
             return $this->response->setStatusCode(404);
