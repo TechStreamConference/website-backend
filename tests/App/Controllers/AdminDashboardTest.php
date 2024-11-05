@@ -20,13 +20,19 @@ class AdminDashboardTest extends CIUnitTestCase
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
-    public function testSetGlobals_returns204() {
+    public function testSetGlobals_returns204()
+    {
         $sessionValues = [
             "user_id" => 1,
         ];
-        $response = $this->withSession($sessionValues)->put('/dashboard/admin/globals', [
-            'footer_text' => 'This is the new text.',
-        ]);
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->put(
+                '/dashboard/admin/globals', [
+                    'footer_text' => 'This is the new text.',
+                ]
+            );
         $response->assertStatus(204);
 
         $response = $this->get('/globals');
