@@ -28,6 +28,49 @@ class AdminDashboard extends BaseController
         return $this->response->setStatusCode(204);
     }
 
+    private const EVENT_RULES = [
+        'title' => 'string|max_length[100]',
+        'subtitle' => 'string|max_length[200]',
+        'start_date' => 'valid_date[Y-m-d]',
+        'end_date' => 'valid_date[Y-m-d]',
+        'discord_url' => 'permit_empty|string|max_length[200]',
+        'twitch_url' => 'permit_empty|string|max_length[200]',
+        'presskit_url' => 'permit_empty|string|max_length[200]',
+        'trailer_youtube_id' => 'permit_empty|string|max_length[200]',
+        'description_headline' => 'string|max_length[200]',
+        'description' => 'string',
+        'schedule_visible_from' => 'permit_empty|valid_date[Y-m-d H:i:s]',
+        'publish_date' => 'permit_empty|valid_date[Y-m-d H:i:s]',
+    ];
+
+    public function createEvent() {
+        $data = $this->request->getJSON(assoc: true);
+
+        if (!$this->validateData($data, self::EVENT_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+
+        $validData = $this->validator->getValidated();
+
+        $eventModel = model(EventModel::class);
+        $eventModel->createEvent(
+            $validData['title'],
+            $validData['subtitle'],
+            $validData['start_date'],
+            $validData['end_date'],
+            $validData['discord_url']??null,
+            $validData['twitch_url']??null,
+            $validData['presskit_url']??null,
+            $validData['trailer_youtube_id']??null,
+            $validData['description_headline'],
+            $validData['description'],
+            $validData['schedule_visible_from']??null,
+            $validData['publish_date']??null,
+        );
+
+        return $this->response->setStatusCode(201);
+    }
+
     public function updateEvent(int $eventId) {
         $eventModel = model(EventModel::class);
         $event = $eventModel->get($eventId);
@@ -40,22 +83,7 @@ class AdminDashboard extends BaseController
 
         $data = $this->request->getJSON(assoc: true);
 
-        $rules = [
-            'title' => 'string|max_length[100]',
-            'subtitle' => 'string|max_length[200]',
-            'start_date' => 'valid_date[Y-m-d]',
-            'end_date' => 'valid_date[Y-m-d]',
-            'discord_url' => 'permit_empty|string|max_length[200]',
-            'twitch_url' => 'permit_empty|string|max_length[200]',
-            'presskit_url' => 'permit_empty|string|max_length[200]',
-            'trailer_youtube_id' => 'permit_empty|string|max_length[200]',
-            'description_headline' => 'string|max_length[200]',
-            'description' => 'string',
-            'schedule_visible_from' => 'permit_empty|valid_date[Y-m-d H:i:s]',
-            'publish_date' => 'permit_empty|valid_date[Y-m-d H:i:s]',
-        ];
-
-        if (!$this->validateData($data, $rules)) {
+        if (!$this->validateData($data, self::EVENT_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 

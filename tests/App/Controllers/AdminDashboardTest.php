@@ -220,4 +220,79 @@ class AdminDashboardTest extends CIUnitTestCase
             ]);
         $response->assertStatus(400);
     }
+
+    public function testCreateEvent_ValidData_Returns201()
+    {
+        $sessionValues = [
+            "user_id" => 1,
+        ];
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->post('/dashboard/admin/event/new', [
+                "title" => "New Event Title",
+                "subtitle" => "New Event Subtitle",
+                "description" => "New Event Description",
+                "start_date" => "2025-11-05",
+                "end_date" => "2025-11-06",
+                "discord_url" => "https://discord.gg/123456",
+                "twitch_url" => "https://twitch.tv/123456",
+                "presskit_url" => "https://presskit.com/123456",
+                "trailer_youtube_id" => "123456",
+                "description_headline" => "New Event Description Headline",
+                "schedule_visible_from" => "2025-11-05 12:00:00",
+                "publish_date" => "2025-11-05 12:00:00",
+            ]);
+        $response->assertStatus(201);
+    }
+
+    public function testCreateEvent_ValidNullValues_Returns201()
+    {
+        $sessionValues = [
+            "user_id" => 1,
+        ];
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->post('/dashboard/admin/event/new', [
+                "title" => "New Event Title",
+                "subtitle" => "New Event Subtitle",
+                "description" => "New Event Description",
+                "start_date" => "2025-11-05",
+                "end_date" => "2025-11-06",
+                "discord_url" => null,
+                "twitch_url" => null,
+                "presskit_url" => null,
+                "trailer_youtube_id" => null,
+                "description_headline" => "New Event Description Headline",
+                "schedule_visible_from" => null,
+                "publish_date" => null,
+            ]);
+        $response->assertStatus(201);
+    }
+
+    public function testCreateEvent_RequiredValueIsNull_Returns400()
+    {
+        $sessionValues = [
+            "user_id" => 1,
+        ];
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->post('/dashboard/admin/event/new', [
+                "title" => "New Event Title",
+                "subtitle" => "New Event Subtitle",
+                "description" => "New Event Description",
+                "start_date" => "2025-11-05",
+                "end_date" => "2025-11-06",
+                "discord_url" => null,
+                "twitch_url" => null,
+                "presskit_url" => null,
+                "trailer_youtube_id" => null,
+                "description_headline" => null, // must not be null
+                "schedule_visible_from" => null,
+                "publish_date" => null,
+            ]);
+        $response->assertStatus(400);
+    }
 }
