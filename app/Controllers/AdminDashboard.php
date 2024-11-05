@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\EventModel;
 use App\Models\GlobalsModel;
 
 class AdminDashboard extends BaseController
@@ -25,5 +26,11 @@ class AdminDashboard extends BaseController
             $validData['footer_text'],
         );
         return $this->response->setStatusCode(204);
+    }
+
+    public function getAllEvents() {
+        $eventModel = model(EventModel::class);
+        $events = $eventModel->getAll();
+        return $this->response->setJSON($events);
     }
 }
