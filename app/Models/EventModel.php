@@ -79,20 +79,21 @@ class EventModel extends Model
     }
 
     public function updateEvent(
-        int $eventId,
-        string $title,
-        string $subtitle,
-        string $startDate,
-        string $endDate,
+        int     $eventId,
+        string  $title,
+        string  $subtitle,
+        string  $startDate,
+        string  $endDate,
         ?string $discordUrl,
         ?string $twitchUrl,
         ?string $presskitUrl,
         ?string $trailerYoutubeId,
-        string $descriptionHeadline,
-        string $description,
+        string  $descriptionHeadline,
+        string  $description,
         ?string $scheduleVisibleFrom,
         ?string $publishDate
-    ) {
+    )
+    {
         $this
             ->where('id', $eventId)
             ->set([
