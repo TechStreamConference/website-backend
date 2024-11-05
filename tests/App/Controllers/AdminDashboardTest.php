@@ -20,6 +20,9 @@ class AdminDashboardTest extends CIUnitTestCase
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
+    // *************************************
+    // * setGlobals()
+    // *************************************
     public function testSetGlobals_Returns204()
     {
         $sessionValues = [
@@ -42,6 +45,9 @@ class AdminDashboardTest extends CIUnitTestCase
         ]);
     }
 
+    // *************************************
+    // * getAllEvents()
+    // *************************************
     public function testGetAllEvents_Returns200()
     {
         $sessionValues = [
@@ -83,6 +89,9 @@ class AdminDashboardTest extends CIUnitTestCase
         ]);
     }
 
+    // *************************************
+    // * getEvent()
+    // *************************************
     public function testGetEvent_PublishedEvent_Returns200()
     {
         $sessionValues = [
@@ -148,6 +157,9 @@ class AdminDashboardTest extends CIUnitTestCase
         $response->assertStatus(404);
     }
 
+    // *************************************
+    // * updateEvent()
+    // *************************************
     public function testUpdateEvent_ValidData_Returns204()
     {
         $sessionValues = [
@@ -173,7 +185,8 @@ class AdminDashboardTest extends CIUnitTestCase
         $response->assertStatus(204);
     }
 
-    public function testUpdateEvent_ValidNullValues_Returns204() {
+    public function testUpdateEvent_ValidNullValues_Returns204()
+    {
         $sessionValues = [
             "user_id" => 1,
         ];
@@ -197,7 +210,8 @@ class AdminDashboardTest extends CIUnitTestCase
         $response->assertStatus(204);
     }
 
-    public function testUpdateEvent_RequiredValueIsNull_Returns400() {
+    public function testUpdateEvent_RequiredValueIsNull_Returns400()
+    {
         $sessionValues = [
             "user_id" => 1,
         ];
@@ -221,6 +235,9 @@ class AdminDashboardTest extends CIUnitTestCase
         $response->assertStatus(400);
     }
 
+    // *************************************
+    // * createEvent()
+    // *************************************
     public function testCreateEvent_ValidData_Returns201()
     {
         $sessionValues = [
