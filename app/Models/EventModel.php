@@ -78,32 +78,37 @@ class EventModel extends Model
             ->first();
     }
 
-    public function create(
-        string      $title,
-        string      $subtitle,
-        string      $startDate,
-        string      $endDate,
-        string      $discordUrl,
-        string      $twitchUrl,
-        string      $presskitUrl,
-        string      $trailerYoutubeId,
-        string      $descriptionHeadline,
-        string      $description,
-        string|null $publishDate = null,
-    ): int
-    {
-        return $this->insert([
-            'title' => $title,
-            'subtitle' => $subtitle,
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'discord_url' => $discordUrl,
-            'twitch_url' => $twitchUrl,
-            'presskit_url' => $presskitUrl,
-            'trailer_youtube_id' => $trailerYoutubeId,
-            'description_headline' => $descriptionHeadline,
-            'description' => $description,
-            'publish_date' => $publishDate,
-        ]);
+    public function updateEvent(
+        int $eventId,
+        string $title,
+        string $subtitle,
+        string $startDate,
+        string $endDate,
+        ?string $discordUrl,
+        ?string $twitchUrl,
+        ?string $presskitUrl,
+        ?string $trailerYoutubeId,
+        string $descriptionHeadline,
+        string $description,
+        ?string $scheduleVisibleFrom,
+        ?string $publishDate
+    ) {
+        $this
+            ->where('id', $eventId)
+            ->set([
+                'title' => $title,
+                'subtitle' => $subtitle,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'discord_url' => $discordUrl,
+                'twitch_url' => $twitchUrl,
+                'presskit_url' => $presskitUrl,
+                'trailer_youtube_id' => $trailerYoutubeId,
+                'description_headline' => $descriptionHeadline,
+                'description' => $description,
+                'schedule_visible_from' => $scheduleVisibleFrom,
+                'publish_date' => $publishDate,
+            ])
+            ->update();
     }
 }

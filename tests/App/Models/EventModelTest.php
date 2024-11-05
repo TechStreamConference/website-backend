@@ -199,4 +199,38 @@ Also sei gespannt!',
         $this->assertEquals('Sei dabei!', $events[1]['description_headline']);
         $this->assertEquals('2024-01-01 12:00:00', $events[1]['publish_date']);
     }
+
+    // *************************************
+    // * updateEvent()
+    // *************************************
+    public function testUpdateEvent_ValidData_Succeeds() {
+        $model = new EventModel();
+        $model->updateEvent(
+            1,
+            'Updated Event',
+            'Updated Event Subtitle',
+            '2024-06-23',
+            '2024-06-24',
+            'https://discord.com/invite/tp4EnphfKb',
+            'https://www.twitch.tv/coder2k',
+            'https://test-conf.de/Test-Conf-Presskit.zip',
+            'IW1vQAB6B18',
+            'Updated Event Headline',
+            'Updated Event Description',
+            '2024-01-01 12:00:00',
+            '2024-01-01 12:00:00'
+        );
+        $event = $model->get(1);
+        $this->assertEquals('Updated Event', $event['title']);
+        $this->assertEquals('Updated Event Subtitle', $event['subtitle']);
+        $this->assertEquals('2024-06-23', $event['start_date']);
+        $this->assertEquals('2024-06-24', $event['end_date']);
+        $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $event['discord_url']);
+        $this->assertEquals('https://www.twitch.tv/coder2k', $event['twitch_url']);
+        $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $event['presskit_url']);
+        $this->assertEquals('IW1vQAB6B18', $event['trailer_youtube_id']);
+        $this->assertEquals('Updated Event Headline', $event['description_headline']);
+        $this->assertEquals('Updated Event Description', $event['description']);
+        $this->assertEquals('2024-01-01 12:00:00', $event['publish_date']);
+    }
 }
