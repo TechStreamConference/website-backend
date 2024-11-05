@@ -143,7 +143,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
     public function testCreate_ReturnsId()
     {
         $model = new EventModel();
-        $eventId = $model->create(
+        $eventId = $model->createEvent(
             'Test Event',
             'Test Event Subtitle',
             '2024-06-22',
@@ -151,9 +151,11 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
             'https://discord.com/invite/tp4EnphfKb',
             'https://www.twitch.tv/coder2k',
             'https://test-conf.de/Test-Conf-Presskit.zip',
-            'https://youtu.be/IW1vQAB6B18',
-            'Test Event Headline',
-            'Test Event Description'
+            'IW1vQAB6B18',
+            'Test Event Description Headline',
+            'Test Event Description',
+            '2024-01-01 12:00:00',
+            '2024-01-01 12:00:00'
         );
         $this->assertEquals(3, $eventId);
     }
