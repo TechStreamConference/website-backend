@@ -203,6 +203,7 @@ Also sei gespannt!',
         );
         $events = $model->getAll();
         $this->assertCount(3, $events);
+        $this->assertEquals(3, $events[0]['id']);
         $this->assertEquals('Test Event', $events[0]['title']);
         $this->assertEquals('Test Event Subtitle', $events[0]['subtitle']);
         $this->assertEquals('2026-06-22', $events[0]['start_date']);
@@ -212,6 +213,7 @@ Also sei gespannt!',
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $events[0]['presskit_url']);
         $this->assertEquals('IW1vQAB6B18', $events[0]['trailer_youtube_id']);
         $this->assertEquals('Test Event Headline', $events[0]['description_headline']);
+        $this->assertEquals('2026-01-01 12:00:00', $events[0]['schedule_visible_from']);
         $this->assertEquals('Test Event Description', $events[0]['description']);
         $this->assertEquals('2026-01-01 12:00:00', $events[0]['publish_date']);
     }

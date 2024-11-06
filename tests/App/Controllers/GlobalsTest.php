@@ -24,8 +24,11 @@ class GlobalsTest extends CIUnitTestCase
     {
         $response = $this->get('/globals');
         $response->assertStatus(200);
-        $response->assertJSON([
+        $response->assertJSONExact([
             'footer_text' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac ante mollis, fermentum nunc nec, tincidunt nunc. Sed nec nunc nec nunc.',
+            'years_with_events' => [
+                2024,
+            ],
         ]);
     }
 }
