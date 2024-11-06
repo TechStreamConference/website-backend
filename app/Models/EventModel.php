@@ -19,6 +19,7 @@ class EventModel extends Model
         'trailer_youtube_id',
         'description_headline',
         'description',
+        'schedule_visible_from',
         'publish_date',
     ];
     protected $useTimestamps = true;
@@ -47,7 +48,7 @@ class EventModel extends Model
     public function getAll(): array
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, publish_date')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date')
             ->orderBy('start_date', 'DESC')
             ->findAll();
     }
