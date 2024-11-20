@@ -124,7 +124,7 @@ class AdminDashboard extends BaseController
         }
 
         $speakerModel = model(SpeakerModel::class);
-        $speakers = $speakerModel->getAll($eventId);
+        $speakers = $speakerModel->getApproved($eventId);
         return $this->response->setJSON($speakers);
     }
 }
