@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
+use App\Models\SpeakerModel;
 
 class AdminDashboard extends BaseController
 {
@@ -112,5 +113,18 @@ class AdminDashboard extends BaseController
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
         return $this->response->setJSON($events);
+    }
+
+    public function getEventSpeaker(int $eventId)
+    {
+        $eventModel = model(EventModel::class);
+        $events = $eventModel->getAll();
+        if (!in_array($eventId, array_column($events, 'id'))) {
+            return $this->response->setStatusCode(404);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $speakers = $speakerModel->getAll($eventId);
+        return $this->response->setJSON($speakers);
     }
 }

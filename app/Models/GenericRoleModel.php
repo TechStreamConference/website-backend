@@ -50,6 +50,30 @@ class GenericRoleModel extends Model
         return $query;
     }
 
+    public function getAll(int $eventId): array {
+        $subQuery = $this->db->table($this->table)
+            ->select('id')
+            ->where("$this->table.user_id = outer_table.user_id")
+            ->orderBy('updated_at', 'DESC')
+            ->limit(1)
+            ->getCompiledSelect();
+
+        $query = $this->db->table("$this->table AS outer_table")
+            ->select('id, user_id, name, short_bio, bio, photo, is_approved, visible_from')
+            ->where('event_id = ', $eventId)
+            ->where("id = ($subQuery)", null, false)
+            ->get()
+            ->getResultArray();
+
+        foreach ($query as &$row) {
+            $row['id'] = intval($row['id']);
+            $row['user_id'] = intval($row['user_id']);
+            $row['is_approved'] = boolval($row['is_approved']);
+        }
+
+        return $query;
+    }
+
     public function create(
         string $name,
         int    $userId,
