@@ -115,7 +115,7 @@ class AdminDashboard extends BaseController
         return $this->response->setJSON($events);
     }
 
-    public function getEventSpeaker(int $eventId)
+    public function getEventSpeakers(int $eventId)
     {
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();

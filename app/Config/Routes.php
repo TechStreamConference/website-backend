@@ -29,4 +29,5 @@ $routes->put('dashboard/admin/globals', [AdminDashboard::class, 'setGlobals'], [
 $routes->get('dashboard/admin/all-events', [AdminDashboard::class, 'getAllEvents'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/event/(:num)', [AdminDashboard::class, 'updateEvent'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/event/(:num)/speaker', [AdminDashboard::class, 'getEventSpeaker'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/admin/event/(:num)/speaker', [AdminDashboard::class, 'getEventSpeakers'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/event/new', [AdminDashboard::class, 'createEvent'], ['filter' => AdminAuthFilter::class]);
