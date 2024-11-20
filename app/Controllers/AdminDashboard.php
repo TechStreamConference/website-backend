@@ -8,7 +8,8 @@ use App\Models\GlobalsModel;
 
 class AdminDashboard extends BaseController
 {
-    public function setGlobals() {
+    public function setGlobals()
+    {
         $data = $this->request->getJSON(assoc: true);
 
         $rules = [
@@ -43,7 +44,8 @@ class AdminDashboard extends BaseController
         'publish_date' => 'permit_empty|valid_date[Y-m-d H:i:s]',
     ];
 
-    public function createEvent() {
+    public function createEvent()
+    {
         $data = $this->request->getJSON(assoc: true);
 
         if (!$this->validateData($data, self::EVENT_RULES)) {
@@ -58,20 +60,21 @@ class AdminDashboard extends BaseController
             $validData['subtitle'],
             $validData['start_date'],
             $validData['end_date'],
-            $validData['discord_url']??null,
-            $validData['twitch_url']??null,
-            $validData['presskit_url']??null,
-            $validData['trailer_youtube_id']??null,
+            $validData['discord_url'] ?? null,
+            $validData['twitch_url'] ?? null,
+            $validData['presskit_url'] ?? null,
+            $validData['trailer_youtube_id'] ?? null,
             $validData['description_headline'],
             $validData['description'],
-            $validData['schedule_visible_from']??null,
-            $validData['publish_date']??null,
+            $validData['schedule_visible_from'] ?? null,
+            $validData['publish_date'] ?? null,
         );
 
         return $this->response->setStatusCode(201);
     }
 
-    public function updateEvent(int $eventId) {
+    public function updateEvent(int $eventId)
+    {
         $eventModel = model(EventModel::class);
         $event = $eventModel->get($eventId);
         if ($event === null) {
@@ -95,20 +98,21 @@ class AdminDashboard extends BaseController
             $validData['subtitle'],
             $validData['start_date'],
             $validData['end_date'],
-            $validData['discord_url']??null,
-            $validData['twitch_url']??null,
-            $validData['presskit_url']??null,
-            $validData['trailer_youtube_id']??null,
+            $validData['discord_url'] ?? null,
+            $validData['twitch_url'] ?? null,
+            $validData['presskit_url'] ?? null,
+            $validData['trailer_youtube_id'] ?? null,
             $validData['description_headline'],
             $validData['description'],
-            $validData['schedule_visible_from']??null,
-            $validData['publish_date']??null,
+            $validData['schedule_visible_from'] ?? null,
+            $validData['publish_date'] ?? null,
         );
 
         return $this->response->setStatusCode(204);
     }
 
-    public function getAllEvents() {
+    public function getAllEvents()
+    {
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
         return $this->response->setJSON($events);
