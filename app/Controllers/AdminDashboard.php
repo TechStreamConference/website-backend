@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
+use App\Models\SpeakerModel;
 
 class AdminDashboard extends BaseController
 {
@@ -116,5 +117,53 @@ class AdminDashboard extends BaseController
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
         return $this->response->setJSON($events);
+    }
+
+    public function getEventSpeakers(int $eventId)
+    {
+        $eventModel = model(EventModel::class);
+        $events = $eventModel->getAll();
+        if (!in_array($eventId, array_column($events, 'id'))) {
+            return $this->response->setStatusCode(404);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $speakers = $speakerModel->getApproved($eventId);
+        return $this->response->setJSON($speakers);
+    }
+
+    public function updateSpeakerDates(int $eventId)
+    {
+        $eventModel = model(EventModel::class);
+        $events = $eventModel->getAll();
+        if (!in_array($eventId, array_column($events, 'id'))) {
+            return $this->response->setJSON(['error' => 'Event with given id not found.'])->setStatusCode(404);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $speakers = $speakerModel->getApproved($eventId);
+
+        $data = $this->request->getJSON(assoc: true);
+        $rules = [
+            'id' => 'required|integer',
+            'visible_from' => 'valid_date[Y-m-d H:i:s]',
+        ];
+        foreach ($data as $speaker) {
+            if (!$this->validateData($speaker, $rules)) {
+                return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            }
+            if (!in_array($speaker['id'], array_column($speakers, 'id'))) {
+                return $this->response->setJSON([
+                    'error' => 'Speaker with given id not found in the list of approved speakers for the event.'
+                ])->setStatusCode(404);
+            }
+        }
+
+        foreach ($data as $speaker) {
+            $row = $speakers[array_search($speaker['id'], array_column($speakers, 'id'))];
+            $row['visible_from'] = $speaker['visible_from'];
+            $speakerModel->update($speaker['id'], $row);
+        }
+        $this->response->setStatusCode(204);
     }
 }
