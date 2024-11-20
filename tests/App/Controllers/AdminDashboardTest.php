@@ -431,4 +431,142 @@ class AdminDashboardTest extends CIUnitTestCase
             ]);
         $response->assertStatus(400);
     }
+
+    // *************************************
+    // * updateSpeakerDates()
+    // *************************************
+    public function testUpdateSpeakerDates_ValidData_Returns204()
+    {
+        $sessionValues = [
+            "user_id" => 1,
+        ];
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->put('/dashboard/admin/event/1/speaker', [
+                [
+                    'id' => 2, // coder2k
+                    'visible_from' => '2025-11-05 15:00:00',
+                ],
+                [
+                    'id' => 4, // GyrosGeier
+                    'visible_from' => '2025-11-06 15:00:00',
+                ],
+                [
+                    'id' => 5, // codingPurpurTentakel
+                    'visible_from' => '2025-11-07 15:00:00',
+                ]
+            ]);
+        $response->assertStatus(204);
+
+        // additionally, we will check the updated values (to have a round-trip test)
+        $response = $this
+            ->withSession($sessionValues)
+            ->get('/dashboard/admin/event/1/speaker');
+        $response->assertStatus(200);
+        $response->assertJSONExact([
+            [
+                "bio" => "Michael (coder2k) hat vor über 20 Jahren 'Turbo Pascal und Delphi für Kids' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.",
+                "id" => 2,
+                "name" => "coder2k",
+                "photo" => "images/coder2k.jpg",
+                "short_bio" => "Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner",
+                "user_id" => 1,
+                "visible_from" => "2025-11-05 15:00:00"
+            ],
+            [
+                "bio" => "GyrosGeier hat nicht nur einen witzigen Namen – nein – er kennt sich auch ziemlich gut im Bereich der Low-Level- bzw. Systemprogrammierung aus. Im vergangenen Jahr ist er nach Tokyo ausgewandert und arbeitet dort für eine Firma, die Mikrosatelliten ins Weltall schießt. In seinen Streams bastelt er an zahlreichen Projekten und vergisst niemals, den Yak-Stapel zu vergrößern.",
+                "id" => 4,
+                "name" => "GyrosGeier",
+                "photo" => "images/GyrosGeier.jpg",
+                "short_bio" => "Embedded- und Lowlevel-Coding",
+                "user_id" => 2,
+                "visible_from" => "2025-11-06 15:00:00"
+            ],
+            [
+                "bio" => "Martin (Purpur Tentakel) kommt aus Köln. Nach der Schule macht er eine Ausbildung zur Fachkraft für Veranstaltungstechnik. Durch Corona kann er nach der Ausbildung nicht in der Branche weiter arbeiten und macht eine 2. Ausbildung zum Elektroniker für Betriebstechnik. In der Zeit der 2. Ausblidung trifft er irgendwann mal auf den Kanal von coder2k. Tja nun muss er coden. Von Python über C# kommt er schließlich zu c++. Seither programmiert er an seinem Spiel 'Tentakels Attacking'",
+                "id" => 5,
+                "name" => "codingPurpurTentakel",
+                "photo" => "images/codingPurpurTentakel.jpg",
+                "short_bio" => "Test-Conf Host, Veranstaltungstechniker, Elektroniker, Hobby-Coder",
+                "user_id" => 4,
+                "visible_from" => "2025-11-07 15:00:00"
+            ]
+        ]);
+    }
+
+    public function testUpdateSpeakerDates_invalidEventId_Returns404()
+    {
+        $sessionValues = [
+            "user_id" => 1,
+        ];
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->put('/dashboard/admin/event/999/speaker', [
+                [
+                    'id' => 2, // coder2k
+                    'visible_from' => '2025-11-05 15:00:00',
+                ],
+                [
+                    'id' => 4, // GyrosGeier
+                    'visible_from' => '2025-11-06 15:00:00',
+                ],
+                [
+                    'id' => 5, // codingPurpurTentakel
+                    'visible_from' => '2025-11-07 15:00:00',
+                ]
+            ]);
+        $response->assertStatus(404);
+    }
+
+    public function testUpdateSpeakerDates_invalidSpeakerId_Returns404()
+    {
+        $sessionValues = [
+            "user_id" => 1,
+        ];
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->put('/dashboard/admin/event/1/speaker', [
+                [
+                    'id' => 2, // coder2k
+                    'visible_from' => '2025-11-05 15:00:00',
+                ],
+                [
+                    'id' => 999, // invalid speaker id
+                    'visible_from' => '2025-11-06 15:00:00',
+                ],
+                [
+                    'id' => 5, // codingPurpurTentakel
+                    'visible_from' => '2025-11-07 15:00:00',
+                ]
+            ]);
+        $response->assertStatus(404);
+    }
+
+    public function testUpdateSpeakerDates_invalidDate_Returns400()
+    {
+        $sessionValues = [
+            "user_id" => 1,
+        ];
+        $response = $this
+            ->withSession($sessionValues)
+            ->withBodyFormat('json')
+            ->put('/dashboard/admin/event/1/speaker', [
+                [
+                    'id' => 2, // coder2k
+                    'visible_from' => '2025-11-05 15:00:00',
+                ],
+                [
+                    'id' => 4, // GyrosGeier
+                    'visible_from' => '2025-11-06 15:00:00',
+                ],
+                [
+                    'id' => 5, // codingPurpurTentakel
+                    'visible_from' => 'invalid date',
+                ]
+            ]);
+        $response->assertStatus(400);
+    }
 }
