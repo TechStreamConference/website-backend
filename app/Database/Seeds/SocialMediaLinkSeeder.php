@@ -14,6 +14,7 @@ class SocialMediaLinkSeeder extends Seeder
             'social_media_type_id' => 1, // Twitch
             'user_id' => 1, // coder2k
             'url' => 'https://www.twitch.tv/coder2k',
+            'approved' => true,
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),
         ]);
@@ -22,6 +23,7 @@ class SocialMediaLinkSeeder extends Seeder
             'social_media_type_id' => 3, // GitHub
             'user_id' => 1, // coder2k
             'url' => 'https://www.github.com/mgerhold',
+            'approved' => false,
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),
         ]);
@@ -30,6 +32,7 @@ class SocialMediaLinkSeeder extends Seeder
             'social_media_type_id' => 1, // Twitch
             'user_id' => 4, // codingPurpurTentakel
             'url' => 'https://www.twitch.tv/codingPurpurTentakel',
+            'approved' => true,
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),
         ]);
@@ -38,6 +41,7 @@ class SocialMediaLinkSeeder extends Seeder
             'social_media_type_id' => 1, // Twitch
             'user_id' => 4, // codingPurpurTentakel
             'url' => 'https://www.twitch.tv/codingPurpurTentakelSecondChannel',
+            'approved' => true,
             'created_at' => date($date_format_string),
             'updated_at' => date($date_format_string),
         ]);
