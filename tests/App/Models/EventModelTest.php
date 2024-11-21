@@ -100,7 +100,9 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
             'Test Event Description Headline',
             'Test Event Description',
             '2024-01-01 12:00:00',
-            '2024-01-01 12:00:00'
+            '2024-01-01 12:00:00',
+            '2023-12-01 12:00:00',
+            '2024-03-01 12:00:00'
         );
         $this->assertEquals(3, $eventId);
     }
@@ -150,7 +152,8 @@ Also sei gespannt!',
     // *************************************
     // * updateEvent()
     // *************************************
-    public function testUpdateEvent() {
+    public function testUpdateEvent()
+    {
         $model = new EventModel();
         $model->updateEvent(
             1,
@@ -165,7 +168,9 @@ Also sei gespannt!',
             'Updated Event Headline',
             'Updated Event Description',
             '2024-01-01 12:00:00',
-            '2024-01-01 12:00:00'
+            '2024-01-01 12:00:00',
+            '2024-01-01 12:00:00',
+            '2024-01-01 12:00:00',
         );
         $events = $model->getAll();
         $this->assertCount(2, $events);
@@ -180,12 +185,15 @@ Also sei gespannt!',
         $this->assertEquals('Updated Event Headline', $events[1]['description_headline']);
         $this->assertEquals('Updated Event Description', $events[1]['description']);
         $this->assertEquals('2024-01-01 12:00:00', $events[1]['publish_date']);
+        $this->assertEquals('2024-01-01 12:00:00', $events[1]['call_for_papers_start']);
+        $this->assertEquals('2024-01-01 12:00:00', $events[1]['call_for_papers_end']);
     }
 
     // *************************************
     // * createEvent()
     // *************************************
-    public function testCreateEvent() {
+    public function testCreateEvent()
+    {
         $model = new EventModel();
         $eventId = $model->createEvent(
             'Test Event',
@@ -199,7 +207,9 @@ Also sei gespannt!',
             'Test Event Headline',
             'Test Event Description',
             '2026-01-01 12:00:00',
-            '2026-01-01 12:00:00'
+            '2026-01-01 12:00:00',
+            null,
+            null,
         );
         $events = $model->getAll();
         $this->assertCount(3, $events);
@@ -216,5 +226,7 @@ Also sei gespannt!',
         $this->assertEquals('2026-01-01 12:00:00', $events[0]['schedule_visible_from']);
         $this->assertEquals('Test Event Description', $events[0]['description']);
         $this->assertEquals('2026-01-01 12:00:00', $events[0]['publish_date']);
+        $this->assertNull($events[0]['call_for_papers_start']);
+        $this->assertNull($events[0]['call_for_papers_end']);
     }
 }
