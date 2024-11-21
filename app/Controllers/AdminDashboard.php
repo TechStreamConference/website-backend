@@ -43,6 +43,8 @@ class AdminDashboard extends BaseController
         'description' => 'string',
         'schedule_visible_from' => 'permit_empty|valid_date[Y-m-d H:i:s]',
         'publish_date' => 'permit_empty|valid_date[Y-m-d H:i:s]',
+        'call_for_papers_start' => 'permit_empty|valid_date[Y-m-d H:i:s]',
+        'call_for_papers_end' => 'permit_empty|valid_date[Y-m-d H:i:s]',
     ];
 
     public function createEvent()
@@ -69,6 +71,8 @@ class AdminDashboard extends BaseController
             $validData['description'],
             $validData['schedule_visible_from'] ?? null,
             $validData['publish_date'] ?? null,
+            $validData['call_for_papers_start'] ?? null,
+            $validData['call_for_papers_end'] ?? null,
         );
 
         return $this->response->setStatusCode(201);
@@ -107,6 +111,8 @@ class AdminDashboard extends BaseController
             $validData['description'],
             $validData['schedule_visible_from'] ?? null,
             $validData['publish_date'] ?? null,
+            $validData['call_for_papers_start'] ?? null,
+            $validData['call_for_papers_end'] ?? null,
         );
 
         return $this->response->setStatusCode(204);
