@@ -8,7 +8,7 @@ class AddEventPublishDate extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('event', [
+        $this->forge->addColumn('Event', [
             'publish_date' => [
                 'type' => 'DATETIME',
                 'null' => true,
