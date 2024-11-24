@@ -63,6 +63,44 @@ class Approval extends BaseController
             $latestPendingEntry['event'] = $eventsById[$latestPendingEntry['event_id']];
         }
 
+        // Check if there's an already approved entry for each user. If you, build up a list of
+        // all fields that differ between the latest pending entry and the approved entry and
+        // add it to the latest pending entry.
+        $allEntries = $roleModel->getAll();
+        $latestApprovedEntries = [];
+        foreach ($allEntries as $entry) {
+            // Find the latest approved entry for each user.
+            if ($entry['is_approved']) {
+                if (!isset($latestApprovedEntries[$entry['user_id']])) {
+                    $latestApprovedEntries[$entry['user_id']] = $entry;
+                    continue;
+                }
+                $latestApprovedEntry = $latestApprovedEntries[$entry['user_id']];
+                if (strtotime($entry['updated_at']) > strtotime($latestApprovedEntry['updated_at'])) {
+                    $latestApprovedEntries[$entry['user_id']] = $entry;
+                }
+            }
+        }
+
+        foreach ($latestPendingEntries as &$latestPendingEntry) {
+            $latestApprovedEntry = $latestApprovedEntries[$latestPendingEntry['user_id']] ?? null;
+            if ($latestApprovedEntry === null) {
+                $latestPendingEntry['diff'] = [];
+                continue;
+            }
+
+            $diff = [];
+            foreach ($latestPendingEntry as $key => $value) {
+                if ($key === 'diff' || $key === 'account' || $key === 'event' || $key === 'id') {
+                    continue;
+                }
+                if ($latestApprovedEntry[$key] !== $value) {
+                    $diff[] = $key;
+                }
+            }
+            $latestPendingEntry['diff'] = $diff;
+        }
+
         // Flatten the associative array to a simple array.
         $latestPendingEntries = array_values($latestPendingEntries);
 

@@ -30,7 +30,7 @@ class GenericRoleModel extends Model
     public function getAll(): array
     {
         return $this
-            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')
+            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, created_at, updated_at')
             ->findAll();
     }
 

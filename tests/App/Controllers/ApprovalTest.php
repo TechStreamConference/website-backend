@@ -64,6 +64,7 @@ class ApprovalTest extends CIUnitTestCase
                     "call_for_papers_start" => "2023-12-01 12:00:00",
                     "call_for_papers_end" => "2024-03-01 12:00:00",
                 ],
+                "diff" => ["name"],
             ],
         ]);
     }
@@ -155,6 +156,7 @@ class ApprovalTest extends CIUnitTestCase
                     "call_for_papers_start" => "2023-12-01 12:00:00",
                     "call_for_papers_end" => "2024-03-01 12:00:00",
                 ],
+                "diff" => ["name"],
             ],
         ]);
     }
