@@ -21,7 +21,34 @@ class GenericRoleModel extends Model
 
     public function get(int $id): array|null
     {
-        return $this->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
+        return $this
+            ->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')
+            ->where('id', $id)
+            ->first();
+    }
+
+    public function getAll(): array
+    {
+        return $this
+            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')
+            ->findAll();
+    }
+
+    public function getPending(): array
+    {
+        return $this
+            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, visible_from')
+            ->where('is_approved', false)
+            ->findAll();
+    }
+
+    public function approve(int $id): bool
+    {
+        $entry = $this->get($id);
+        if ($entry === null || $entry['is_approved']) {
+            return false;
+        }
+        return $this->update($id, ['is_approved' => true]);
     }
 
     public function getPublished(int $eventId): array
@@ -50,7 +77,8 @@ class GenericRoleModel extends Model
         return $query;
     }
 
-    public function getApproved(int $eventId): array {
+    public function getApproved(int $eventId): array
+    {
         $subQuery = $this->db->table($this->table)
             ->select('id')
             ->where("$this->table.user_id = outer_table.user_id")
