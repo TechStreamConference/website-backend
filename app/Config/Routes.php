@@ -36,5 +36,8 @@ $routes->get('dashboard/admin/approval/speaker', [Approval::class, 'getPendingSp
 $routes->get('dashboard/admin/approval/team-member', [Approval::class, 'getPendingTeamMembers'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/speaker/(:num)', [Approval::class, 'approveSpeaker'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/team-member/(:num)', [Approval::class, 'approveTeamMember'], ['filter' => AdminAuthFilter::class]);
+$routes->put('dashboard/admin/approval/speaker/(:num)/request-changes', [Approval::class, 'requestChangesForSpeaker'], ['filter' => AdminAuthFilter::class]);
+$routes->put('dashboard/admin/approval/team-member/(:num)/request-changes', [Approval::class, 'requestChangesForTeamMember'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/approval/social-media-link', [Approval::class, 'getPendingSocialMediaLinks'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/social-media-link/(:num)', [Approval::class, 'approveSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
+$routes->put('dashboard/admin/approval/social-media-link/(:num)/request-changes', [Approval::class, 'requestChangesForSocialMediaLink'], ['filter' => AdminAuthFilter::class]);

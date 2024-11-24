@@ -91,7 +91,12 @@ class Approval extends BaseController
 
             $diff = [];
             foreach ($latestPendingEntry as $key => $value) {
-                if ($key === 'diff' || $key === 'account' || $key === 'event' || $key === 'id') {
+                if (
+                    $key === 'account'
+                    || $key === 'event'
+                    || $key === 'id'
+                    || $key === 'requested_changes'
+                ) {
                     continue;
                 }
                 if ($latestApprovedEntry[$key] !== $value) {
@@ -124,6 +129,30 @@ class Approval extends BaseController
         return $this->response->setStatusCode(204);
     }
 
+    private function requestChangesForRoleEntry(Role $role, int $id)
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, ['message' => 'required|string'])) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+        $message = $validData['message'];
+
+        $roleModel = match ($role) {
+            Role::SPEAKER => model(SpeakerModel::class),
+            Role::TEAM_MEMBER => model(TeamMemberModel::class),
+        };
+
+        $result = $roleModel->requestChanges($id, $message);
+        if (!$result) {
+            return $this
+                ->response
+                ->setJSON(["error" => "Id not found or entry was already approved."])
+                ->setStatusCode(400);
+        }
+        return $this->response->setStatusCode(204);
+    }
+
     public function getPendingSpeakers()
     {
         return $this->getPendingRoleEntries(Role::SPEAKER);
@@ -142,6 +171,16 @@ class Approval extends BaseController
     public function approveTeamMember(int $id)
     {
         return $this->approveRoleEntry(Role::TEAM_MEMBER, $id);
+    }
+
+    public function requestChangesForSpeaker(int $id)
+    {
+        return $this->requestChangesForRoleEntry(Role::SPEAKER, $id);
+    }
+
+    public function requestChangesForTeamMember(int $id)
+    {
+        return $this->requestChangesForRoleEntry(Role::TEAM_MEMBER, $id);
     }
 
     public function getPendingSocialMediaLinks()
@@ -163,6 +202,27 @@ class Approval extends BaseController
     {
         $socialMediaLinkModel = model(SocialMediaLinkModel::class);
         $result = $socialMediaLinkModel->approve($id);
+        if (!$result) {
+            return $this
+                ->response
+                ->setJSON(["error" => "Id not found or entry was already approved."])
+                ->setStatusCode(400);
+        }
+        return $this->response->setStatusCode(204);
+    }
+
+    public function requestChangesForSocialMediaLink(int $id)
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, ['message' => 'required|string'])) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+        $message = $validData['message'];
+
+        $socialMediaLinkModel = model(SocialMediaLinkModel::class);
+
+        $result = $socialMediaLinkModel->requestChanges($id, $message);
         if (!$result) {
             return $this
                 ->response
