@@ -11,7 +11,18 @@ class GenericRoleModel extends Model
 {
     // child classes will have to set the protected $table field to make this class work
 
-    protected $allowedFields = ['name', 'user_id', 'event_id', 'short_bio', 'bio', 'photo', 'photo_mime_type', 'is_approved', 'visible_from'];
+    protected $allowedFields = [
+        'name',
+        'user_id',
+        'event_id',
+        'short_bio',
+        'bio',
+        'photo',
+        'photo_mime_type',
+        'is_approved',
+        'visible_from',
+        'requested_changes'
+    ];
     protected $useTimestamps = true;
     protected array $casts = [
         'id' => 'int',
@@ -21,7 +32,43 @@ class GenericRoleModel extends Model
 
     public function get(int $id): array|null
     {
-        return $this->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from')->where('id', $id)->first();
+        return $this
+            ->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
+            ->where('id', $id)
+            ->first();
+    }
+
+    public function getAll(): array
+    {
+        return $this
+            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes, created_at, updated_at')
+            ->findAll();
+    }
+
+    public function getPending(): array
+    {
+        return $this
+            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, visible_from, requested_changes')
+            ->where('is_approved', false)
+            ->findAll();
+    }
+
+    public function approve(int $id): bool
+    {
+        $entry = $this->get($id);
+        if ($entry === null || $entry['is_approved']) {
+            return false;
+        }
+        return $this->update($id, ['is_approved' => true, 'requested_changes' => null]);
+    }
+
+    public function requestChanges(int $id, string $message): bool
+    {
+        $entry = $this->get($id);
+        if ($entry === null || $entry['is_approved']) {
+            return false;
+        }
+        return $this->update($id, ['requested_changes' => $message]);
     }
 
     public function getPublished(int $eventId): array
@@ -50,7 +97,8 @@ class GenericRoleModel extends Model
         return $query;
     }
 
-    public function getApproved(int $eventId): array {
+    public function getApproved(int $eventId): array
+    {
         $subQuery = $this->db->table($this->table)
             ->select('id')
             ->where("$this->table.user_id = outer_table.user_id")
