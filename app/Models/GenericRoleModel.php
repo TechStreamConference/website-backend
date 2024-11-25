@@ -28,6 +28,7 @@ class GenericRoleModel extends Model
         'id' => 'int',
         'user_id' => 'int',
         'is_approved' => 'bool',
+        'event_id' => 'int',
     ];
 
     public function get(int $id): array|null
