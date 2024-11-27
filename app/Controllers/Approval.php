@@ -8,10 +8,10 @@ use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
 use App\Models\TeamMemberModel;
 
-enum Role
+enum Role : string
 {
-    case SPEAKER;
-    case TEAM_MEMBER;
+    case SPEAKER = 'speaker';
+    case TEAM_MEMBER = 'team_member';
 }
 
 class Approval extends BaseController
