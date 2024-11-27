@@ -58,13 +58,25 @@ class Event extends BaseController
 
         $event['year'] = $year;
 
-        foreach ($speakers as &$speaker) {
-            unset($speaker['user_id']);
-        }
-
         foreach ($teamMembers as &$teamMember) {
             unset($teamMember['user_id']);
         }
+
+        foreach ($talks as &$talk) {
+            // Find the speaker for this talk based on their user_id.
+            $talk['speaker_id'] = null;
+            unset($speaker);
+            foreach ($speakers as $speaker) {
+                if ($speaker['user_id'] === $talk['user_id']) {
+                    $talk['speaker_id'] = $speaker['id'];
+                    break;
+                }
+            }
+        }
+
+        /*foreach ($speakers as &$speaker) {
+            unset($speaker['user_id']);
+        }*/
 
         return $this->response->setJSON([
             'event' => $event,
