@@ -2,17 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Helpers\Role;
 use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
 use App\Models\TeamMemberModel;
-
-enum Role : string
-{
-    case SPEAKER = 'speaker';
-    case TEAM_MEMBER = 'team_member';
-}
 
 class Approval extends BaseController
 {
@@ -117,7 +112,11 @@ class Approval extends BaseController
         $roleModel = match ($role) {
             Role::SPEAKER => model(SpeakerModel::class),
             Role::TEAM_MEMBER => model(TeamMemberModel::class),
+            default => null,
         };
+        if ($roleModel === null) {
+            return $this->response->setStatusCode(500);
+        }
 
         $result = $roleModel->approve($id);
         if (!$result) {
