@@ -20,12 +20,6 @@ class Approval extends BaseController
         };
         $pendingEntries = $roleModel->getPending();
 
-        // We use an associative array to emulate a set of all user IDs.
-        $userIds = [];
-        foreach ($pendingEntries as $entry) {
-            $userIds[$entry['user_id']] = true;
-        }
-
         // Get the latest pending entry of each user.
         $latestPendingEntries = [];
         foreach ($pendingEntries as $entry) {
