@@ -17,19 +17,39 @@ class Approval extends BaseController
         $roleModel = match ($role) {
             Role::SPEAKER => model(SpeakerModel::class),
             Role::TEAM_MEMBER => model(TeamMemberModel::class),
+            Role::ADMIN => throw new \Exception("Invalid role."),
         };
         $pendingEntries = $roleModel->getPending();
 
-        // Get the latest pending entry of each user.
-        $latestPendingEntries = [];
-        foreach ($pendingEntries as $entry) {
-            if (!isset($latestPendingEntries[$entry['user_id']])) {
-                $latestPendingEntries[$entry['user_id']] = $entry;
+        // For each event, get the latest pending entry per user.
+        $pendingEntriesPerEvent = [];
+        foreach ($pendingEntries as $pendingEntry) {
+            $eventId = $pendingEntry['event_id'];
+            $userId = $pendingEntry['user_id'];
+            if (!isset($pendingEntriesPerEvent[$eventId])) {
+                $pendingEntriesPerEvent[$eventId] = [];
+            }
+            if (!isset($pendingEntriesPerEvent[$eventId][$userId])) {
+                $pendingEntriesPerEvent[$eventId][$userId] = $pendingEntry;
                 continue;
             }
-            $latestPendingEntry = $latestPendingEntries[$entry['user_id']];
-            if (strtotime($entry['updated_at']) > strtotime($latestPendingEntry['updated_at'])) {
-                $latestPendingEntries[$entry['user_id']] = $entry;
+            $latestPendingEntry = $pendingEntriesPerEvent[$eventId][$userId];
+            if (strtotime($pendingEntry['updated_at']) > strtotime($latestPendingEntry['updated_at'])) {
+                $pendingEntriesPerEvent[$eventId][$userId] = $pendingEntry;
+            }
+        }
+
+        foreach ($pendingEntries as &$pendingEntry) {
+            unset($pendingEntry['updated_at']);
+            unset($pendingEntry['created_at']);
+        }
+
+        // Flatten the associative array to a simple array.
+        $latestPendingEntries = [];
+        foreach ($pendingEntriesPerEvent as $pendingEntries) {
+            unset($pendingEntry);
+            foreach ($pendingEntries as $pendingEntry) {
+                $latestPendingEntries[] = $pendingEntry;
             }
         }
 

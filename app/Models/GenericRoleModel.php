@@ -49,7 +49,7 @@ class GenericRoleModel extends Model
     public function getPending(): array
     {
         return $this
-            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, visible_from, requested_changes')
+            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, visible_from, requested_changes, created_at, updated_at')
             ->where('is_approved', false)
             ->findAll();
     }
@@ -123,6 +123,20 @@ class GenericRoleModel extends Model
         return $query;
     }
 
+    public function getLatestForEvent(int $userId, int $eventId): array|null
+    {
+        // This returns the latest entry for the given user and the given event,
+        // regardless of whether it is approved or not.
+        return $this->db->table($this->table)
+            ->select('id, user_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
+            ->where('event_id', $eventId)
+            ->where('user_id', $userId)
+            ->orderBy('updated_at', 'DESC')
+            ->limit(1)
+            ->get()
+            ->getRowArray();
+    }
+
     public function create(
         string $name,
         int    $userId,
@@ -131,8 +145,8 @@ class GenericRoleModel extends Model
         string $bio,
         string $photo,
         string $photoMimeType,
-        bool   $isActive,
-        string $visibleFrom,
+        bool   $isApproved,
+        ?string $visibleFrom,
     ): int
     {
         return $this->insert([
@@ -143,8 +157,8 @@ class GenericRoleModel extends Model
             'bio' => $bio,
             'photo' => $photo,
             'photo_mime_type' => $photoMimeType,
-            'is_approved' => $isActive,
-            'visible_from' => $visibleFrom,
+            'is_approved' => $isApproved,
+            'visible_from' => $visibleFrom ?? null,
         ]);
     }
 }

@@ -7,8 +7,12 @@ use App\Controllers\Event;
 use App\Controllers\Globals;
 use App\Controllers\Image;
 use App\Controllers\HealthCheck;
+use App\Controllers\SpeakerDashboard;
+use App\Controllers\TeamMemberDashboard;
 use App\Filters\AdminAuthFilter;
 use App\Filters\AuthFilter;
+use App\Filters\SpeakerAuthFilter;
+use App\Filters\TeamMemberAuthFilter;
 use CodeIgniter\Router\RouteCollection;
 
 /**
@@ -26,6 +30,7 @@ $routes->get('events/(:num)', [Event::class, 'get']);
 $routes->get('events/(:num)/ics', [Event::class, 'getICalendarFile']);
 $routes->get('health', [HealthCheck::class, 'check']);
 $routes->get('globals', [Globals::class, 'get']);
+
 $routes->put('dashboard/admin/globals', [AdminDashboard::class, 'setGlobals'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/all-events', [AdminDashboard::class, 'getAllEvents'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/event/(:num)', [AdminDashboard::class, 'updateEvent'], ['filter' => AdminAuthFilter::class]);
@@ -41,3 +46,9 @@ $routes->put('dashboard/admin/approval/team-member/(:num)/request-changes', [App
 $routes->get('dashboard/admin/approval/social-media-link', [Approval::class, 'getPendingSocialMediaLinks'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/social-media-link/(:num)', [Approval::class, 'approveSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/social-media-link/(:num)/request-changes', [Approval::class, 'requestChangesForSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
+
+$routes->get('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'get'], ['filter' => SpeakerAuthFilter::class]);
+$routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'createOrUpdate'], ['filter' => SpeakerAuthFilter::class]);
+
+$routes->get('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'get'], ['filter' => TeamMemberAuthFilter::class]);
+$routes->post('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'createOrUpdate'], ['filter' => TeamMemberAuthFilter::class]);
