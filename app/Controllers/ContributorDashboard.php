@@ -29,7 +29,11 @@ abstract class ContributorDashboard extends BaseController
 
     abstract protected function getRoleName(): string;
 
-    public function get(int $eventId)
+    /** Returns the latest entry for the current contributor type for the given event.
+     * @param int $eventId The ID of the event for which the entry is retrieved.
+     * @return ResponseInterface
+     */
+    public function get(int $eventId): ResponseInterface
     {
         $model = $this->getModel();
         $entry = $model->getLatestForEvent(userId: $this->getLoggedInUserId(), eventId: $eventId);
@@ -45,6 +49,18 @@ abstract class ContributorDashboard extends BaseController
         return $this
             ->response
             ->setJSON($entry);
+    }
+
+    /** Returns all events for which the current contributor type has an entry.
+     * @return ResponseInterface
+     */
+    public function getAll(): ResponseInterface
+    {
+        $model = $this->getModel();
+        $entries = $model->getAllForUser(userId: $this->getLoggedInUserId());
+        return $this
+            ->response
+            ->setJSON($entries);
     }
 
     /** Extracts the JSON data from the request. If the data is invalid, it returns a response

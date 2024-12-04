@@ -47,8 +47,10 @@ $routes->get('dashboard/admin/approval/social-media-link', [Approval::class, 'ge
 $routes->put('dashboard/admin/approval/social-media-link/(:num)', [Approval::class, 'approveSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/social-media-link/(:num)/request-changes', [Approval::class, 'requestChangesForSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
 
+$routes->get('dashboard/speaker/all-events', [SpeakerDashboard::class, 'getAll'], ['filter' => SpeakerAuthFilter::class]);
 $routes->get('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'get'], ['filter' => SpeakerAuthFilter::class]);
 $routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'createOrUpdate'], ['filter' => SpeakerAuthFilter::class]);
 
+$routes->get('dashboard/team-member/all-events', [TeamMemberDashboard::class, 'getAll'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->get('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'get'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->post('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'createOrUpdate'], ['filter' => TeamMemberAuthFilter::class]);
