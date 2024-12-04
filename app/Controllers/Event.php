@@ -45,8 +45,8 @@ class Event extends BaseController
         $teamMemberUserIds = array_column($teamMembers, 'user_id');
 
         $socialMediaLinkModel = new SocialMediaLinkModel();
-        $speakersSocialMediaLinks = $socialMediaLinkModel->getApprovedByUserIds($speakerUserIds);
-        $teamMembersSocialMediaLinks = $socialMediaLinkModel->getApprovedByUserIds($teamMemberUserIds);
+        $speakersSocialMediaLinks = $socialMediaLinkModel->getLatestApprovedByUserIds($speakerUserIds);
+        $teamMembersSocialMediaLinks = $socialMediaLinkModel->getLatestApprovedByUserIds($teamMemberUserIds);
 
         foreach ($speakers as &$speaker) {
             $speaker['social_media_links'] = $speakersSocialMediaLinks[$speaker['user_id']] ?? [];

@@ -24,17 +24,25 @@ class SocialMediaLinkModel extends Model
         'approved' => 'bool',
     ];
 
-    public function getApprovedByUserIds(array $userIds): array
+    public function getLatestApprovedByUserIds(array $userIds): array
     {
         if (count($userIds) === 0) {
             return [];
         }
-        $queryResult = $this
-            ->select('user_id, name, url')
-            ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')
+        $subQuery = $this->db->table($this->table)
+            ->select('user_id, social_media_type_id, MAX(updated_at) as latest_update')
             ->where('approved', true)
             ->whereIn('user_id', $userIds)
+            ->groupBy('user_id, social_media_type_id')
+            ->getCompiledSelect();
+
+        $queryResult = $this
+            ->select('user_id, name, url')
+            ->where("($this->table.user_id, $this->table.social_media_type_id, $this->table.updated_at) IN ($subQuery)", null, false)
+            ->whereIn('user_id', $userIds)
+            ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')
             ->findAll();
+
         $result = [];
         foreach ($queryResult as $row) {
             $result[$row['user_id']][] = [
