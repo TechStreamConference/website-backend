@@ -56,9 +56,14 @@ class SocialMediaLinkModel extends Model
 
     public function getPending(): array
     {
+        $subQuery = $this->db->table($this->table)
+            ->select('social_media_type_id, MAX(updated_at) as latest_update')
+            ->where('approved', false)
+            ->groupBy('social_media_type_id')
+            ->getCompiledSelect();
         return $this
             ->select('SocialMediaLink.id, user_id, name, url, requested_changes')
-            ->where('approved', false)
+            ->where("($this->table.social_media_type_id, $this->table.updated_at) IN ($subQuery)", null, false)
             ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')
             ->findAll();
     }
