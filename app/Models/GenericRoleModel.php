@@ -49,8 +49,10 @@ class GenericRoleModel extends Model
     public function getAllForUser(int $userId): array
     {
         return $this
-            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes, created_at, updated_at')
+            ->select('Event.id as event_id, Event.title')
+            ->join('Event', 'Event.id = event_id')
             ->where('user_id', $userId)
+            ->groupBy('Event.id')
             ->findAll();
     }
 
