@@ -138,14 +138,13 @@ class GenericRoleModel extends Model
     {
         // This returns the latest entry for the given user and the given event,
         // regardless of whether it is approved or not.
-        return $this->db->table($this->table)
+        return $this
             ->select('id, user_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
             ->where('event_id', $eventId)
             ->where('user_id', $userId)
             ->orderBy('updated_at', 'DESC')
             ->limit(1)
-            ->get()
-            ->getRowArray();
+            ->find();
     }
 
     public function create(
