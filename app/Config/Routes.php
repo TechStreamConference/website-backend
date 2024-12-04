@@ -7,6 +7,7 @@ use App\Controllers\Event;
 use App\Controllers\Globals;
 use App\Controllers\Image;
 use App\Controllers\HealthCheck;
+use App\Controllers\UserDashboard;
 use App\Controllers\SpeakerDashboard;
 use App\Controllers\TeamMemberDashboard;
 use App\Filters\AdminAuthFilter;
@@ -37,6 +38,7 @@ $routes->put('dashboard/admin/event/(:num)', [AdminDashboard::class, 'updateEven
 $routes->get('dashboard/admin/event/(:num)/speaker', [AdminDashboard::class, 'getEventSpeakers'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/event/(:num)/speaker', [AdminDashboard::class, 'updateSpeakerDates'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/event/new', [AdminDashboard::class, 'createEvent'], ['filter' => AdminAuthFilter::class]);
+
 $routes->get('dashboard/admin/approval/speaker', [Approval::class, 'getPendingSpeakers'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/approval/team-member', [Approval::class, 'getPendingTeamMembers'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/speaker/(:num)', [Approval::class, 'approveSpeaker'], ['filter' => AdminAuthFilter::class]);
@@ -54,3 +56,6 @@ $routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'creat
 $routes->get('dashboard/team-member/all-events', [TeamMemberDashboard::class, 'getAll'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->get('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'get'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->post('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'createOrUpdate'], ['filter' => TeamMemberAuthFilter::class]);
+
+$routes->get('/dashboard/user/social-media-link', [UserDashboard::class, 'get'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->post('/dashboard/user/social-media-link', [UserDashboard::class, 'create'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);

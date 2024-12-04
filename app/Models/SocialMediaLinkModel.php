@@ -93,4 +93,35 @@ class SocialMediaLinkModel extends Model
         }
         return $this->update($id, ['requested_changes' => $message]);
     }
+
+    public function getLatestForUser(int $userId): array
+    {
+        // For each type of social media link, get the most recent one, regardless
+        // of whether it is approved or not.
+        $subQuery = $this->db->table($this->table)
+            ->select('social_media_type_id, MAX(updated_at) as latest_update')
+            ->where('user_id', $userId)
+            ->groupBy('social_media_type_id')
+            ->getCompiledSelect();
+        return $this
+            ->select('SocialMediaLink.id, SocialMediaLink.user_id, SocialMediaLink.social_media_type_id, name, url, approved, requested_changes')
+            ->where("($this->table.social_media_type_id, $this->table.updated_at) IN ($subQuery)", null, false)
+            ->where('SocialMediaLink.user_id', $userId)
+            ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')
+            ->findAll();
+    }
+
+    public function create(
+        int $social_media_type_id,
+        int $user_id,
+        string $url,
+        bool $approved
+    ): int {
+        return $this->insert([
+            'social_media_type_id' => $social_media_type_id,
+            'user_id' => $user_id,
+            'url' => $url,
+            'approved' => $approved,
+        ]);
+    }
 }
