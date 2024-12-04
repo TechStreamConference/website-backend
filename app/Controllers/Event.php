@@ -74,10 +74,6 @@ class Event extends BaseController
             }
         }
 
-        /*foreach ($speakers as &$speaker) {
-            unset($speaker['user_id']);
-        }*/
-
         return $this->response->setJSON([
             'event' => $event,
             'speakers' => $speakers,
