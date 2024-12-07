@@ -117,7 +117,28 @@ abstract class ContributorDashboard extends BaseController
         if ($entry === null) {
             return $this->createNewEntry($validData, $eventId);
         }
+        if (!$this->hasChanges($validData, $entry)) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'No changes detected.'])
+                ->setStatusCode(400);
+        }
         return $this->updateEntry($validData, $entry, $eventId);
+    }
+
+    /** Checks if the given data has changes compared to the existing entry.
+     * @param array $newData The data to check.
+     * @param array $existingEntry The existing entry.
+     * @return bool True if the data has changes, false otherwise.
+     */
+    private function hasChanges(array $newData, array $existingEntry): bool
+    {
+        foreach ($newData as $key => $value) {
+            if ($value !== $existingEntry[$key]) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Creates a new entry for the current contributor type. This function is called when no entry
