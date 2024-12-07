@@ -101,6 +101,9 @@ abstract class ContributorDashboard extends BaseController
     public function createOrUpdate(int $eventId): ResponseInterface
     {
         $data = $this->getJsonData();
+        if ($data instanceof ResponseInterface) {
+            return $data;
+        }
         if (!$this->validateData($data, self::RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
