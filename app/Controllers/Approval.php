@@ -55,6 +55,7 @@ class Approval extends BaseController
         // add it to the latest pending entry.
         $allEntries = $roleModel->getAll();
         $latestApprovedEntries = [];
+        unset($entry);
         foreach ($allEntries as $entry) {
             // Find the latest approved entry for each user.
             if ($entry['is_approved']) {
