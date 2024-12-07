@@ -259,10 +259,27 @@ abstract class ContributorDashboard extends BaseController
         if (!in_array($mimeType, $this->getAllowedMimeTypes())) {
             return $this->response->setJSON(['error' => 'Invalid MIME type.'])->setStatusCode(400);
         }
+
         $filename = $fileId->getRandomName();
-        if (!$fileId->move(targetPath: WRITEPATH . 'uploads', name: $filename)) {
+        $targetPath = WRITEPATH . 'uploads';
+
+        if (!$fileId->move(targetPath: $targetPath, name: $filename)) {
             return $this->response->setJSON(['error' => 'Failed to move image.'])->setStatusCode(400);
         }
+
+        $filePath = $targetPath . DIRECTORY_SEPARATOR . $filename;
+
+        // Get the resolution.
+        $imageInfo = getimagesize($filePath);
+        if ($imageInfo === false) {
+            return $this->response->setJSON(['error' => 'Failed to get image resolution.'])->setStatusCode(400);
+        }
+        [$width, $height] = $imageInfo;
+        if ($width != $height) {
+            unlink($filePath);
+            return $this->response->setJSON(['error' => 'Image must be square.'])->setStatusCode(400);
+        }
+
         $pathForDatabase = 'images' . DIRECTORY_SEPARATOR . $filename;
         return [$pathForDatabase, $mimeType];
     }
