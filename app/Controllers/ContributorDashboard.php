@@ -189,7 +189,7 @@ abstract class ContributorDashboard extends BaseController
             bio: $validData['bio'] ?? $existingEntry['bio'],
             photo: $hasPhoto ? $path : $existingEntry['photo'],
             photoMimeType: $hasPhoto ? $mimeType : $existingEntry['photo_mime_type'],
-            isApproved: $existingEntry['is_approved'],
+            isApproved: false,
             visibleFrom: $existingEntry['visible_from'] ?? null,
         );
         return $this
