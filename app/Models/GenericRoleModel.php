@@ -56,12 +56,20 @@ class GenericRoleModel extends Model
             ->findAll();
     }
 
-    public function getPending(): array
-    {
-        return $this
-            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, visible_from, requested_changes, created_at, updated_at')
-            ->where('is_approved', false)
-            ->findAll();
+    public function getLatestPerUserPerEvent(): array {
+        $subQuery = $this->db->table($this->table)
+            ->select('id')
+            ->where("$this->table.user_id = outer_table.user_id")
+            ->where("$this->table.event_id = outer_table.event_id")
+            ->orderBy('updated_at', 'DESC')
+            ->limit(1)
+            ->getCompiledSelect();
+
+        return $this->db->table("$this->table AS outer_table")
+            ->select('id, user_id, event_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
+            ->where("id = ($subQuery)", null, false)
+            ->get()
+            ->getResultArray();
     }
 
     public function approve(int $id): bool

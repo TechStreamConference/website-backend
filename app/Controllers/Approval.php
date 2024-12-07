@@ -19,38 +19,13 @@ class Approval extends BaseController
             Role::TEAM_MEMBER => model(TeamMemberModel::class),
             Role::ADMIN => throw new \Exception("Invalid role."),
         };
-        $pendingEntries = $roleModel->getPending();
-
-        // For each event, get the latest pending entry per user.
-        $pendingEntriesPerEvent = [];
-        foreach ($pendingEntries as $pendingEntry) {
-            $eventId = $pendingEntry['event_id'];
-            $userId = $pendingEntry['user_id'];
-            if (!isset($pendingEntriesPerEvent[$eventId])) {
-                $pendingEntriesPerEvent[$eventId] = [];
-            }
-            if (!isset($pendingEntriesPerEvent[$eventId][$userId])) {
-                $pendingEntriesPerEvent[$eventId][$userId] = $pendingEntry;
-                continue;
-            }
-            $latestPendingEntry = $pendingEntriesPerEvent[$eventId][$userId];
-            if (strtotime($pendingEntry['updated_at']) > strtotime($latestPendingEntry['updated_at'])) {
-                $pendingEntriesPerEvent[$eventId][$userId] = $pendingEntry;
-            }
-        }
+        $pendingEntries = $roleModel->getLatestPerUserPerEvent();
+        // Remove entries that are already approved.
+        $latestPendingEntries = array_filter($pendingEntries, fn($entry) => !$entry['is_approved']);
 
         foreach ($pendingEntries as &$pendingEntry) {
             unset($pendingEntry['updated_at']);
             unset($pendingEntry['created_at']);
-        }
-
-        // Flatten the associative array to a simple array.
-        $latestPendingEntries = [];
-        foreach ($pendingEntriesPerEvent as $pendingEntries) {
-            unset($pendingEntry);
-            foreach ($pendingEntries as $pendingEntry) {
-                $latestPendingEntries[] = $pendingEntry;
-            }
         }
 
         $accountModel = model(AccountModel::class);
