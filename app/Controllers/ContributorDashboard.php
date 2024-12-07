@@ -117,7 +117,6 @@ abstract class ContributorDashboard extends BaseController
             return $this->createNewEntry($validData, $eventId);
         }
         return $this->updateEntry($validData, $entry, $eventId);
-
     }
 
     /** Creates a new entry for the current contributor type. This function is called when no entry
