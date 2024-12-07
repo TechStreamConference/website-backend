@@ -144,7 +144,7 @@ class GenericRoleModel extends Model
             ->where('user_id', $userId)
             ->orderBy('updated_at', 'DESC')
             ->limit(1)
-            ->find();
+            ->first();
     }
 
     public function create(
