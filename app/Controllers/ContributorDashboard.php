@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\GenericRoleModel;
+use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\ResponseInterface;
 use RuntimeException;
 
@@ -138,7 +139,11 @@ abstract class ContributorDashboard extends BaseController
                     ->setStatusCode(400);
             }
         }
-        $uploadResult = $this->uploadPhoto();
+        $image = $this->request->getFile('photo');
+        if ($image === null) {
+            return $this->response->setJSON(['error' => 'No image uploaded.'])->setStatusCode(400);
+        }
+        $uploadResult = $this->uploadPhoto($image);
         if ($uploadResult instanceof ResponseInterface) {
             return $this
                 ->response
@@ -176,8 +181,18 @@ abstract class ContributorDashboard extends BaseController
     {
         // If there's an existing entry, we *still* want to create a new entry, but only with the fields
         // that are being updated. For the other fields, we copy the values from the existing entry.
-        $uploadResult = $this->uploadPhoto();
-        $hasPhoto = !($uploadResult instanceof ResponseInterface);
+        $image = $this->request->getFile('photo');
+        $wasPhotoUploaded = $image !== null;
+
+        $uploadResult = null;
+        $hasPhoto = false;
+        if ($wasPhotoUploaded) {
+            $uploadResult = $this->uploadPhoto($image);
+            if ($uploadResult instanceof ResponseInterface) {
+                return $uploadResult;
+            }
+            $hasPhoto = true;
+        }
         $path = $hasPhoto ? $uploadResult[0] : null;
         $mimeType = $hasPhoto ? $uploadResult[1] : null;
 
@@ -232,24 +247,20 @@ abstract class ContributorDashboard extends BaseController
      * and the MIME type of the file. If an error occurs, it returns a string with an error message.
      * @return array|string The path to the uploaded file and the MIME type, or an error message.
      */
-    private function uploadPhoto(): array|ResponseInterface
+    private function uploadPhoto(UploadedFile $fileId): array|ResponseInterface
     {
-        $image = $this->request->getFile('photo');
-        if ($image === null) {
-            return $this->response->setJSON(['error' => 'No image uploaded.'])->setStatusCode(400);
-        }
         if (!$this->validateData([], self::PHOTO_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
-        if ($image->hasMoved()) {
+        if ($fileId->hasMoved()) {
             return $this->response->setJSON(['error' => 'Image has moved.'])->setStatusCode(400);
         }
-        $mimeType = $image->getMimeType();
+        $mimeType = $fileId->getMimeType();
         if (!in_array($mimeType, $this->getAllowedMimeTypes())) {
             return $this->response->setJSON(['error' => 'Invalid MIME type.'])->setStatusCode(400);
         }
-        $filename = $image->getRandomName();
-        if (!$image->move(targetPath: WRITEPATH . 'uploads', name: $filename)) {
+        $filename = $fileId->getRandomName();
+        if (!$fileId->move(targetPath: WRITEPATH . 'uploads', name: $filename)) {
             return $this->response->setJSON(['error' => 'Failed to move image.'])->setStatusCode(400);
         }
         $pathForDatabase = 'images' . DIRECTORY_SEPARATOR . $filename;
