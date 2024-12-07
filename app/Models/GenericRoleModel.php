@@ -143,7 +143,6 @@ class GenericRoleModel extends Model
             ->where('event_id', $eventId)
             ->where('user_id', $userId)
             ->orderBy('updated_at', 'DESC')
-            ->limit(1)
             ->first();
     }
 
