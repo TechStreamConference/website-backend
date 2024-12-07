@@ -59,3 +59,4 @@ $routes->post('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class,
 
 $routes->get('/dashboard/user/social-media-link', [UserDashboard::class, 'get'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
 $routes->post('/dashboard/user/social-media-link', [UserDashboard::class, 'create'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->put('/dashboard/user/social-media-link', [UserDashboard::class, 'update'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);

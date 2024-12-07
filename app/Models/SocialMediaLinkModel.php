@@ -53,10 +53,10 @@ class SocialMediaLinkModel extends Model
         return $result;
     }
 
-    private function get(int $id): array|null
+    public function get(int $id): array|null
     {
         return $this
-            ->select('user_id, name, url, approved, requested_changes')
+            ->select('SocialMediaLink.id, social_media_type_id, user_id, name, url, approved, requested_changes')
             ->where('SocialMediaLink.id', $id)
             ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')
             ->first();
@@ -111,17 +111,45 @@ class SocialMediaLinkModel extends Model
             ->findAll();
     }
 
+    public function getByLinkTypeAndUserId(int $social_media_type_id, int $user_id): array|null
+    {
+        return $this
+            ->select('id, user_id, social_media_type_id, url, approved, requested_changes')
+            ->where('social_media_type_id', $social_media_type_id)
+            ->where('user_id', $user_id)
+            ->first();
+    }
+
     public function create(
-        int $social_media_type_id,
-        int $user_id,
+        int    $social_media_type_id,
+        int    $user_id,
         string $url,
-        bool $approved
-    ): int {
+        bool   $approved
+    ): int
+    {
         return $this->insert([
             'social_media_type_id' => $social_media_type_id,
             'user_id' => $user_id,
             'url' => $url,
             'approved' => $approved,
+        ]);
+    }
+
+    public function updateLink(
+        int    $id,
+        int    $social_media_type_id,
+        int    $user_id,
+        string $url,
+        bool   $approved,
+        ?string $requested_changes
+    ): int
+    {
+        return $this->update($id, [
+            'social_media_type_id' => $social_media_type_id,
+            'user_id' => $user_id,
+            'url' => $url,
+            'approved' => $approved,
+            'requested_changes' => $requested_changes ?? null,
         ]);
     }
 }

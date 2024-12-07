@@ -10,6 +10,6 @@ POST http://localhost:8080/api/account/login
 POST localhost:8080/api/dashboard/user/social-media-link
 
 {
-  "social_media_type_id": 4,
-  "url": "https://www.facebook.com/facebook-is-for-boomers"
+  "social_media_type_id": 1,
+  "url": "https://www.twitch.tv/theReal_coder2k"
 }
