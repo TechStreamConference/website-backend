@@ -12,6 +12,9 @@ class SocialMediaTypeModel extends Model
 
     public function all(): array
     {
-        return $this->select('id, name')->findAll();
+        return $this
+            ->select('id, name')
+            ->orderBy('name')
+            ->findAll();
     }
 }

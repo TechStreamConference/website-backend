@@ -31,6 +31,7 @@ $routes->get('events/(:num)', [Event::class, 'get']);
 $routes->get('events/(:num)/ics', [Event::class, 'getICalendarFile']);
 $routes->get('health', [HealthCheck::class, 'check']);
 $routes->get('globals', [Globals::class, 'get']);
+$routes->get('social-media-link-types', [Globals::class, 'getSocialMediaLinkTypes']);
 
 $routes->put('dashboard/admin/globals', [AdminDashboard::class, 'setGlobals'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/all-events', [AdminDashboard::class, 'getAllEvents'], ['filter' => AdminAuthFilter::class]);
