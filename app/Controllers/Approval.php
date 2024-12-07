@@ -23,9 +23,12 @@ class Approval extends BaseController
         // Remove entries that are already approved.
         $latestPendingEntries = array_filter($pendingEntries, fn($entry) => !$entry['is_approved']);
 
-        foreach ($pendingEntries as &$pendingEntry) {
-            unset($pendingEntry['updated_at']);
-            unset($pendingEntry['created_at']);
+        foreach ($latestPendingEntries as &$entry) {
+            $entry['id'] = intval($entry['id']);
+            $entry['user_id'] = intval($entry['user_id']);
+            $entry['event_id'] = intval($entry['event_id']);
+            unset($entry['updated_at']);
+            unset($entry['created_at']);
         }
 
         $accountModel = model(AccountModel::class);
