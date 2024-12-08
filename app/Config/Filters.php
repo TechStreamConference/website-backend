@@ -2,6 +2,8 @@
 
 namespace Config;
 
+use App\Filters\SpeakerAuthFilter;
+use App\Filters\TeamMemberAuthFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -34,6 +36,11 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+
+        'SpeakerOrTeamMemberAuthFilter' => [
+            SpeakerAuthFilter::class,
+            TeamMemberAuthFilter::class
+        ]
     ];
 
     /**

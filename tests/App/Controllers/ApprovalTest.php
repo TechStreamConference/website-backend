@@ -44,6 +44,8 @@ class ApprovalTest extends CIUnitTestCase
                 "photo_mime_type" => "image/jpeg",
                 "visible_from" => "2024-06-01 15:00:00",
                 "requested_changes" => null,
+                "created_at" => "0000-00-00 00:00:00",
+                "updated_at" => "2024-06-01 15:02:00",
                 "account" => [
                     "username" => "coder2k",
                     "email" => "coder2k@test-conf.de",
@@ -65,7 +67,10 @@ class ApprovalTest extends CIUnitTestCase
                     "call_for_papers_start" => "2023-12-01 12:00:00",
                     "call_for_papers_end" => "2024-03-01 12:00:00",
                 ],
-                "diff" => ["name"],
+                "diff" => [
+                    "name",
+                    "updated_at",
+                ],
             ],
         ]);
     }
@@ -137,6 +142,8 @@ class ApprovalTest extends CIUnitTestCase
                 "photo_mime_type" => "image/jpeg",
                 "visible_from" => "2024-06-01 15:00:00",
                 "requested_changes" => null,
+                "created_at" => "0000-00-00 00:00:00",
+                "updated_at" => "2024-06-01 15:02:00",
                 "account" => [
                     "username" => "coder2k",
                     "email" => "coder2k@test-conf.de",
@@ -158,7 +165,10 @@ class ApprovalTest extends CIUnitTestCase
                     "call_for_papers_start" => "2023-12-01 12:00:00",
                     "call_for_papers_end" => "2024-03-01 12:00:00",
                 ],
-                "diff" => ["name"],
+                "diff" => [
+                    "name",
+                    "updated_at",
+                ],
             ],
         ]);
     }
@@ -315,7 +325,8 @@ class ApprovalTest extends CIUnitTestCase
             ->withSession($sessionValues)
             ->get('dashboard/admin/approval/speaker');
         $response->assertStatus(200);
-        $response->assertJSONExact([
+        // We cannot use assertJSONExact() here, because the updated_at field is not predictable.
+        $response->assertJSONFragment([
             [
                 "id" => 3,
                 "name" => "coder4k",
@@ -327,6 +338,8 @@ class ApprovalTest extends CIUnitTestCase
                 "photo_mime_type" => "image/jpeg",
                 "visible_from" => "2024-06-01 15:00:00",
                 "requested_changes" => "There is a typo in the username.",
+                "created_at" => "0000-00-00 00:00:00",
+                //  "updated_at" is ignored here.
                 "account" => [
                     "username" => "coder2k",
                     "email" => "coder2k@test-conf.de",
@@ -348,7 +361,10 @@ class ApprovalTest extends CIUnitTestCase
                     "call_for_papers_start" => "2023-12-01 12:00:00",
                     "call_for_papers_end" => "2024-03-01 12:00:00",
                 ],
-                "diff" => ["name"],
+                "diff" => [
+                    "name",
+                    "updated_at",
+                ],
             ],
         ]);
     }
