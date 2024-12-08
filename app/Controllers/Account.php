@@ -5,25 +5,9 @@ namespace App\Controllers;
 use App\Models\AccountModel;
 use App\Models\RolesModel;
 use App\Models\UserModel;
-use CodeIgniter\HTTP\ResponseInterface;
-use Config\Services;
 
 class Account extends BaseController
 {
-    public function mailTest(): ResponseInterface {
-        $email = Services::email();
-
-        $email->setTo('john@doe.com');
-        $email->setSubject('Test email');
-        $email->setMessage('This is a test email');
-
-        if ($email->send()) {
-            return $this->response->setJSON(['mail' => 'sent']);
-        } else {
-            return $this->response->setJSON(['mail' => 'not sent']);
-        }
-    }
-
     public function register()
     {
         $accountModel = model(AccountModel::class);
