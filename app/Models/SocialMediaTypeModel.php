@@ -20,4 +20,9 @@ class SocialMediaTypeModel extends Model
             ->orderBy('name')
             ->findAll();
     }
+
+    public function create(string $name): int
+    {
+        return $this->insert(['name' => $name]);
+    }
 }
