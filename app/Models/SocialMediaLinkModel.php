@@ -62,6 +62,14 @@ class SocialMediaLinkModel extends Model
             ->first();
     }
 
+    public function getByUserId(int $userId): array
+    {
+        return $this
+            ->select('id, social_media_type_id, user_id, url, approved, requested_changes')
+            ->where('user_id', $userId)
+            ->findAll();
+    }
+
     public function getPending(): array
     {
         $subQuery = $this->db->table($this->table)

@@ -12,9 +12,24 @@ class UserDashboard extends BaseController
         'url' => 'required|valid_url',
     ];
 
+    /* Expected JSON structure:
+     * {
+     *     "social_media_links": [
+     *         {
+     *             "id": 1,
+     *             "url": "..."
+     *         },
+     *         {
+     *             "id": 2,
+     *             "url": "..."
+     *         }
+     *         ...
+     *     ]
+     * }
+     */
     private const SOCIAL_MEDIA_LINK_UPDATE_RULES = [
-        'id' => 'required|is_natural_no_zero',
-        'url' => 'required|valid_url',
+        'social_media_links.*.id' => 'required|is_natural_no_zero',
+        'social_media_links.*.url' => 'required|valid_url',
     ];
 
     /** For each type of social media link, this function returns the most recent link
@@ -61,7 +76,7 @@ class UserDashboard extends BaseController
         return $this->response->setStatusCode(201);
     }
 
-    /** This function updates an existing social media link for the currently logged in user.
+    /** This function updates existing social media links for the currently logged in user.
      * @return ResponseInterface The response to return to the client.
      */
     public function update(): ResponseInterface
@@ -71,39 +86,61 @@ class UserDashboard extends BaseController
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
+        $links = $validData['social_media_links'];
 
-        $model = model(SocialMediaLinkModel::class);
-
-        // Check if the social media link exists and belongs to the currently logged in user.
-        $userId = $this->getLoggedInUserId();
-        $link = $model->get($validData['id']);
-        if ($link === null || $link['user_id'] !== $userId) {
+        // Check for duplicate IDs.
+        $linksToUpdate = array_column($links, 'id');
+        if (count($linksToUpdate) !== count(array_unique($linksToUpdate))) {
             return $this
                 ->response
-                ->setJSON(['error' => 'Social media link not found or does not belong to the currently logged in user.'])
-                ->setStatusCode(404);
-        }
-
-        if ($link['url'] === $validData['url']) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'The new URL is the same as the old one.'])
+                ->setJSON(['error' => 'Duplicate IDs found in the request.'])
                 ->setStatusCode(400);
         }
 
-        $model->updateLink(
-            $link['id'],
-            $link['social_media_type_id'],
-            $userId,
-            $validData['url'],
-            false,
-            null,
-        );
+        $model = model(SocialMediaLinkModel::class);
+
+        $userId = $this->getLoggedInUserId();
+        $existingEntries = $model->getByUserId($userId);
+        foreach ($links as &$link) {
+            // Check if the social media link exists and belongs to the currently logged in user.
+            $existingLink = null;
+            foreach ($existingEntries as $entry) {
+                if ($entry['id'] === $link['id']) {
+                    $existingLink = $entry;
+                    break;
+                }
+            }
+            if ($existingLink === null) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'Social media link not found or does not belong to the currently logged in user.'])
+                    ->setStatusCode(404);
+            }
+
+            $link['has_changed'] = $existingLink['url'] !== $link['url'];
+            $link['social_media_type_id'] = $existingLink['social_media_type_id'];
+        }
+
+        // All links are valid. Update them if they contain changes.
+        unset($link);
+        foreach ($links as $link) {
+            if (!$link['has_changed']) {
+                continue;
+            }
+
+            $model->updateLink(
+                $link['id'],
+                $link['social_media_type_id'],
+                $userId,
+                $link['url'],
+                false,
+                null,
+            );
+        }
 
         return $this
             ->response
-            ->setJSON(['message' => 'Link updated.'])
-            ->setStatusCode(204);
+            ->setStatusCode(200);
     }
 
     /** This function returns the ID of the currently logged in user. We don't check their role here.
