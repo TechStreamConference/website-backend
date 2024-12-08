@@ -22,12 +22,16 @@ class AccountModel extends Model
 
     public function isUsernameTaken(string $username): bool
     {
-        return $this->where(['username' => $username])->countAllResults() > 0;
+        return $this
+                ->where(['username' => $username])
+                ->countAllResults() > 0;
     }
 
     public function isEmailTaken(string $email): bool
     {
-        return $this->where(['email' => $email])->countAllResults() > 0;
+        return $this
+                ->where(['email' => $email])
+                ->countAllResults() > 0;
     }
 
     public function createAccount(int $userId, string $username, string $passwordHash, string $email): bool
@@ -47,11 +51,17 @@ class AccountModel extends Model
 
     public function getAccountByUsernameOrEmail(string $usernameOrEmail): array|null
     {
-        return $this->where('username', $usernameOrEmail)->orWhere('email', $usernameOrEmail)->first();
+        return $this
+            ->where('username', $usernameOrEmail)
+            ->orWhere('email', $usernameOrEmail)
+            ->first();
     }
 
     public function get(int $userId): array|null
     {
-        return $this->select('username, email')->where('user_id', $userId)->first();
+        return $this
+            ->select('username, email')
+            ->where('user_id', $userId)
+            ->first();
     }
 }
