@@ -140,7 +140,7 @@ class UserDashboard extends BaseController
 
         return $this
             ->response
-            ->setStatusCode(200);
+            ->setStatusCode(204);
     }
 
     /** This function returns the ID of the currently logged in user. We don't check their role here.
