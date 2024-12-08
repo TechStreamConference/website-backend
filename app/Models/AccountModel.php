@@ -64,4 +64,12 @@ class AccountModel extends Model
             ->where('user_id', $userId)
             ->first();
     }
+
+    public function getAdmins(): array
+    {
+        return $this
+            ->select('Account.user_id, username, email')
+            ->join('Admin', 'Admin.user_id = Account.user_id')
+            ->findAll();
+    }
 }
