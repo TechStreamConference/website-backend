@@ -49,6 +49,16 @@ class AccountModel extends Model
         }
     }
 
+    public function markAsVerified(int $userId): void
+    {
+        $this->update($userId, ['is_verified' => true]);
+    }
+
+    public function deleteAccount(int $userId): void
+    {
+        $this->where('user_id', $userId)->delete();
+    }
+
     public function getAccountByUsernameOrEmail(string $usernameOrEmail): array|null
     {
         return $this
