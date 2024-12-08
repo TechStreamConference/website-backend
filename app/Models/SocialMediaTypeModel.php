@@ -8,6 +8,9 @@ class SocialMediaTypeModel extends Model
 {
     protected $table = 'SocialMediaType';
     protected $allowedFields = ['name', 'icon', 'icon_mime_type'];
+    protected array $casts = [
+        'id' => 'int',
+    ];
     protected $useTimestamps = true;
 
     public function all(): array
