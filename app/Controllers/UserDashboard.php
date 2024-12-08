@@ -143,6 +143,19 @@ class UserDashboard extends BaseController
             ->setStatusCode(204);
     }
 
+    public function delete(int $id): ResponseInterface
+    {
+        $model = model(SocialMediaLinkModel::class);
+        $userId = $this->getLoggedInUserId();
+        $link = $model->get($id);
+        if ($link === null || $link['user_id'] !== $userId) {
+            return $this->response->setStatusCode(404);
+        }
+
+        $model->delete($id);
+        return $this->response->setStatusCode(204);
+    }
+
     /** This function returns the ID of the currently logged in user. We don't check their role here.
      * @return int The ID of the currently logged in user.
      */
