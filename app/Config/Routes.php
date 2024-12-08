@@ -25,6 +25,7 @@ $routes->get('account/roles', [Account::class, 'roles'], ['filter' => AuthFilter
 $routes->post('account/register', [Account::class, 'register']);
 $routes->post('account/login', [Account::class, 'login']);
 $routes->post('account/logout', [Account::class, 'logout']);
+$routes->post('account/verify', [Account::class, 'verify']);
 $routes->get('images/(:segment)', [Image::class, 'get']);
 $routes->get('events', [Event::class, 'get']);
 $routes->get('events/(:num)', [Event::class, 'get']);
