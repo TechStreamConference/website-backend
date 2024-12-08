@@ -63,3 +63,5 @@ $routes->get('/dashboard/user/social-media-link', [UserDashboard::class, 'get'],
 $routes->post('/dashboard/user/social-media-link', [UserDashboard::class, 'create'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
 $routes->put('/dashboard/user/social-media-link', [UserDashboard::class, 'update'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
 $routes->delete('/dashboard/user/social-media-link/(:num)', [UserDashboard::class, 'delete'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+
+$routes->get('test', [Account::class, 'mailTest']);
