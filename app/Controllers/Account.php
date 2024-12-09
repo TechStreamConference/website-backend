@@ -77,7 +77,7 @@ class Account extends BaseController
             )
         );
 
-        return $this->response->setStatusCode(201);
+        return $this->response->setJSON(['message' => 'success'])->setStatusCode(201);
     }
 
     public function usernameExists()
