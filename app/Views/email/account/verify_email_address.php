@@ -5,5 +5,7 @@ vielen Dank für deine Registrierung auf der Webseite der Tech Stream Conference
 <?= $verificationLink ?>
 
 
+Beachte, dass der Link nur 24 Stunden gültig ist.
+
 Viele Grüße,
 das Tech Stream Conference Team
