@@ -2,26 +2,13 @@
 
 namespace App\Filters;
 
-use App\Models\RolesModel;
-use CodeIgniter\Config\Services;
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\Response;
+use App\Helpers\Role;
 
-class AdminAuthFilter extends AuthFilter
+class AdminAuthFilter extends RoleAuthFilter
 {
-    public function before(RequestInterface $request, $arguments = null)
+
+    public function __construct()
     {
-        $userIdOrErrorResponse = $this->tryGetUserId();
-        if ($userIdOrErrorResponse instanceof Response) {
-            return $userIdOrErrorResponse;
-        }
-        $rolesModel = model(RolesModel::class);
-        $roles = $rolesModel->getByUserId($userIdOrErrorResponse);
-        if ($roles === null || !$roles['is_admin']) {
-            $response = Services::response();
-            $response->setJSON(['error' => 'Forbidden']);
-            $response->setStatusCode(403);
-            return $response;
-        }
+        parent::__construct(Role::ADMIN);
     }
 }

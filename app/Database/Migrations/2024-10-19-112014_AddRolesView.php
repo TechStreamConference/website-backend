@@ -14,8 +14,16 @@ class AddRolesView extends Migration
                 Account.user_id,
                 Account.email,
                 Account.username,
-                IF(Speaker.user_id IS NOT NULL, TRUE, FALSE) AS is_speaker,
-                IF(TeamMember.user_id IS NOT NULL, TRUE, FALSE) AS is_team_member,
+                EXISTS (
+                    SELECT 1
+                    FROM Speaker
+                    WHERE Speaker.user_id = Account.user_id AND Speaker.is_approved = TRUE
+                ) AS is_speaker,
+                EXISTS (
+                    SELECT 1
+                    FROM TeamMember t
+                    WHERE TeamMember.user_id = Account.user_id AND TeamMember.is_approved = TRUE
+                ) AS is_team_member,
                 IF(Admin.user_id IS NOT NULL, TRUE, FALSE) AS is_admin
             FROM
                 Account

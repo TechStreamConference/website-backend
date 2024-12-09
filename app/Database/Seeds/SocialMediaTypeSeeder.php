@@ -8,28 +8,26 @@ class SocialMediaTypeSeeder extends Seeder
 {
     public function run()
     {
-        $this->db->table('SocialMediaType')->insert([
-            'name' => 'Twitch',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        $names = [
+            'Web',
+            'Twitch',
+            'Discord',
+            'LinkedIn',
+            'YouTube',
+            'Instagram',
+            'X',
+            'Git',
+            'GitHub',
+            'GitLab',
+            'Mail',
+        ];
 
-        $this->db->table('SocialMediaType')->insert([
-            'name' => 'Instagram',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-
-        $this->db->table('SocialMediaType')->insert([
-            'name' => 'GitHub',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-
-        $this->db->table('SocialMediaType')->insert([
-            'name' => 'Facebook',
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        foreach ($names as $name) {
+            $this->db->table('SocialMediaType')->insert([
+                'name' => $name,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
     }
 }

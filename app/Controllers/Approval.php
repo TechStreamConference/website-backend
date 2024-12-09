@@ -2,46 +2,33 @@
 
 namespace App\Controllers;
 
+use App\Helpers\Role;
 use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
 use App\Models\TeamMemberModel;
-
-enum Role : string
-{
-    case SPEAKER = 'speaker';
-    case TEAM_MEMBER = 'team_member';
-}
+use CodeIgniter\HTTP\ResponseInterface;
 
 class Approval extends BaseController
 {
-    private function getPendingRoleEntries(Role $role)
+    private function getPendingRoleEntries(Role $role): ResponseInterface
     {
         // From all pending speaker entries, get the latest one of each specific user.
         $roleModel = match ($role) {
             Role::SPEAKER => model(SpeakerModel::class),
             Role::TEAM_MEMBER => model(TeamMemberModel::class),
+            Role::ADMIN => throw new \Exception("Invalid role."),
         };
-        $pendingEntries = $roleModel->getPending();
+        $pendingEntries = $roleModel->getLatestPerUserPerEvent();
 
-        // We use an associative array to emulate a set of all user IDs.
-        $userIds = [];
-        foreach ($pendingEntries as $entry) {
-            $userIds[$entry['user_id']] = true;
-        }
+        // Remove entries that are already approved.
+        $latestPendingEntries = array_filter($pendingEntries, fn($entry) => !$entry['is_approved']);
 
-        // Get the latest pending entry of each user.
-        $latestPendingEntries = [];
-        foreach ($pendingEntries as $entry) {
-            if (!isset($latestPendingEntries[$entry['user_id']])) {
-                $latestPendingEntries[$entry['user_id']] = $entry;
-                continue;
-            }
-            $latestPendingEntry = $latestPendingEntries[$entry['user_id']];
-            if (strtotime($entry['updated_at']) > strtotime($latestPendingEntry['updated_at'])) {
-                $latestPendingEntries[$entry['user_id']] = $entry;
-            }
+        foreach ($latestPendingEntries as &$entry) {
+            unset($entry['updated_at']);
+            unset($entry['created_at']);
+            unset($entry['is_approved']);
         }
 
         $accountModel = model(AccountModel::class);
@@ -63,27 +50,23 @@ class Approval extends BaseController
             $latestPendingEntry['event'] = $eventsById[$latestPendingEntry['event_id']];
         }
 
-        // Check if there's an already approved entry for each user. If you, build up a list of
-        // all fields that differ between the latest pending entry and the approved entry and
-        // add it to the latest pending entry.
         $allEntries = $roleModel->getAll();
-        $latestApprovedEntries = [];
-        foreach ($allEntries as $entry) {
-            // Find the latest approved entry for each user.
-            if ($entry['is_approved']) {
-                if (!isset($latestApprovedEntries[$entry['user_id']])) {
-                    $latestApprovedEntries[$entry['user_id']] = $entry;
-                    continue;
-                }
-                $latestApprovedEntry = $latestApprovedEntries[$entry['user_id']];
-                if (strtotime($entry['updated_at']) > strtotime($latestApprovedEntry['updated_at'])) {
-                    $latestApprovedEntries[$entry['user_id']] = $entry;
-                }
-            }
-        }
 
         foreach ($latestPendingEntries as &$latestPendingEntry) {
-            $latestApprovedEntry = $latestApprovedEntries[$latestPendingEntry['user_id']] ?? null;
+            // Find the latest approved entry (based on updated_at) for this user and event.
+            $latestApprovedEntry = null;
+            unset($entry);
+            foreach ($allEntries as $entry) {
+                if (
+                    $entry['user_id'] === $latestPendingEntry['user_id']
+                    && $entry['event_id'] === $latestPendingEntry['event_id']
+                    && $entry['is_approved']
+                    && ($latestApprovedEntry === null || $entry['updated_at'] > $latestApprovedEntry['updated_at'])
+                ) {
+                    $latestApprovedEntry = $entry;
+                }
+            }
+
             if ($latestApprovedEntry === null) {
                 $latestPendingEntry['diff'] = [];
                 continue;
@@ -117,7 +100,11 @@ class Approval extends BaseController
         $roleModel = match ($role) {
             Role::SPEAKER => model(SpeakerModel::class),
             Role::TEAM_MEMBER => model(TeamMemberModel::class),
+            default => null,
         };
+        if ($roleModel === null) {
+            return $this->response->setStatusCode(500);
+        }
 
         $result = $roleModel->approve($id);
         if (!$result) {

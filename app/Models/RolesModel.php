@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Role;
 use CodeIgniter\Model;
 
 class RolesModel extends Model
@@ -19,5 +20,19 @@ class RolesModel extends Model
     public function getByUserId(int $userId): object|array|null
     {
         return $this->where('user_id', $userId)->first();
+    }
+
+    public function hasRole(int $userId, Role $role): bool
+    {
+        $roles = $this->getByUserId($userId);
+        if ($roles === null) {
+            return false;
+        }
+        return match ($role) {
+            Role::ADMIN => $roles['is_admin'],
+            Role::SPEAKER => $roles['is_speaker'],
+            Role::TEAM_MEMBER => $roles['is_team_member'],
+            default => false,
+        };
     }
 }
