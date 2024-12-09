@@ -14,12 +14,14 @@ Content-Type: multipart/form-data; boundary=boundary
 Content-Disposition: form-data; name="photo"; filename="photo.jpg"
 Content-Type: image/jpeg
 
-< D:\test_image.jpeg
+< C:\Users\micha\Pictures\coder2k\coder2k-2024-09-26-quadratisch.jpg
 --boundary
 Content-Disposition: form-data; name="json"
 
 {
-
+  "photo_x": 200,
+  "photo_y": 50,
+  "photo_size": 600
 }
 
 --boundary--
