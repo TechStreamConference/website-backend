@@ -64,5 +64,6 @@ $routes->get('/dashboard/user/social-media-link', [UserDashboard::class, 'get'],
 $routes->post('/dashboard/user/social-media-link', [UserDashboard::class, 'create'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
 $routes->put('/dashboard/user/social-media-link', [UserDashboard::class, 'update'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
 $routes->delete('/dashboard/user/social-media-link/(:num)', [UserDashboard::class, 'delete'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-
-$routes->get('test', [Account::class, 'mailTest']);
+// Speaker application logic resides in the SpeakerDashboard controller, even though it is accessed by the UserDashboard.
+// The main reason for this is to be able to reuse the code.
+$routes->post('/dashboard/user/apply-as-speaker/(:num)', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);
