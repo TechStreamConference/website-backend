@@ -44,8 +44,6 @@ class ApprovalTest extends CIUnitTestCase
                 "photo_mime_type" => "image/jpeg",
                 "visible_from" => "2024-06-01 15:00:00",
                 "requested_changes" => null,
-                "created_at" => "0000-00-00 00:00:00",
-                "updated_at" => "2024-06-01 15:02:00",
                 "account" => [
                     "username" => "coder2k",
                     "email" => "coder2k@test-conf.de",
@@ -69,9 +67,44 @@ class ApprovalTest extends CIUnitTestCase
                 ],
                 "diff" => [
                     "name",
-                    "updated_at",
                 ],
             ],
+            [
+                "account" => [
+                    "email" => "coder2k@test-conf.de",
+                    "username" => "coder2k"
+                ],
+                "bio" => "Auch 2025 noch ein geiler Typ.",
+                "diff" => [
+                    "name"
+                ],
+                "event" => [
+                    "call_for_papers_end" => null,
+                    "call_for_papers_start" => null,
+                    "description" => "In einer weit, weit entfernten Galaxis...\nDie Tech Stream Conference 2025 steht unter dem Motto \"Das Imperium schlägt zurück!\".\nSei dabei, wenn wir die dunkle Seite der Macht beleuchten und uns mit den dunklen Machenschaften der Technik beschäftigen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch \"special guests\" und Überraschungen.\nAlso sei gespannt!",
+                    "description_headline" => "Komm' ran!",
+                    "discord_url" => "https://discord.com/invite/tp4EnphfKb",
+                    "end_date" => "2025-06-23",
+                    "id" => 2,
+                    "presskit_url" => "https://test-conf.de/Test-Conf-Presskit.zip",
+                    "publish_date" => null,
+                    "schedule_visible_from" => "2025-06-22 12:00:00",
+                    "start_date" => "2025-06-22",
+                    "subtitle" => "Das Imperium schlägt zurück!",
+                    "title" => "Tech Stream Conference 2025",
+                    "trailer_youtube_id" => "IW1vQAB6B18",
+                    "twitch_url" => "https://www.twitch.tv/coder2k"
+                ],
+                "event_id" => 2,
+                "id" => 7,
+                "name" => "coder2k",
+                "photo" => "images/coder2k.jpg",
+                "photo_mime_type" => "image/jpeg",
+                "requested_changes" => null,
+                "short_bio" => "Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner, auch 2025 wieder dabei!",
+                "user_id" => 1,
+                "visible_from" => "2025-06-01 15:00:00"
+            ]
         ]);
     }
 
@@ -93,7 +126,47 @@ class ApprovalTest extends CIUnitTestCase
             ->withSession($sessionValues)
             ->get('dashboard/admin/approval/speaker');
         $response->assertStatus(200);
-        $response->assertJSONExact([]);
+        $response->assertJSONExact([
+            [
+                "account" => [
+                    "email" => "coder2k@test-conf.de",
+                    "username" => "coder2k"
+                ],
+                "bio" => "Auch 2025 noch ein geiler Typ.",
+                "diff" => [
+                    "name"
+                ],
+                "event" => [
+                    "call_for_papers_end" => null,
+                    "call_for_papers_start" => null,
+                    "description" => "In einer weit, weit entfernten Galaxis...
+Die Tech Stream Conference 2025 steht unter dem Motto \"Das Imperium schlägt zurück!\".
+Sei dabei, wenn wir die dunkle Seite der Macht beleuchten und uns mit den dunklen Machenschaften der Technik beschäftigen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch \"special guests\" und Überraschungen.
+Also sei gespannt!",
+                    "description_headline" => "Komm' ran!",
+                    "discord_url" => "https://discord.com/invite/tp4EnphfKb",
+                    "end_date" => "2025-06-23",
+                    "id" => 2,
+                    "presskit_url" => "https://test-conf.de/Test-Conf-Presskit.zip",
+                    "publish_date" => null,
+                    "schedule_visible_from" => "2025-06-22 12:00:00",
+                    "start_date" => "2025-06-22",
+                    "subtitle" => "Das Imperium schlägt zurück!",
+                    "title" => "Tech Stream Conference 2025",
+                    "trailer_youtube_id" => "IW1vQAB6B18",
+                    "twitch_url" => "https://www.twitch.tv/coder2k"
+                ],
+                "event_id" => 2,
+                "id" => 7,
+                "name" => "coder2k",
+                "photo" => "images/coder2k.jpg",
+                "photo_mime_type" => "image/jpeg",
+                "requested_changes" => null,
+                "short_bio" => "Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner, auch 2025 wieder dabei!",
+                "user_id" => 1,
+                "visible_from" => "2025-06-01 15:00:00"
+            ]
+        ]);
     }
 
     public function testApproveRoleEntry_doesNotApproveApprovedRoleEntry()
@@ -142,8 +215,6 @@ class ApprovalTest extends CIUnitTestCase
                 "photo_mime_type" => "image/jpeg",
                 "visible_from" => "2024-06-01 15:00:00",
                 "requested_changes" => null,
-                "created_at" => "0000-00-00 00:00:00",
-                "updated_at" => "2024-06-01 15:02:00",
                 "account" => [
                     "username" => "coder2k",
                     "email" => "coder2k@test-conf.de",
@@ -167,9 +238,47 @@ class ApprovalTest extends CIUnitTestCase
                 ],
                 "diff" => [
                     "name",
-                    "updated_at",
                 ],
             ],
+            [
+                "account" => [
+                    "email" => "coder2k@test-conf.de",
+                    "username" => "coder2k"
+                ],
+                "bio" => "Auch 2025 noch ein geiler Typ.",
+                "diff" => [
+                    "name"
+                ],
+                "event" => [
+                    "call_for_papers_end" => null,
+                    "call_for_papers_start" => null,
+                    "description" => "In einer weit, weit entfernten Galaxis...
+Die Tech Stream Conference 2025 steht unter dem Motto \"Das Imperium schlägt zurück!\".
+Sei dabei, wenn wir die dunkle Seite der Macht beleuchten und uns mit den dunklen Machenschaften der Technik beschäftigen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch \"special guests\" und Überraschungen.
+Also sei gespannt!",
+                    "description_headline" => "Komm' ran!",
+                    "discord_url" => "https://discord.com/invite/tp4EnphfKb",
+                    "end_date" => "2025-06-23",
+                    "id" => 2,
+                    "presskit_url" => "https://test-conf.de/Test-Conf-Presskit.zip",
+                    "publish_date" => null,
+                    "schedule_visible_from" => "2025-06-22 12:00:00",
+                    "start_date" => "2025-06-22",
+                    "subtitle" => "Das Imperium schlägt zurück!",
+                    "title" => "Tech Stream Conference 2025",
+                    "trailer_youtube_id" => "IW1vQAB6B18",
+                    "twitch_url" => "https://www.twitch.tv/coder2k"
+                ],
+                "event_id" => 2,
+                "id" => 7,
+                "name" => "coder2k",
+                "photo" => "images/coder2k.jpg",
+                "photo_mime_type" => "image/jpeg",
+                "requested_changes" => null,
+                "short_bio" => "Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner, auch 2025 wieder dabei!",
+                "user_id" => 1,
+                "visible_from" => "2025-06-01 15:00:00"
+            ]
         ]);
     }
 
@@ -191,7 +300,47 @@ class ApprovalTest extends CIUnitTestCase
             ->withSession($sessionValues)
             ->get('dashboard/admin/approval/speaker');
         $response->assertStatus(200);
-        $response->assertJSONExact([]);
+        $response->assertJSONExact([
+            [
+                "account" => [
+                    "email" => "coder2k@test-conf.de",
+                    "username" => "coder2k"
+                ],
+                "bio" => "Auch 2025 noch ein geiler Typ.",
+                "diff" => [
+                    "name"
+                ],
+                "event" => [
+                    "call_for_papers_end" => null,
+                    "call_for_papers_start" => null,
+                    "description" => "In einer weit, weit entfernten Galaxis...
+Die Tech Stream Conference 2025 steht unter dem Motto \"Das Imperium schlägt zurück!\".
+Sei dabei, wenn wir die dunkle Seite der Macht beleuchten und uns mit den dunklen Machenschaften der Technik beschäftigen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch \"special guests\" und Überraschungen.
+Also sei gespannt!",
+                    "description_headline" => "Komm' ran!",
+                    "discord_url" => "https://discord.com/invite/tp4EnphfKb",
+                    "end_date" => "2025-06-23",
+                    "id" => 2,
+                    "presskit_url" => "https://test-conf.de/Test-Conf-Presskit.zip",
+                    "publish_date" => null,
+                    "schedule_visible_from" => "2025-06-22 12:00:00",
+                    "start_date" => "2025-06-22",
+                    "subtitle" => "Das Imperium schlägt zurück!",
+                    "title" => "Tech Stream Conference 2025",
+                    "trailer_youtube_id" => "IW1vQAB6B18",
+                    "twitch_url" => "https://www.twitch.tv/coder2k"
+                ],
+                "event_id" => 2,
+                "id" => 7,
+                "name" => "coder2k",
+                "photo" => "images/coder2k.jpg",
+                "photo_mime_type" => "image/jpeg",
+                "requested_changes" => null,
+                "short_bio" => "Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner, auch 2025 wieder dabei!",
+                "user_id" => 1,
+                "visible_from" => "2025-06-01 15:00:00"
+            ]
+        ]);
     }
 
     public function testApproveSpeaker_doesNotApproveApprovedSpeaker()
@@ -325,8 +474,7 @@ class ApprovalTest extends CIUnitTestCase
             ->withSession($sessionValues)
             ->get('dashboard/admin/approval/speaker');
         $response->assertStatus(200);
-        // We cannot use assertJSONExact() here, because the updated_at field is not predictable.
-        $response->assertJSONFragment([
+        $response->assertJSONExact([
             [
                 "id" => 3,
                 "name" => "coder4k",
@@ -338,8 +486,6 @@ class ApprovalTest extends CIUnitTestCase
                 "photo_mime_type" => "image/jpeg",
                 "visible_from" => "2024-06-01 15:00:00",
                 "requested_changes" => "There is a typo in the username.",
-                "created_at" => "0000-00-00 00:00:00",
-                //  "updated_at" is ignored here.
                 "account" => [
                     "username" => "coder2k",
                     "email" => "coder2k@test-conf.de",
@@ -363,9 +509,47 @@ class ApprovalTest extends CIUnitTestCase
                 ],
                 "diff" => [
                     "name",
-                    "updated_at",
                 ],
             ],
+            [
+                "account" => [
+                    "email" => "coder2k@test-conf.de",
+                    "username" => "coder2k"
+                ],
+                "bio" => "Auch 2025 noch ein geiler Typ.",
+                "diff" => [
+                    "name"
+                ],
+                "event" => [
+                    "call_for_papers_end" => null,
+                    "call_for_papers_start" => null,
+                    "description" => "In einer weit, weit entfernten Galaxis...
+Die Tech Stream Conference 2025 steht unter dem Motto \"Das Imperium schlägt zurück!\".
+Sei dabei, wenn wir die dunkle Seite der Macht beleuchten und uns mit den dunklen Machenschaften der Technik beschäftigen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch \"special guests\" und Überraschungen.
+Also sei gespannt!",
+                    "description_headline" => "Komm' ran!",
+                    "discord_url" => "https://discord.com/invite/tp4EnphfKb",
+                    "end_date" => "2025-06-23",
+                    "id" => 2,
+                    "presskit_url" => "https://test-conf.de/Test-Conf-Presskit.zip",
+                    "publish_date" => null,
+                    "schedule_visible_from" => "2025-06-22 12:00:00",
+                    "start_date" => "2025-06-22",
+                    "subtitle" => "Das Imperium schlägt zurück!",
+                    "title" => "Tech Stream Conference 2025",
+                    "trailer_youtube_id" => "IW1vQAB6B18",
+                    "twitch_url" => "https://www.twitch.tv/coder2k"
+                ],
+                "event_id" => 2,
+                "id" => 7,
+                "name" => "coder2k",
+                "photo" => "images/coder2k.jpg",
+                "photo_mime_type" => "image/jpeg",
+                "requested_changes" => null,
+                "short_bio" => "Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner, auch 2025 wieder dabei!",
+                "user_id" => 1,
+                "visible_from" => "2025-06-01 15:00:00"
+            ]
         ]);
     }
 
