@@ -133,6 +133,11 @@ abstract class ContributorDashboard extends BaseController
      */
     private function hasChanges(array $newData, array $existingEntry): bool
     {
+        $image = $this->request->getFile('photo');
+        if ($image !== null) {
+            return true;
+        }
+
         foreach ($newData as $key => $value) {
             if ($value !== $existingEntry[$key]) {
                 return true;
