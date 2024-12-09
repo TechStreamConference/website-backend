@@ -23,6 +23,23 @@ class SpeakerDashboard extends ContributorDashboard
 
     public function applyAsSpeaker(int $eventId): ResponseInterface
     {
+        $checkResult = $this->checkIfUserCanApplyAsSpeaker();
+        if ($checkResult !== true) {
+            return $checkResult;
+        }
+
+        return $this->createOrUpdate($eventId);
+    }
+
+    public function canApplyAsSpeaker(): ResponseInterface {
+        $checkResult = $this->checkIfUserCanApplyAsSpeaker();
+        if ($checkResult !== true) {
+            return $this->response->setJSON(['can_apply_as_speaker' => false])->setStatusCode(200);
+        }
+        return $this->response->setJSON(['can_apply_as_speaker' => true])->setStatusCode(200);
+    }
+
+    private function checkIfUserCanApplyAsSpeaker(): bool|ResponseInterface {
         // Preconditions to be able to apply as a speaker:
         // - The user must not already be a speaker (i.e. the user doesn't already have the speaker role).
         // - The user must not have a pending speaker application.
@@ -43,6 +60,6 @@ class SpeakerDashboard extends ContributorDashboard
                 ->setStatusCode(403);
         }
 
-        return $this->createOrUpdate($eventId);
+        return true;
     }
 }
