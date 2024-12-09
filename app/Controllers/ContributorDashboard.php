@@ -263,7 +263,7 @@ abstract class ContributorDashboard extends BaseController
     /** This function returns the ID of the currently logged in user. We don't check their role here.
      * @return int The ID of the currently logged in user.
      */
-    private function getLoggedInUserId(): int
+    protected function getLoggedInUserId(): int
     {
         $session = session();
         return $session->get('user_id');
