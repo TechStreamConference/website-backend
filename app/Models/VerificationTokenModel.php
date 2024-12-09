@@ -45,4 +45,11 @@ class VerificationTokenModel extends Model
     {
         $this->where('token', $token)->delete();
     }
+
+    public function getExpiredTokens(): array
+    {
+        return $this
+            ->where('expires_at <', date('Y-m-d H:i:s'))
+            ->findAll();
+    }
 }

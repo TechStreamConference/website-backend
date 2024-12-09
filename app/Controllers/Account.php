@@ -16,6 +16,8 @@ class Account extends BaseController
 
     public function register()
     {
+        $this->deleteExpiredAccounts();
+
         $accountModel = model(AccountModel::class);
         $userModel = model(UserModel::class);
 
@@ -192,5 +194,18 @@ class Account extends BaseController
             return null;
         }
         return $token;
+    }
+
+    private function deleteExpiredAccounts()
+    {
+        $accountModel = model(AccountModel::class);
+        $userModel = model(UserModel::class);
+        $verificationTokenModel = model(VerificationTokenModel::class);
+        $expiredTokens = $verificationTokenModel->getExpiredTokens();
+        foreach ($expiredTokens as $expiredToken) {
+            $verificationTokenModel->deleteToken($expiredToken['token']);
+            $accountModel->deleteAccount($expiredToken['user_id']);
+            $userModel->deleteUser($expiredToken['user_id']);
+        }
     }
 }
