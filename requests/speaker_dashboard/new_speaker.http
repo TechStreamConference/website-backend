@@ -19,7 +19,12 @@ Content-Type: image/jpeg
 Content-Disposition: form-data; name="json"
 
 {
-  "name": "coder2k"
+  "name": "coder2k",
+  "bio": "Bla",
+  "short_bio": "short bla",
+  "photo_x": 50,
+  "photo_y": 50,
+  "photo_size": 100
 }
 
 --boundary--
