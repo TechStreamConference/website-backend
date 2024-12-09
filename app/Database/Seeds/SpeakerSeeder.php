@@ -88,5 +88,35 @@ class SpeakerSeeder extends Seeder
                 'visible_from' => date('2024-06-01 15:00:00'),
             ]
         );
+
+        $this->db->table('Speaker')->insert(
+            [
+                'name' => 'coder3k',
+                'user_id' => 1,
+                'event_id' => 2,
+                'short_bio' => 'Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner, auch 2025 wieder dabei!',
+                'bio' => 'Auch 2025 noch ein geiler Typ.',
+                'photo' => 'images/coder2k.jpg',
+                'photo_mime_type' => 'image/jpeg',
+                'is_approved' => true,
+                'visible_from' => date('2025-06-01 15:00:00'),
+                'updated_at' => date('2025-01-01 12:00:00'),
+            ]
+        );
+
+        $this->db->table('Speaker')->insert(
+            [
+                'name' => 'coder2k', // <- correct name for 2025
+                'user_id' => 1,
+                'event_id' => 2,
+                'short_bio' => 'Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner, auch 2025 wieder dabei!',
+                'bio' => 'Auch 2025 noch ein geiler Typ.',
+                'photo' => 'images/coder2k.jpg',
+                'photo_mime_type' => 'image/jpeg',
+                'is_approved' => false, // not approved yet
+                'visible_from' => date('2025-06-01 15:00:00'),
+                'updated_at' => date('2025-01-01 13:00:00'),
+            ]
+        );
     }
 }

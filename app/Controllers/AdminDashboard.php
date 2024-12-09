@@ -2,13 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
+use App\Models\SocialMediaTypeModel;
 use App\Models\SpeakerModel;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminDashboard extends BaseController
 {
+    const CREATE_SOCIAL_MEDIA_LINK_RULES = [
+        'name' => 'required|string|max_length[100]',
+    ];
+
     public function setGlobals()
     {
         $data = $this->request->getJSON(assoc: true);
@@ -171,5 +176,32 @@ class AdminDashboard extends BaseController
             $speakerModel->update($speaker['id'], $row);
         }
         $this->response->setStatusCode(204);
+    }
+
+    public function createSocialMediaType(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::CREATE_SOCIAL_MEDIA_LINK_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+
+        $model = model(SocialMediaTypeModel::class);
+
+        $linkTypes = $model->all();
+        foreach ($linkTypes as $linkType) {
+            if ($linkType['name'] === $validData['name']) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'Social media link type already exists.'])
+                    ->setStatusCode(400);
+            }
+        }
+
+        $model->create($validData['name']);
+        return $this
+            ->response
+            ->setJSON(['message' => 'New social media link type created.'])
+            ->setStatusCode(201);
     }
 }

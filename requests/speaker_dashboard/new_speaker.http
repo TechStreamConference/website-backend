@@ -1,0 +1,27 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "password"
+}
+
+###
+
+POST localhost:8080/api/dashboard/speaker/event/1
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="photo"; filename="photo.jpg"
+Content-Type: image/jpeg
+
+< D:\test_image.jpeg
+--boundary
+Content-Disposition: form-data; name="json"
+
+{
+  "name": "coder2k"
+}
+
+--boundary--
+
+###
