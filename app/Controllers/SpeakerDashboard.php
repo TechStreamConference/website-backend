@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Helpers\Role;
+use App\Models\EventModel;
 use App\Models\RolesModel;
 use App\Models\SpeakerModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -21,28 +22,32 @@ class SpeakerDashboard extends ContributorDashboard
         return 'speaker';
     }
 
-    public function applyAsSpeaker(int $eventId): ResponseInterface
+    public function applyAsSpeaker(): ResponseInterface
     {
-        $checkResult = $this->checkIfUserCanApplyAsSpeaker();
-        if ($checkResult !== true) {
-            return $checkResult;
+        $event = $this->getEventForNewSpeakerApplication();
+        if ($event instanceof ResponseInterface) {
+            return $event;
         }
 
-        return $this->createOrUpdate($eventId);
+        return $this->createOrUpdate($event['id']);
     }
 
-    public function canApplyAsSpeaker(): ResponseInterface {
-        $checkResult = $this->checkIfUserCanApplyAsSpeaker();
-        if ($checkResult !== true) {
-            return $this->response->setJSON(['can_apply_as_speaker' => false])->setStatusCode(200);
+    public function getApplicationEvent(): ResponseInterface
+    {
+        $event = $this->getEventForNewSpeakerApplication();
+        if ($event instanceof ResponseInterface) {
+            return $this->response->setJSON(['event' => null])->setStatusCode(200);
         }
-        return $this->response->setJSON(['can_apply_as_speaker' => true])->setStatusCode(200);
+
+        return $this->response->setJSON(['event' => $event,])->setStatusCode(200);
     }
 
-    private function checkIfUserCanApplyAsSpeaker(): bool|ResponseInterface {
+    private function getEventForNewSpeakerApplication(): array|ResponseInterface
+    {
         // Preconditions to be able to apply as a speaker:
         // - The user must not already be a speaker (i.e. the user doesn't already have the speaker role).
         // - The user must not have a pending speaker application.
+        // - There must be an event to apply for.
         $rolesModel = model(RolesModel::class);
         if ($rolesModel->hasRole($this->getLoggedInUserId(), Role::SPEAKER)) {
             return $this
@@ -60,6 +65,15 @@ class SpeakerDashboard extends ContributorDashboard
                 ->setStatusCode(403);
         }
 
-        return true;
+        $eventModel = model(EventModel::class);
+        $latestPublishedEvent = $eventModel->getLatestPublished();
+        if ($latestPublishedEvent === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'No event to apply for.'])
+                ->setStatusCode(404);
+        }
+
+        return $latestPublishedEvent;
     }
 }
