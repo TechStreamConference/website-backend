@@ -12,6 +12,7 @@ class AddSocialMediaLinkRequestedChanges extends Migration
             'requested_changes' => [
                 'type' => 'TEXT',
                 'null' => true,
+                'after' => 'approved',
             ],
         ]);
     }

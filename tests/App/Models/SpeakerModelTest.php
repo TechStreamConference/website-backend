@@ -41,7 +41,7 @@ class SpeakerModelTest extends CIUnitTestCase
     public function testGet_InvalidId_ReturnsNull()
     {
         $model = new SpeakerModel();
-        $speaker = $model->get(7);
+        $speaker = $model->get(10);
         $this->assertNull($speaker);
     }
 
@@ -71,7 +71,7 @@ class SpeakerModelTest extends CIUnitTestCase
     {
         $model = new SpeakerModel();
         $this->assertEquals(
-            6,
+            8,
             $model->create(
                 'Test Speaker',
                 4,
