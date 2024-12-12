@@ -7,6 +7,6 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-GET http://localhost:8080/api/dashboard/user/can-apply-as-speaker
+GET http://localhost:8080/api/dashboard/user/get-application-event
 
 ###

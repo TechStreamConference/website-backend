@@ -60,11 +60,11 @@ $routes->get('dashboard/team-member/all-events', [TeamMemberDashboard::class, 'g
 $routes->get('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'get'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->post('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'createOrUpdate'], ['filter' => TeamMemberAuthFilter::class]);
 
-$routes->get('/dashboard/user/social-media-link', [UserDashboard::class, 'get'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->post('/dashboard/user/social-media-link', [UserDashboard::class, 'create'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->put('/dashboard/user/social-media-link', [UserDashboard::class, 'update'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->delete('/dashboard/user/social-media-link/(:num)', [UserDashboard::class, 'delete'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->get('dashboard/user/social-media-link', [UserDashboard::class, 'get'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->post('dashboard/user/social-media-link', [UserDashboard::class, 'create'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->put('dashboard/user/social-media-link', [UserDashboard::class, 'update'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->delete('dashboard/user/social-media-link/(:num)', [UserDashboard::class, 'delete'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
 // Speaker application logic resides in the SpeakerDashboard controller, even though it is accessed by the UserDashboard.
 // The main reason for this is to be able to reuse the code.
-$routes->post('/dashboard/user/apply-as-speaker/(:num)', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);
-$routes->get('dashboard/user/can-apply-as-speaker', [SpeakerDashboard::class, 'canApplyAsSpeaker'], ['filter' => AuthFilter::class]);
+$routes->post('dashboard/user/apply-as-speaker', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);
+$routes->get('dashboard/user/get-application-event', [SpeakerDashboard::class, 'getApplicationEvent'], ['filter' => AuthFilter::class]);

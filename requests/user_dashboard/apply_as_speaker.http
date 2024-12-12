@@ -7,7 +7,7 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-POST localhost:8080/api/dashboard/user/apply-as-speaker/1
+POST localhost:8080/api/dashboard/user/apply-as-speaker
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
