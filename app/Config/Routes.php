@@ -25,6 +25,7 @@ $routes->get('account/roles', [Account::class, 'roles'], ['filter' => AuthFilter
 $routes->post('account/register', [Account::class, 'register']);
 $routes->post('account/login', [Account::class, 'login']);
 $routes->post('account/logout', [Account::class, 'logout']);
+$routes->post('account/verify', [Account::class, 'verify']);
 $routes->get('images/(:segment)', [Image::class, 'get']);
 $routes->get('events', [Event::class, 'get']);
 $routes->get('events/(:num)', [Event::class, 'get']);
@@ -67,3 +68,5 @@ $routes->delete('dashboard/user/social-media-link/(:num)', [UserDashboard::class
 // The main reason for this is to be able to reuse the code.
 $routes->post('dashboard/user/apply-as-speaker', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);
 $routes->get('dashboard/user/get-application-event', [SpeakerDashboard::class, 'getApplicationEvent'], ['filter' => AuthFilter::class]);
+
+$routes->get('test', [Account::class, 'mailTest']);

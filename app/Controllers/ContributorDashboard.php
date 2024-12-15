@@ -17,14 +17,24 @@ abstract class ContributorDashboard extends BaseController
         'name' => 'permit_empty|string|max_length[100]',
         'short_bio' => 'permit_empty|string|max_length[300]',
         'bio' => 'permit_empty|string',
+        'photo_x' => 'permit_empty|integer',
+        'photo_y' => 'permit_empty|integer',
+        'photo_size' => 'permit_empty|integer',
     ];
 
     private const PHOTO_RULES = [
-        'photo' => "max_size[photo,1024]|max_dims[photo,500,500]|is_image[photo]|mime_in[photo,image/png,image/jpeg]",
+        'photo' => "max_size[photo,3072]|max_dims[photo,2000,2000]|is_image[photo]|mime_in[photo,image/png,image/jpeg]",
     ];
 
     // When creating a new entry, the following fields are required.
-    private const REQUIRED_JSON_FIELDS = ['name', 'short_bio', 'bio'];
+    private const REQUIRED_JSON_FIELDS = [
+        'name',
+        'short_bio',
+        'bio',
+        'photo_x',
+        'photo_y',
+        'photo_size',
+    ];
 
     abstract protected function getModelClassName(): string;
 
@@ -169,7 +179,12 @@ abstract class ContributorDashboard extends BaseController
         if ($image === null) {
             return $this->response->setJSON(['error' => 'No image uploaded.'])->setStatusCode(400);
         }
-        $uploadResult = $this->uploadPhoto($image);
+        $uploadResult = $this->uploadPhoto(
+            $image,
+            $validData['photo_x'],
+            $validData['photo_y'],
+            $validData['photo_size'],
+        );
         if ($uploadResult instanceof ResponseInterface) {
             return $this
                 ->response
@@ -213,7 +228,18 @@ abstract class ContributorDashboard extends BaseController
         $uploadResult = null;
         $hasPhoto = false;
         if ($wasPhotoUploaded) {
-            $uploadResult = $this->uploadPhoto($image);
+            if (!isset($validData['photo_x'], $validData['photo_y'], $validData['photo_size'])) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'Missing photo dimensions.'])
+                    ->setStatusCode(400);
+            }
+            $uploadResult = $this->uploadPhoto(
+                $image,
+                $validData['photo_x'],
+                $validData['photo_y'],
+                $validData['photo_size'],
+            );
             if ($uploadResult instanceof ResponseInterface) {
                 return $uploadResult;
             }
@@ -273,7 +299,7 @@ abstract class ContributorDashboard extends BaseController
      * and the MIME type of the file. If an error occurs, it returns a string with an error message.
      * @return array|string The path to the uploaded file and the MIME type, or an error message.
      */
-    private function uploadPhoto(UploadedFile $fileId): array|ResponseInterface
+    private function uploadPhoto(UploadedFile $fileId, int $x, int $y, int $size): array|ResponseInterface
     {
         if (!$this->validateData([], self::PHOTO_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
@@ -294,6 +320,15 @@ abstract class ContributorDashboard extends BaseController
         }
 
         $filePath = $targetPath . DIRECTORY_SEPARATOR . $filename;
+
+        // Crop image according to the given dimensions and scale it down to 300x300 pixels.
+        $image = service('image');
+        $image
+            ->withFile($filePath)
+            ->flatten(20, 20, 20)
+            ->crop($size, $size, $x, $y)
+            ->resize(300, 300, true)
+            ->save($filePath);
 
         // Get the resolution.
         $imageInfo = getimagesize($filePath);

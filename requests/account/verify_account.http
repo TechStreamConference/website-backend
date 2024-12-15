@@ -1,0 +1,5 @@
+POST localhost:8080/api/account/verify
+
+{
+  "token": "8bb341154c68838150f4cade4ef67b70c6cea558891dd9e40375e47f8643a1b8e3d195f3a240aa5aaaf1e9acca379f7cb11a92a23a75ce7ddd5702108a69b80f"
+}
