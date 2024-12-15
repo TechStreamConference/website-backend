@@ -2,14 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
 use App\Models\RolesModel;
 use App\Models\UserModel;
+use App\Models\VerificationTokenModel;
 
 class Account extends BaseController
 {
+    const VERIFICATION_RULES = [
+        'token' => 'required|trim',
+    ];
+
     public function register()
     {
+        $this->deleteExpiredAccounts();
+
         $accountModel = model(AccountModel::class);
         $userModel = model(UserModel::class);
 
@@ -35,7 +43,43 @@ class Account extends BaseController
             $userModel->deleteUser($userId);
             return $this->response->setJSON(['error' => 'Username or email already taken'])->setStatusCode(400);
         }
-        return $this->response->setStatusCode(201);
+
+        $validationToken = $this->storeValidationToken($userId);
+        if ($validationToken === null) {
+            // This could only happen if the token is already in use. So, this should never happen.
+            // But if it does, we need to clean up the database.
+            $accountModel->deleteAccount($userId);
+            $userModel->deleteUser($userId);
+            return $this->response->setStatusCode(500);
+        }
+
+        // Base URL is something that ends with /api/, so we need to remove api/ from the base URL.
+        $baseUrl = base_url();
+        $suffix = "api/";
+        if (str_ends_with($baseUrl, $suffix)) {
+            $baseUrl = substr($baseUrl, 0, -strlen($suffix));
+        }
+
+        $verificationLink = $baseUrl . 'verify-email-address' . '?token=' . $validationToken;
+
+        EmailHelper::sendToAdmins(
+            'Neues Benutzerkonto',
+            view('email/admin/new_user', ['username' => $username])
+        );
+
+        EmailHelper::send(
+            $email,
+            'Deine Registrierung bei der Tech Stream Conference',
+            view(
+                'email/account/verify_email_address',
+                [
+                    'username' => $username,
+                    'verificationLink' => $verificationLink,
+                ]
+            )
+        );
+
+        return $this->response->setJSON(['message' => 'success'])->setStatusCode(201);
     }
 
     public function usernameExists()
@@ -84,7 +128,7 @@ class Account extends BaseController
 
         $model = model(AccountModel::class);
         $account = $model->getAccountByUsernameOrEmail($usernameOrEmail);
-        if ($account === null) {
+        if ($account === null || $account['is_verified'] === false) {
             return $this->response->setJSON(['error' => 'Unknown username or email'])->setStatusCode(404);
         }
 
@@ -101,11 +145,67 @@ class Account extends BaseController
         return $this->response->setJSON(['login' => 'success'])->setStatusCode(200);
     }
 
+    public function verify()
+    {
+        $data = $this->request->getJSON(assoc: true);
+
+        if (!$this->validateData($data, self::VERIFICATION_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+
+        $validData = $this->validator->getValidated();
+        $token = $validData['token'];
+
+        $verificationTokenModel = model(VerificationTokenModel::class);
+        $entry = $verificationTokenModel->get($token);
+        $notFoundJsonData = ['error' => 'Token not found'];
+        if ($entry === null) {
+            return $this->response->setJSON($notFoundJsonData)->setStatusCode(404);
+        }
+
+        $verificationTokenModel->deleteToken($token);
+
+        if ($entry['expires_at'] < date('Y-m-d H:i:s')) {
+            return $this->response->setJSON($notFoundJsonData)->setStatusCode(404);
+        }
+
+        $accountModel = model(AccountModel::class);
+        $accountModel->markAsVerified($entry['user_id']);
+
+        return $this->response->setJSON(['message' => 'success']);
+    }
+
     public function logout()
     {
         $session = session();
         $session->remove('user_id');
         $session->destroy();
         return $this->response->setJSON(['logout' => 'success']);
+    }
+
+    private function storeValidationToken(int $userId): string|null
+    {
+        $token = bin2hex(random_bytes(64));
+        $expiresAt = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $model = model(VerificationTokenModel::class);
+        if (!$model->store($token, $userId, $expiresAt)) {
+            // This could only happen if the token is already in use, but this is
+            // very unlikely because the token is generated randomly.
+            return null;
+        }
+        return $token;
+    }
+
+    private function deleteExpiredAccounts()
+    {
+        $accountModel = model(AccountModel::class);
+        $userModel = model(UserModel::class);
+        $verificationTokenModel = model(VerificationTokenModel::class);
+        $expiredTokens = $verificationTokenModel->getExpiredTokens();
+        foreach ($expiredTokens as $expiredToken) {
+            $verificationTokenModel->deleteToken($expiredToken['token']);
+            $accountModel->deleteAccount($expiredToken['user_id']);
+            $userModel->deleteUser($expiredToken['user_id']);
+        }
     }
 }

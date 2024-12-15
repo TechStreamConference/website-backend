@@ -1,0 +1,15 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "password"
+}
+
+###
+
+POST localhost:8080/api/dashboard/user/social-media-link
+
+{
+  "social_media_type_id": 1,
+  "url": "https://www.twitch.tv/theReal_coder2k"
+}

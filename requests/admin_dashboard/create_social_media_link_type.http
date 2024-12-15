@@ -1,0 +1,14 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "password"
+}
+
+###
+
+POST localhost:8080/api/dashboard/admin/social-media-link-type
+
+{
+  "name": "Wer kennt wen?"
+}

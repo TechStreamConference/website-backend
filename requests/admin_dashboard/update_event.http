@@ -1,0 +1,25 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "password"
+}
+
+###
+
+PUT localhost:8080/api/dashboard/admin/event/2
+
+{
+  "title": "New Event Title",
+  "subtitle": "New Event Subtitle",
+  "description": "New Event Description",
+  "start_date": "2025-11-05",
+    "end_date": "2025-11-06",
+    "discord_url": "https://discord.gg/123456",
+    "twitch_url": "https://twitch.tv/123456",
+    "presskit_url": "https://presskit.com/123456",
+    "trailer_youtube_id": "123456",
+    "description_headline": "New Event Description Headline",
+    "schedule_visible_from": null,
+    "publish_date": null
+}

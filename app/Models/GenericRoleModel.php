@@ -46,12 +46,37 @@ class GenericRoleModel extends Model
             ->findAll();
     }
 
-    public function getPending(): array
+    public function getAllForUser(int $userId): array
     {
         return $this
-            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, visible_from, requested_changes')
-            ->where('is_approved', false)
+            ->select('Event.id as event_id, Event.title')
+            ->join('Event', 'Event.id = event_id')
+            ->where('user_id', $userId)
+            ->groupBy('Event.id')
             ->findAll();
+    }
+
+    public function getLatestPerUserPerEvent(): array {
+        $subQuery = $this->db->table($this->table)
+            ->select('MAX(id) as id')
+            ->where("$this->table.user_id = outer_table.user_id", null, false)
+            ->where("$this->table.event_id = outer_table.event_id", null, false)
+            ->getCompiledSelect();
+
+        $query = $this->db->table("$this->table AS outer_table")
+            ->select('id, user_id, event_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
+            ->where("id IN ($subQuery)")
+            ->get()
+            ->getResultArray();
+
+        foreach ($query as &$row) {
+            $row['id'] = intval($row['id']);
+            $row['user_id'] = intval($row['user_id']);
+            $row['event_id'] = intval($row['event_id']);
+            $row['is_approved'] = boolval($row['is_approved']);
+        }
+
+        return $query;
     }
 
     public function approve(int $id): bool
@@ -87,6 +112,7 @@ class GenericRoleModel extends Model
             ->select('id, user_id, name, short_bio, bio, photo')
             ->where('event_id = ', $eventId)
             ->where("id = ($subQuery)", null, false)
+            ->orderBy('name', 'ASC')
             ->get()
             ->getResultArray();
 
@@ -104,6 +130,7 @@ class GenericRoleModel extends Model
             ->select('id')
             ->where("$this->table.user_id = outer_table.user_id")
             ->where('is_approved', true)
+            ->where('event_id', $eventId)
             ->orderBy('updated_at', 'DESC')
             ->limit(1)
             ->getCompiledSelect();
@@ -123,6 +150,18 @@ class GenericRoleModel extends Model
         return $query;
     }
 
+    public function getLatestForEvent(int $userId, int $eventId): array|null
+    {
+        // This returns the latest entry for the given user and the given event,
+        // regardless of whether it is approved or not.
+        return $this
+            ->select('id, user_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
+            ->where('event_id', $eventId)
+            ->where('user_id', $userId)
+            ->orderBy('updated_at', 'DESC')
+            ->first();
+    }
+
     public function create(
         string $name,
         int    $userId,
@@ -131,8 +170,8 @@ class GenericRoleModel extends Model
         string $bio,
         string $photo,
         string $photoMimeType,
-        bool   $isActive,
-        string $visibleFrom,
+        bool   $isApproved,
+        ?string $visibleFrom,
     ): int
     {
         return $this->insert([
@@ -143,8 +182,8 @@ class GenericRoleModel extends Model
             'bio' => $bio,
             'photo' => $photo,
             'photo_mime_type' => $photoMimeType,
-            'is_approved' => $isActive,
-            'visible_from' => $visibleFrom,
+            'is_approved' => $isApproved,
+            'visible_from' => $visibleFrom ?? null,
         ]);
     }
 }
