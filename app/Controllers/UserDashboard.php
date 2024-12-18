@@ -120,7 +120,8 @@ class UserDashboard extends BaseController
                     ->setStatusCode(404);
             }
 
-            $link['has_changed'] = $existingLink['url'] !== $link['url'];
+            $link['has_changed'] = $existingLink['url'] !== $link['url']
+                || $existingLink['social_media_type_id'] !== $link['social_media_type_id'];
         }
 
         // All links are valid. Update them if they contain changes.
