@@ -36,7 +36,7 @@ class SpeakerDashboard extends ContributorDashboard
     {
         $event = $this->getEventForNewSpeakerApplication();
         if ($event instanceof ResponseInterface) {
-            return $this->response->setJSON(['event' => null])->setStatusCode(200);
+            return $event;
         }
 
         return $this->response->setJSON(['event' => $event,])->setStatusCode(200);
