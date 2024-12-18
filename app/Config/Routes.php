@@ -68,5 +68,3 @@ $routes->delete('dashboard/user/social-media-link/(:num)', [UserDashboard::class
 // The main reason for this is to be able to reuse the code.
 $routes->post('dashboard/user/apply-as-speaker', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);
 $routes->get('dashboard/user/get-application-event', [SpeakerDashboard::class, 'getApplicationEvent'], ['filter' => AuthFilter::class]);
-
-$routes->get('test', [Account::class, 'mailTest']);
