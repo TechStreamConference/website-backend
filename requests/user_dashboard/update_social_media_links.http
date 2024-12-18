@@ -19,8 +19,7 @@ PUT localhost:8080/api/dashboard/user/social-media-link
     {
       "id": 2,
       "social_media_type_id": 7,
-      "url":
-      "https://www.x.com/mgerhold"
+      "url": "https://www.x.com/mgerhold"
     }
   ]
 }
