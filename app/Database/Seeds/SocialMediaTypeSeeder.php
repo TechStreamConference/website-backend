@@ -19,7 +19,6 @@ class SocialMediaTypeSeeder extends Seeder
             'Git',
             'GitHub',
             'GitLab',
-            'Mail',
         ];
 
         foreach ($names as $name) {
