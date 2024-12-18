@@ -17,10 +17,12 @@ class UserDashboard extends BaseController
      *     "social_media_links": [
      *         {
      *             "id": 1,
+     *             "social_media_type_id": 1,
      *             "url": "..."
      *         },
      *         {
      *             "id": 2,
+     *             "social_media_type_id": 1,
      *             "url": "..."
      *         }
      *         ...
