@@ -1,0 +1,10 @@
+### GET request to example server
+POST localhost:8080/api/account/register
+
+{
+  "username": "ClausKleber",
+  "email": "claus@kleber.de",
+  "password": "ClausKleber123!"
+}
+
+###
