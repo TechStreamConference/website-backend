@@ -29,6 +29,7 @@ class UserDashboard extends BaseController
      */
     private const SOCIAL_MEDIA_LINK_UPDATE_RULES = [
         'social_media_links.*.id' => 'required|is_natural_no_zero',
+        'social_media_links.*.social_media_type_id' => 'required|is_natural_no_zero',
         'social_media_links.*.url' => 'required|valid_url',
     ];
 
@@ -118,7 +119,6 @@ class UserDashboard extends BaseController
             }
 
             $link['has_changed'] = $existingLink['url'] !== $link['url'];
-            $link['social_media_type_id'] = $existingLink['social_media_type_id'];
         }
 
         // All links are valid. Update them if they contain changes.
