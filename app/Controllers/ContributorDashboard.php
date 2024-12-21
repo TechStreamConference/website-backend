@@ -23,7 +23,7 @@ abstract class ContributorDashboard extends BaseController
     ];
 
     private const PHOTO_RULES = [
-        'photo' => "max_size[photo,3072]|max_dims[photo,2000,2000]|is_image[photo]|mime_in[photo,image/png,image/jpeg]",
+        'photo' => "is_image[photo]|mime_in[photo,image/png,image/jpeg]",
     ];
 
     // When creating a new entry, the following fields are required.
