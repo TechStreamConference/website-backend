@@ -6,6 +6,8 @@ use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
 use App\Models\RolesModel;
 use App\Models\UserModel;
+use CodeIgniter\HTTP\ResponseInterface;
+use Config\Services;
 use App\Models\VerificationTokenModel;
 
 class Account extends BaseController

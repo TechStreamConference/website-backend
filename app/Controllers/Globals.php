@@ -2,11 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
 use App\Models\SocialMediaTypeModel;
-use App\Models\SpeakerModel;
 
 class Globals extends BaseController
 {

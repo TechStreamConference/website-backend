@@ -7,7 +7,7 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-POST localhost:8080/api/dashboard/speaker/event/1
+POST localhost:8080/api/dashboard/user/apply-as-speaker
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -24,7 +24,7 @@ Content-Disposition: form-data; name="json"
   "bio": "Meine Biografie",
   "photo_x": 50,
   "photo_y": 50,
-  "photo_size": 100,
+  "photo_size": 100
 }
 
 --boundary--

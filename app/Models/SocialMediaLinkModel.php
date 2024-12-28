@@ -41,6 +41,7 @@ class SocialMediaLinkModel extends Model
             ->where("($this->table.user_id, $this->table.social_media_type_id, $this->table.updated_at) IN ($subQuery)", null, false)
             ->whereIn('user_id', $userIds)
             ->join('SocialMediaType', 'SocialMediaType.id = SocialMediaLink.social_media_type_id')
+            ->orderBy('name')
             ->findAll();
 
         $result = [];

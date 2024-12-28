@@ -5,7 +5,7 @@ POST http://localhost:8080/api/account/login
   "password": "password"
 }
 
-###
+### Update two links, change second link from GitHub to GitLab
 
 PUT localhost:8080/api/dashboard/user/social-media-link
 
@@ -13,11 +13,13 @@ PUT localhost:8080/api/dashboard/user/social-media-link
   "social_media_links": [
     {
       "id": 1,
-      "url": "https://www.twitch.tv/theReal_coder2kHD"
+      "social_media_type_id": 2,
+      "url": "https://www.twitch.tv/coder2k"
     },
     {
       "id": 2,
-      "url": "https://www.github.com/coder2k"
+      "social_media_type_id": 7,
+      "url": "https://www.x.com/mgerhold"
     }
   ]
 }
