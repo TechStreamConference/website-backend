@@ -37,7 +37,7 @@ class UserModelTest extends CIUnitTestCase
     {
         $model = new UserModel();
         $this->assertIsArray($model->getUser());
-        $user = $model->getUser(5);
+        $user = $model->getUser(6);
         $this->assertNull($user);
     }
 
@@ -48,7 +48,7 @@ class UserModelTest extends CIUnitTestCase
     {
         $model = new UserModel();
         $userId = $model->createUser();
-        $this->assertEquals(5, $userId);
+        $this->assertEquals(6, $userId);
     }
 
     // *************************************
@@ -88,7 +88,7 @@ class UserModelTest extends CIUnitTestCase
     public function testGetRoles_UserDoesNotExist_ReturnsNull()
     {
         $model = new UserModel();
-        $roles = $model->getRoles(5);
+        $roles = $model->getRoles(6);
         $this->assertNull($roles);
     }
 }

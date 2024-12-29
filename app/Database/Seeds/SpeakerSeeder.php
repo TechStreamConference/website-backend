@@ -71,7 +71,7 @@ class SpeakerSeeder extends Seeder
                 'photo' => 'images/GyrosGeier.jpg',
                 'photo_mime_type' => 'image/jpeg',
                 'is_approved' => true,
-                'visible_from' => date('2124-06-01 15:00:00'),
+                'visible_from' => date('2024-06-10 15:00:00'),
             ]
         );
 
