@@ -82,6 +82,16 @@ class SpeakerDashboard extends ContributorDashboard
                 ->setStatusCode(404);
         }
 
+        // Check if the current date is within the time period when speaker applications are accepted.
+        // This depends on the "call_for_papers_start" and "call_for_papers_end" fields of the event.
+        $currentDate = date('Y-m-d H:i:s');
+        if ($currentDate < $latestPublishedEvent['call_for_papers_start'] || $currentDate > $latestPublishedEvent['call_for_papers_end']) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'Speaker applications are not accepted at this time.'])
+                ->setStatusCode(403);
+        }
+
         return $latestPublishedEvent;
     }
 }
