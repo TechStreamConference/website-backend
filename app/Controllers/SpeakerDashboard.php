@@ -29,6 +29,14 @@ class SpeakerDashboard extends ContributorDashboard
             return $event;
         }
 
+        $socialMediaLinkUpdateResult = $this->createSocialMediaLinksForCurrentUser();
+        if ($socialMediaLinkUpdateResult->getStatusCode() !== 201) {
+            return $socialMediaLinkUpdateResult;
+        }
+
+        // Reset current response to avoid returning the result of the createSocialMediaLinksForCurrentUser method.
+        $this->response->setJSON([]);
+        $this->response->setStatusCode(200);
         return $this->createOrUpdate($event['id']);
     }
 

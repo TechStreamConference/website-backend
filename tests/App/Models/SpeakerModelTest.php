@@ -53,7 +53,7 @@ class SpeakerModelTest extends CIUnitTestCase
         $model = new SpeakerModel();
         $speakers = $model->getPublished(1);
         $this->assertIsArray($speakers);
-        $this->assertCount(2, $speakers);
+        $this->assertCount(3, $speakers);
         $this->assertEquals('coder2k', $speakers[0]['name']);
         $this->assertEquals('Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner', $speakers[0]['short_bio']);
         $this->assertEquals(

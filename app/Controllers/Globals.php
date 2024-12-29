@@ -5,10 +5,11 @@ namespace App\Controllers;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
 use App\Models\SocialMediaTypeModel;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class Globals extends BaseController
 {
-    public function get()
+    public function get(): ResponseInterface
     {
         // get global settings
         $globalsModel = model(GlobalsModel::class);
@@ -31,7 +32,7 @@ class Globals extends BaseController
         return $this->response->setJSON($globals);
     }
 
-    public function getSocialMediaLinkTypes()
+    public function getSocialMediaLinkTypes(): ResponseInterface
     {
         $model = model(SocialMediaTypeModel::class);
         return $this->response->setJSON($model->all());

@@ -18,7 +18,7 @@ class EventSeeder extends Seeder
                 'twitch_url' => 'https://www.twitch.tv/coder2k',
                 'presskit_url' => 'https://test-conf.de/Test-Conf-Presskit.zip',
                 'publish_date' => date('2024-01-01 12:00:00'),
-                'schedule_visible_from' => date('2024-06-22 12:00:00'),
+                'schedule_visible_from' => date('2024-06-10 12:00:00'),
                 'trailer_youtube_id' => 'IW1vQAB6B18',
                 'description_headline' => 'Sei dabei!',
                 'description' => 'Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.

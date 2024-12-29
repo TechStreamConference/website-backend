@@ -30,5 +30,16 @@ class AccountSeeder extends Seeder
                 'updated_at' => date('2024-08-17 14:00:00'),
             ]
         );
+        $this->db->table('Account')->insert(
+            [
+                'user_id' => 5,
+                'email' => 'claus@kleber.de',
+                'username' => 'ClausKleber',
+                'is_verified' => true,
+                'password' => password_hash('ClausKleber123!', null),
+                'created_at' => date('2024-08-17 16:00:00'),
+                'updated_at' => date('2024-08-17 16:00:00'),
+            ]
+        );
     }
 }

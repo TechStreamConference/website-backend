@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\GenericRoleModel;
+use App\Models\SocialMediaLinkModel;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\ResponseInterface;
 use RuntimeException;
@@ -36,9 +37,197 @@ abstract class ContributorDashboard extends BaseController
         'photo_size',
     ];
 
+    private const SOCIAL_MEDIA_LINK_CREATION_RULES = [
+        'social_media_type_id' => 'required|is_natural_no_zero',
+        'url' => 'required|valid_url',
+    ];
+
+    /* Expected JSON structure:
+     * {
+     *     "social_media_links": [
+     *         {
+     *             "id": 1,
+     *             "social_media_type_id": 1,
+     *             "url": "..."
+     *         },
+     *         {
+     *             "id": 2,
+     *             "social_media_type_id": 1,
+     *             "url": "..."
+     *         }
+     *         ...
+     *     ]
+     * }
+     */
+    private const SOCIAL_MEDIA_LINK_UPDATE_RULES = [
+        'social_media_links.*.id' => 'required|is_natural_no_zero',
+        'social_media_links.*.social_media_type_id' => 'required|is_natural_no_zero',
+        'social_media_links.*.url' => 'required|valid_url',
+    ];
+
+    // The following rules are used when bulk-creating new links. This happens during speaker application.
+    private const APPLICATION_SOCIAL_MEDIA_LINK_RULES = [
+        'social_media_links.*.social_media_type_id' => 'required|is_natural_no_zero',
+        'social_media_links.*.url' => 'required|valid_url',
+    ];
+
     abstract protected function getModelClassName(): string;
 
     abstract protected function getRoleName(): string;
+
+    /** For each type of social media link, this function returns the most recent link
+     * for the currently logged in user, regardless of whether it has already been approved
+     * or not.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function getLatestSocialMediaLinksForCurrentUser(): ResponseInterface
+    {
+        $model = model(SocialMediaLinkModel::class);
+        return $this->response->setJSON($model->getLatestForUser($this->getLoggedInUserId()));
+    }
+
+    /** This function creates a new social media link for the currently logged in user.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function createSocialMediaLinkForCurrentUser(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::SOCIAL_MEDIA_LINK_CREATION_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+
+        $model = model(SocialMediaLinkModel::class);
+
+        // Check if there already is a social media link of the same type with the same URL.
+        $userId = $this->getLoggedInUserId();
+        $existingLink = $model->getByLinkTypeAndUserId($validData['social_media_type_id'], $userId);
+        if ($existingLink !== null && $existingLink['url'] === $validData['url']) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'A social media link with the same contents already exists.'])
+                ->setStatusCode(400);
+        }
+
+        $model->create(
+            $validData['social_media_type_id'],
+            $userId,
+            $validData['url'],
+            false,
+        );
+
+        return $this->response->setStatusCode(201);
+    }
+
+    /** This function creates new social media links for the currently logged in user.
+     * It is used when the user applies as a speaker.
+     * @return ResponseInterface The response to return to the client.
+     */
+    protected function createSocialMediaLinksForCurrentUser(): ResponseInterface {
+        $data = $this->getJsonFromMultipartRequest();
+        if ($data instanceof ResponseInterface) {
+            return $data;
+        }
+        if (!$this->validateData($data, self::APPLICATION_SOCIAL_MEDIA_LINK_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+        $links = $validData['social_media_links'];
+
+        $model = model(SocialMediaLinkModel::class);
+
+        $userId = $this->getLoggedInUserId();
+        foreach ($links as $link) {
+            $model->create(
+                $link['social_media_type_id'],
+                $userId,
+                $link['url'],
+                false,
+            );
+        }
+
+        return $this->response->setStatusCode(201);
+    }
+
+    /** This function updates existing social media links for the currently logged in user.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function updateSocialMediaLinksForCurrentUser(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::SOCIAL_MEDIA_LINK_UPDATE_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+        $links = $validData['social_media_links'];
+
+        // Check for duplicate IDs.
+        $linksToUpdate = array_column($links, 'id');
+        if (count($linksToUpdate) !== count(array_unique($linksToUpdate))) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'Duplicate IDs found in the request.'])
+                ->setStatusCode(400);
+        }
+
+        $model = model(SocialMediaLinkModel::class);
+
+        $userId = $this->getLoggedInUserId();
+        $existingEntries = $model->getByUserId($userId);
+        foreach ($links as &$link) {
+            // Check if the social media link exists and belongs to the currently logged in user.
+            $existingLink = null;
+            foreach ($existingEntries as $entry) {
+                if ($entry['id'] === $link['id']) {
+                    $existingLink = $entry;
+                    break;
+                }
+            }
+            if ($existingLink === null) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'Social media link not found or does not belong to the currently logged in user.'])
+                    ->setStatusCode(404);
+            }
+
+            $link['has_changed'] = $existingLink['url'] !== $link['url']
+                || $existingLink['social_media_type_id'] !== $link['social_media_type_id'];
+        }
+
+        // All links are valid. Update them if they contain changes.
+        unset($link);
+        foreach ($links as $link) {
+            if (!$link['has_changed']) {
+                continue;
+            }
+
+            $model->updateLink(
+                $link['id'],
+                $link['social_media_type_id'],
+                $userId,
+                $link['url'],
+                false,
+                null,
+            );
+        }
+
+        return $this
+            ->response
+            ->setStatusCode(204);
+    }
+
+    public function deleteSocialMediaLink(int $id): ResponseInterface
+    {
+        $model = model(SocialMediaLinkModel::class);
+        $userId = $this->getLoggedInUserId();
+        $link = $model->get($id);
+        if ($link === null || $link['user_id'] !== $userId) {
+            return $this->response->setStatusCode(404);
+        }
+
+        $model->delete($id);
+        return $this->response->setStatusCode(204);
+    }
 
     /** Returns the latest entry for the current contributor type for the given event.
      * @param int $eventId The ID of the event for which the entry is retrieved.
@@ -74,6 +263,25 @@ abstract class ContributorDashboard extends BaseController
             ->setJSON($entries);
     }
 
+    private function getJsonFromMultipartRequest(): array|ResponseInterface
+    {
+        $data = $this->request->getPost('json');
+        if ($data === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'Invalid JSON.'])
+                ->setStatusCode(400);
+        }
+        $data = json_decode($data, true);
+        if (json_last_error() != JSON_ERROR_NONE) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'Invalid JSON.'])
+                ->setStatusCode(400);
+        }
+        return $data;
+    }
+
     /** Extracts the JSON data from the request. If the data is invalid, it returns a response
      * with an error status code. If the data is valid, it returns the data as an associative array.
      * @return array|ResponseInterface The JSON data as an associative array, or a response with a 400 status code.
@@ -86,21 +294,7 @@ abstract class ContributorDashboard extends BaseController
         } catch (\Exception) {
             // This is not a JSON request, but it still might be a multipart request.
         }
-        $jsonString = $this->request->getPost('json');
-        if ($jsonString === null) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'Invalid JSON.'])
-                ->setStatusCode(400);
-        }
-        $data = json_decode($jsonString, true);
-        if (json_last_error() != JSON_ERROR_NONE) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'Invalid JSON.'])
-                ->setStatusCode(400);
-        }
-        return $data;
+        return $this->getJsonFromMultipartRequest();
     }
 
     /**
