@@ -7,7 +7,6 @@ use App\Controllers\Event;
 use App\Controllers\Globals;
 use App\Controllers\Image;
 use App\Controllers\HealthCheck;
-use App\Controllers\UserDashboard;
 use App\Controllers\SpeakerDashboard;
 use App\Controllers\TeamMemberDashboard;
 use App\Filters\AdminAuthFilter;
@@ -60,10 +59,12 @@ $routes->get('dashboard/team-member/all-events', [TeamMemberDashboard::class, 'g
 $routes->get('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'get'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->post('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'createOrUpdate'], ['filter' => TeamMemberAuthFilter::class]);
 
-$routes->get('dashboard/user/social-media-link', [UserDashboard::class, 'get'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->post('dashboard/user/social-media-link', [UserDashboard::class, 'create'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->put('dashboard/user/social-media-link', [UserDashboard::class, 'update'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->delete('dashboard/user/social-media-link/(:num)', [UserDashboard::class, 'delete'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+// The social media link logic resides in the abstract base class ContributorDashboard. Since that class cannot be
+// instantiated, we use the TeamMemberDashboard class here instead.
+$routes->get('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'getLatestSocialMediaLinksForCurrentUser'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->post('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'createSocialMediaLinkForCurrentUser'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->put('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'updateSocialMediaLinksForCurrentUser'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->delete('dashboard/user/social-media-link/(:num)', [TeamMemberDashboard::class, 'deleteSocialMediaLink'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
 // Speaker application logic resides in the SpeakerDashboard controller, even though it is accessed by the UserDashboard.
 // The main reason for this is to be able to reuse the code.
 $routes->post('dashboard/user/apply-as-speaker', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);
