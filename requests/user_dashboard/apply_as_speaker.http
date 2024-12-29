@@ -1,8 +1,8 @@
 POST http://localhost:8080/api/account/login
 
 {
-  "username_or_email": "coder2k",
-  "password": "password"
+  "username_or_email": "ClausKleber",
+  "password": "ClausKleber123!"
 }
 
 ###
@@ -14,17 +14,27 @@ Content-Type: multipart/form-data; boundary=boundary
 Content-Disposition: form-data; name="photo"; filename="photo.jpg"
 Content-Type: image/jpeg
 
-< D:\test_image.jpeg
+< D:\Claus Kleber.jpg
 --boundary
 Content-Disposition: form-data; name="json"
 
 {
-  "name": "coder2k",
+  "name": "Claus Kleber",
   "short_bio": "Meine Kurzbiografie",
   "bio": "Meine Biografie",
-  "photo_x": 50,
-  "photo_y": 50,
-  "photo_size": 100
+  "photo_x": 100,
+  "photo_y": 20,
+  "photo_size": 400,
+    "social_media_links": [
+        {
+          "social_media_type_id": 7,
+          "url": "https://twitter.com/ClausKleber"
+        },
+        {
+          "social_media_type_id": 1,
+          "url": "https://facebook.com/ClausKleber"
+        }
+    ]
 }
 
 --boundary--

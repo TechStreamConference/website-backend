@@ -65,6 +65,12 @@ abstract class ContributorDashboard extends BaseController
         'social_media_links.*.url' => 'required|valid_url',
     ];
 
+    // The following rules are used when bulk-creating new links. This happens during speaker application.
+    private const APPLICATION_SOCIAL_MEDIA_LINK_RULES = [
+        'social_media_links.*.social_media_type_id' => 'required|is_natural_no_zero',
+        'social_media_links.*.url' => 'required|valid_url',
+    ];
+
     abstract protected function getModelClassName(): string;
 
     abstract protected function getRoleName(): string;
@@ -109,6 +115,36 @@ abstract class ContributorDashboard extends BaseController
             $validData['url'],
             false,
         );
+
+        return $this->response->setStatusCode(201);
+    }
+
+    /** This function creates new social media links for the currently logged in user.
+     * It is used when the user applies as a speaker.
+     * @return ResponseInterface The response to return to the client.
+     */
+    protected function createSocialMediaLinksForCurrentUser(): ResponseInterface {
+        $data = $this->getJsonFromMultipartRequest();
+        if ($data instanceof ResponseInterface) {
+            return $data;
+        }
+        if (!$this->validateData($data, self::APPLICATION_SOCIAL_MEDIA_LINK_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+        $links = $validData['social_media_links'];
+
+        $model = model(SocialMediaLinkModel::class);
+
+        $userId = $this->getLoggedInUserId();
+        foreach ($links as $link) {
+            $model->create(
+                $link['social_media_type_id'],
+                $userId,
+                $link['url'],
+                false,
+            );
+        }
 
         return $this->response->setStatusCode(201);
     }
@@ -227,6 +263,25 @@ abstract class ContributorDashboard extends BaseController
             ->setJSON($entries);
     }
 
+    private function getJsonFromMultipartRequest(): array|ResponseInterface
+    {
+        $data = $this->request->getPost('json');
+        if ($data === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'Invalid JSON.'])
+                ->setStatusCode(400);
+        }
+        $data = json_decode($data, true);
+        if (json_last_error() != JSON_ERROR_NONE) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'Invalid JSON.'])
+                ->setStatusCode(400);
+        }
+        return $data;
+    }
+
     /** Extracts the JSON data from the request. If the data is invalid, it returns a response
      * with an error status code. If the data is valid, it returns the data as an associative array.
      * @return array|ResponseInterface The JSON data as an associative array, or a response with a 400 status code.
@@ -239,21 +294,7 @@ abstract class ContributorDashboard extends BaseController
         } catch (\Exception) {
             // This is not a JSON request, but it still might be a multipart request.
         }
-        $jsonString = $this->request->getPost('json');
-        if ($jsonString === null) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'Invalid JSON.'])
-                ->setStatusCode(400);
-        }
-        $data = json_decode($jsonString, true);
-        if (json_last_error() != JSON_ERROR_NONE) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'Invalid JSON.'])
-                ->setStatusCode(400);
-        }
-        return $data;
+        return $this->getJsonFromMultipartRequest();
     }
 
     /**
