@@ -19,22 +19,24 @@ Content-Type: image/jpeg
 Content-Disposition: form-data; name="json"
 
 {
-  "name": "Claus Kleber",
-  "short_bio": "Meine Kurzbiografie",
-  "bio": "Meine Biografie",
-  "photo_x": 100,
-  "photo_y": 20,
-  "photo_size": 400,
-    "social_media_links": [
-        {
-          "social_media_type_id": 7,
-          "url": "https://twitter.com/ClausKleber"
-        },
-        {
-          "social_media_type_id": 1,
-          "url": "https://facebook.com/ClausKleber"
-        }
-    ]
+  "application": {
+    "name": "Claus Kleber",
+    "short_bio": "Meine Kurzbiografie",
+    "bio": "Meine Biografie",
+    "photo_x": 100,
+    "photo_y": 20,
+    "photo_size": 400
+  },
+  "social_media_links": [
+    {
+      "social_media_type_id": 7,
+      "url": "https://twitter.com/ClausKleber"
+    },
+    {
+      "social_media_type_id": 1,
+      "url": "https://facebook.com/ClausKleber"
+    }
+  ]
 }
 
 --boundary--

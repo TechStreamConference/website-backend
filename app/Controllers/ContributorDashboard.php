@@ -356,7 +356,7 @@ abstract class ContributorDashboard extends BaseController
      * @param int $eventId
      * @return ResponseInterface
      */
-    private function createNewEntry(array $validData, int $eventId): ResponseInterface
+    protected function createNewEntry(array $validData, int $eventId): ResponseInterface
     {
         // Check if all required fields are present.
         foreach (self::REQUIRED_JSON_FIELDS as $field) {
@@ -471,7 +471,7 @@ abstract class ContributorDashboard extends BaseController
     /** Returns the model for the current contributor type.
      * @return GenericRoleModel The model for the current contributor type.
      */
-    private function getModel(): GenericRoleModel
+    protected function getModel(): GenericRoleModel
     {
         $model = model($this->getModelClassName());
         if (!$model instanceof GenericRoleModel) {
