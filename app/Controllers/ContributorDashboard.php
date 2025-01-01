@@ -263,7 +263,7 @@ abstract class ContributorDashboard extends BaseController
             ->setJSON($entries);
     }
 
-    private function getJsonFromMultipartRequest(): array|ResponseInterface
+    protected function getJsonFromMultipartRequest(): array|ResponseInterface
     {
         $data = $this->request->getPost('json');
         if ($data === null) {
