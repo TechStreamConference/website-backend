@@ -515,13 +515,13 @@ abstract class ContributorDashboard extends BaseController
 
         $filePath = $targetPath . DIRECTORY_SEPARATOR . $filename;
 
-        // Crop image according to the given dimensions and scale it down to 300x300 pixels.
+        // Crop image according to the given dimensions and scale it down to 350x350 pixels.
         $image = service('image');
         $image
             ->withFile($filePath)
             ->flatten(20, 20, 20)
             ->crop($size, $size, $x, $y)
-            ->resize(300, 300, true)
+            ->resize(350, 350, true)
             ->save($filePath);
 
         // Get the resolution.
