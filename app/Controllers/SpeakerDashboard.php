@@ -10,6 +10,15 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class SpeakerDashboard extends ContributorDashboard
 {
+    private const APPLICATION_RULES = [
+        'application.name' => 'string|max_length[100]',
+        'application.short_bio' => 'string|max_length[300]',
+        'application.bio' => 'string',
+        'application.photo_x' => 'integer',
+        'application.photo_y' => 'integer',
+        'application.photo_size' => 'integer',
+    ];
+
     #[\Override]
     protected function getModelClassName(): string
     {
@@ -29,6 +38,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $event;
         }
 
+        // Only create social media links if they were provided in the request.
         $data = $this->getJsonFromMultipartRequest();
         if ($data instanceof ResponseInterface) {
             return $data;
@@ -42,12 +52,21 @@ class SpeakerDashboard extends ContributorDashboard
             if ($socialMediaLinkUpdateResult->getStatusCode() !== 201) {
                 return $socialMediaLinkUpdateResult;
             }
+            // Reset current response to avoid returning the result of the createSocialMediaLinksForCurrentUser method.
+            $this->response->setJSON([]);
+            $this->response->setStatusCode(200);
         }
 
-        // Reset current response to avoid returning the result of the createSocialMediaLinksForCurrentUser method.
-        $this->response->setJSON([]);
-        $this->response->setStatusCode(200);
-        return $this->createOrUpdate($event['id']);
+        return $this->createFromApplication($event['id'], $data);
+    }
+
+    private function createFromApplication(int $eventId, array $data): ResponseInterface
+    {
+        if (!$this->validateData($data, self::APPLICATION_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+        return $this->createNewEntry($validData['application'], $eventId);
     }
 
     public function getApplicationEvent(): ResponseInterface
