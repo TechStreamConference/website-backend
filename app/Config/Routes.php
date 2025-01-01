@@ -12,6 +12,7 @@ use App\Controllers\TeamMemberDashboard;
 use App\Filters\AdminAuthFilter;
 use App\Filters\AuthFilter;
 use App\Filters\SpeakerAuthFilter;
+use App\Filters\SpeakerOrTeamMemberAuthFilter;
 use App\Filters\TeamMemberAuthFilter;
 use CodeIgniter\Router\RouteCollection;
 
@@ -61,10 +62,10 @@ $routes->post('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class,
 
 // The social media link logic resides in the abstract base class ContributorDashboard. Since that class cannot be
 // instantiated, we use the TeamMemberDashboard class here instead.
-$routes->get('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'getLatestSocialMediaLinksForCurrentUser'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->post('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'createSocialMediaLinkForCurrentUser'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->put('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'updateSocialMediaLinksForCurrentUser'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
-$routes->delete('dashboard/user/social-media-link/(:num)', [TeamMemberDashboard::class, 'deleteSocialMediaLink'], ['filter' => 'SpeakerOrTeamMemberAuthFilter']);
+$routes->get('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'getLatestSocialMediaLinksForCurrentUser'], ['filter' => SpeakerOrTeamMemberAuthFilter::class]);
+$routes->post('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'createSocialMediaLinkForCurrentUser'], ['filter' => SpeakerOrTeamMemberAuthFilter::class]);
+$routes->put('dashboard/user/social-media-link', [TeamMemberDashboard::class, 'updateSocialMediaLinksForCurrentUser'], ['filter' => SpeakerOrTeamMemberAuthFilter::class]);
+$routes->delete('dashboard/user/social-media-link/(:num)', [TeamMemberDashboard::class, 'deleteSocialMediaLink'], ['filter' => SpeakerOrTeamMemberAuthFilter::class]);
 // Speaker application logic resides in the SpeakerDashboard controller, even though it is accessed by the UserDashboard.
 // The main reason for this is to be able to reuse the code.
 $routes->post('dashboard/user/apply-as-speaker', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);

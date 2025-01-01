@@ -10,11 +10,14 @@ use CodeIgniter\HTTP\Response;
 
 class RoleAuthFilter extends AuthFilter
 {
-    private Role $role;
+    private array $allowedRoles;
 
-    public function __construct(Role $role)
+    public function __construct(Role|array $allowedRoles)
     {
-        $this->role = $role;
+        if (!is_array($allowedRoles)) {
+            $allowedRoles = [$allowedRoles];
+        }
+        $this->allowedRoles = $allowedRoles;
     }
 
     public function before(RequestInterface $request, $arguments = null)
@@ -24,8 +27,8 @@ class RoleAuthFilter extends AuthFilter
             return $userIdOrErrorResponse;
         }
         $rolesModel = model(RolesModel::class);
-        $roles = $rolesModel->getByUserId($userIdOrErrorResponse);
-        if ($roles === null || !$this->hasExpectedRole($roles)) {
+        $actualRoles = $rolesModel->getByUserId($userIdOrErrorResponse);
+        if ($actualRoles === null || !$this->hasExpectedRole($actualRoles)) {
             $response = Services::response();
             $response->setJSON(['error' => 'Forbidden']);
             $response->setStatusCode(403);
@@ -33,12 +36,22 @@ class RoleAuthFilter extends AuthFilter
         }
     }
 
-    private function hasExpectedRole(array $roles): bool
+    private function hasExpectedRole(array $actualRoles): bool
     {
-        return match ($this->role) {
-            Role::ADMIN => $roles['is_admin'],
-            Role::SPEAKER => $roles['is_speaker'],
-            Role::TEAM_MEMBER => $roles['is_team_member'],
+        foreach ($this->allowedRoles as $allowedRole) {
+            if ($this->hasRole($actualRoles, $allowedRole)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function hasRole(array $actualRoles, Role $role): bool
+    {
+        return match ($role) {
+            Role::ADMIN => $actualRoles['is_admin'],
+            Role::SPEAKER => $actualRoles['is_speaker'],
+            Role::TEAM_MEMBER => $actualRoles['is_team_member'],
             default => false,
         };
     }
