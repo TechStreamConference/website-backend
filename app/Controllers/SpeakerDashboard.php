@@ -38,6 +38,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $event;
         }
 
+        // Only create social media links if they were provided in the request.
         $data = $this->getJsonFromMultipartRequest();
         if ($data instanceof ResponseInterface) {
             return $data;
@@ -51,6 +52,9 @@ class SpeakerDashboard extends ContributorDashboard
             if ($socialMediaLinkUpdateResult->getStatusCode() !== 201) {
                 return $socialMediaLinkUpdateResult;
             }
+            // Reset current response to avoid returning the result of the createSocialMediaLinksForCurrentUser method.
+            $this->response->setJSON([]);
+            $this->response->setStatusCode(200);
         }
 
         return $this->createFromApplication($event['id'], $data);
