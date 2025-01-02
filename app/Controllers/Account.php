@@ -42,8 +42,9 @@ class Account extends BaseController
 
         $userId = $userModel->createUser();
         if ($accountModel->createAccount($userId, $username, $passwordHash, $email) === false) {
+            // Username or email already taken.
             $userModel->deleteUser($userId);
-            return $this->response->setJSON(['error' => 'Username or email already taken'])->setStatusCode(400);
+            return $this->response->setJSON(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN'])->setStatusCode(400);
         }
 
         $validationToken = $this->storeValidationToken($userId);
@@ -125,17 +126,19 @@ class Account extends BaseController
         $password = $this->request->getJsonVar('password');
 
         if (empty($usernameOrEmail) || empty($password)) {
-            return $this->response->setJSON(['error' => 'Username/email or password missing'])->setStatusCode(400);
+            // Username/email or password missing.
+            return $this->response->setJSON(['error' => 'USERNAME_OR_EMAIL_FIELD_MISSING'])->setStatusCode(400);
         }
 
         $model = model(AccountModel::class);
         $account = $model->getAccountByUsernameOrEmail($usernameOrEmail);
         if ($account === null || $account['is_verified'] === false) {
-            return $this->response->setJSON(['error' => 'Unknown username or email'])->setStatusCode(404);
+            // Unknown username or email.
+            return $this->response->setJSON(['error' => 'UNKNOWN_USERNAME_OR_EMAIL'])->setStatusCode(404);
         }
 
         if (!password_verify($password, $account['password'])) {
-            return $this->response->setJSON(['error' => 'Invalid password'])->setStatusCode(401);
+            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
         }
 
         $session = session();
@@ -160,7 +163,7 @@ class Account extends BaseController
 
         $verificationTokenModel = model(VerificationTokenModel::class);
         $entry = $verificationTokenModel->get($token);
-        $notFoundJsonData = ['error' => 'Token not found'];
+        $notFoundJsonData = ['error' => 'TOKEN_NOT_FOUND'];
         if ($entry === null) {
             return $this->response->setJSON($notFoundJsonData)->setStatusCode(404);
         }

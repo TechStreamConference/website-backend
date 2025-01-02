@@ -148,7 +148,8 @@ class AdminDashboard extends BaseController
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
         if (!in_array($eventId, array_column($events, 'id'))) {
-            return $this->response->setJSON(['error' => 'Event with given id not found.'])->setStatusCode(404);
+            // Event with given id not found.
+            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
         }
 
         $speakerModel = model(SpeakerModel::class);
@@ -164,9 +165,11 @@ class AdminDashboard extends BaseController
                 return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
             }
             if (!in_array($speaker['id'], array_column($speakers, 'id'))) {
-                return $this->response->setJSON([
-                    'error' => 'Speaker with given id not found in the list of approved speakers for the event.'
-                ])->setStatusCode(404);
+                // Speaker with given id not found in the list of approved speakers for the event.
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'SPEAKER_NOT_AMONG_APPROVED_SPEAKERS_OF_EVENT'])
+                    ->setStatusCode(404);
             }
         }
 
@@ -191,9 +194,10 @@ class AdminDashboard extends BaseController
         $linkTypes = $model->all();
         foreach ($linkTypes as $linkType) {
             if ($linkType['name'] === $validData['name']) {
+                // Social media link type already exists.
                 return $this
                     ->response
-                    ->setJSON(['error' => 'Social media link type already exists.'])
+                    ->setJSON(['error' => 'SOCIAL_MEDIA_LINK_TYPE_ALREADY_EXISTS'])
                     ->setStatusCode(400);
             }
         }

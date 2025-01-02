@@ -75,6 +75,8 @@ abstract class ContributorDashboard extends BaseController
 
     abstract protected function getRoleName(): string;
 
+    abstract protected function getRoleNameScreamingSnakeCase(): string;
+
     /** For each type of social media link, this function returns the most recent link
      * for the currently logged in user, regardless of whether it has already been approved
      * or not.
@@ -103,9 +105,10 @@ abstract class ContributorDashboard extends BaseController
         $userId = $this->getLoggedInUserId();
         $existingLink = $model->getByLinkTypeAndUserId($validData['social_media_type_id'], $userId);
         if ($existingLink !== null && $existingLink['url'] === $validData['url']) {
+            // A social media link with the same contents already exists.
             return $this
                 ->response
-                ->setJSON(['error' => 'A social media link with the same contents already exists.'])
+                ->setJSON(['error' => 'DUPLICATE_SOCIAL_MEDIA_LINK_CONTENTS'])
                 ->setStatusCode(400);
         }
 
@@ -123,7 +126,8 @@ abstract class ContributorDashboard extends BaseController
      * It is used when the user applies as a speaker.
      * @return ResponseInterface The response to return to the client.
      */
-    protected function createSocialMediaLinksForCurrentUser(): ResponseInterface {
+    protected function createSocialMediaLinksForCurrentUser(): ResponseInterface
+    {
         $data = $this->getJsonFromMultipartRequest();
         if ($data instanceof ResponseInterface) {
             return $data;
@@ -164,9 +168,10 @@ abstract class ContributorDashboard extends BaseController
         // Check for duplicate IDs.
         $linksToUpdate = array_column($links, 'id');
         if (count($linksToUpdate) !== count(array_unique($linksToUpdate))) {
+            // Duplicate IDs found in the request.
             return $this
                 ->response
-                ->setJSON(['error' => 'Duplicate IDs found in the request.'])
+                ->setJSON(['error' => 'DUPLICATE_SOCIAL_MEDIA_LINK_IDS'])
                 ->setStatusCode(400);
         }
 
@@ -184,9 +189,10 @@ abstract class ContributorDashboard extends BaseController
                 }
             }
             if ($existingLink === null) {
+                // Social media link not found or does not belong to the currently logged in user.
                 return $this
                     ->response
-                    ->setJSON(['error' => 'Social media link not found or does not belong to the currently logged in user.'])
+                    ->setJSON(['error' => 'SOCIAL_MEDIA_LINK_NOT_FOUND'])
                     ->setStatusCode(404);
             }
 
@@ -238,11 +244,10 @@ abstract class ContributorDashboard extends BaseController
         $model = $this->getModel();
         $entry = $model->getLatestForEvent(userId: $this->getLoggedInUserId(), eventId: $eventId);
         if ($entry === null) {
+            // Entry not found for given event.
             return $this
                 ->response
-                ->setJSON([
-                    'error' => "No {$this->getRoleName()} found for the given event."
-                ])
+                ->setJSON(['error' => "{$this->getRoleNameScreamingSnakeCase()}_NOT_FOUND_FOR_EVENT"])
                 ->setStatusCode(404);
         }
 
@@ -269,14 +274,14 @@ abstract class ContributorDashboard extends BaseController
         if ($data === null) {
             return $this
                 ->response
-                ->setJSON(['error' => 'Invalid JSON.'])
+                ->setJSON(['error' => 'INVALID_JSON'])
                 ->setStatusCode(400);
         }
         $data = json_decode($data, true);
         if (json_last_error() != JSON_ERROR_NONE) {
             return $this
                 ->response
-                ->setJSON(['error' => 'Invalid JSON.'])
+                ->setJSON(['error' => 'INVALID_JSON'])
                 ->setStatusCode(400);
         }
         return $data;
@@ -324,7 +329,7 @@ abstract class ContributorDashboard extends BaseController
         if (!$this->hasChanges($validData, $entry)) {
             return $this
                 ->response
-                ->setJSON(['error' => 'No changes detected.'])
+                ->setJSON(['error' => 'NO_CHANGES_DETECTED'])
                 ->setStatusCode(400);
         }
         return $this->updateEntry($validData, $entry, $eventId);
@@ -364,14 +369,15 @@ abstract class ContributorDashboard extends BaseController
                 return $this
                     ->response
                     ->setJSON([
-                        'error' => "All fields are required when creating a new {$this->getRoleName()} entry. Missing field: $field."
+                        'error' => "{$this->getRoleNameScreamingSnakeCase()}_CREATION_REQUIRES_ALL_FIELDS",
+                        'missing_field' => $field,
                     ])
                     ->setStatusCode(400);
             }
         }
         $image = $this->request->getFile('photo');
         if ($image === null) {
-            return $this->response->setJSON(['error' => 'No image uploaded.'])->setStatusCode(400);
+            return $this->response->setJSON(['error' => 'IMAGE_MISSING'])->setStatusCode(400);
         }
         $uploadResult = $this->uploadPhoto(
             $image,
@@ -425,7 +431,7 @@ abstract class ContributorDashboard extends BaseController
             if (!isset($validData['photo_x'], $validData['photo_y'], $validData['photo_size'])) {
                 return $this
                     ->response
-                    ->setJSON(['error' => 'Missing photo dimensions.'])
+                    ->setJSON(['error' => 'MISSING_PHOTO_DIMENSIONS'])
                     ->setStatusCode(400);
             }
             $uploadResult = $this->uploadPhoto(
@@ -499,18 +505,18 @@ abstract class ContributorDashboard extends BaseController
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         if ($fileId->hasMoved()) {
-            return $this->response->setJSON(['error' => 'Image has moved.'])->setStatusCode(400);
+            return $this->response->setJSON(['error' => 'IMAGE_HAS_MOVED'])->setStatusCode(400);
         }
         $mimeType = $fileId->getMimeType();
         if (!in_array($mimeType, $this->getAllowedMimeTypes())) {
-            return $this->response->setJSON(['error' => 'Invalid MIME type.'])->setStatusCode(400);
+            return $this->response->setJSON(['error' => 'INVALID_MIME_TYPE'])->setStatusCode(400);
         }
 
         $filename = $fileId->getRandomName();
         $targetPath = WRITEPATH . 'uploads';
 
         if (!$fileId->move(targetPath: $targetPath, name: $filename)) {
-            return $this->response->setJSON(['error' => 'Failed to move image.'])->setStatusCode(400);
+            return $this->response->setJSON(['error' => 'FAILED_TO_MOVE_IMAGE'])->setStatusCode(400);
         }
 
         $filePath = $targetPath . DIRECTORY_SEPARATOR . $filename;
@@ -527,12 +533,12 @@ abstract class ContributorDashboard extends BaseController
         // Get the resolution.
         $imageInfo = getimagesize($filePath);
         if ($imageInfo === false) {
-            return $this->response->setJSON(['error' => 'Failed to get image resolution.'])->setStatusCode(400);
+            return $this->response->setJSON(['error' => 'FAILED_TO_GET_IMAGE_RESOLUTION'])->setStatusCode(400);
         }
         [$width, $height] = $imageInfo;
         if ($width != $height) {
             unlink($filePath);
-            return $this->response->setJSON(['error' => 'Image must be square.'])->setStatusCode(400);
+            return $this->response->setJSON(['error' => 'IMAGE_MUST_BE_SQUARE'])->setStatusCode(400);
         }
 
         $pathForDatabase = 'images' . DIRECTORY_SEPARATOR . $filename;

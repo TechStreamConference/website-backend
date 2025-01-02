@@ -270,9 +270,7 @@ class AccountTest extends CIUnitTestCase
             'email' => 'random@random.com',
         ]);
         $result->assertStatus(400);
-        $result->assertJSONExact([
-            'error' => 'Username or email already taken'
-        ]);
+        $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
     function testRegister_UsernameAlreadyTaken_CaseInsensitive_Returns400()
@@ -283,9 +281,7 @@ class AccountTest extends CIUnitTestCase
             'email' => 'random@random.com',
         ]);
         $result->assertStatus(400);
-        $result->assertJSONExact([
-            'error' => 'Username or email already taken'
-        ]);
+        $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
     function testRegister_EmailAlreadyTaken_Returns400()
@@ -296,9 +292,7 @@ class AccountTest extends CIUnitTestCase
             'email' => 'coder2k@test-conf.de',
         ]);
         $result->assertStatus(400);
-        $result->assertJSONExact([
-            'error' => 'Username or email already taken'
-        ]);
+        $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
     function testRegister_EmailAlreadyTaken_CaseInsensitive_Returns400()
@@ -309,9 +303,7 @@ class AccountTest extends CIUnitTestCase
             'email' => 'Coder2k@test-conf.de',
         ]);
         $result->assertStatus(400);
-        $result->assertJSONExact([
-            'error' => 'Username or email already taken'
-        ]);
+        $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
     // *************************************

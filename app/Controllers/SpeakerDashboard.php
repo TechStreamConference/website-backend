@@ -31,6 +31,12 @@ class SpeakerDashboard extends ContributorDashboard
         return 'speaker';
     }
 
+    #[\Override]
+    protected function getRoleNameScreamingSnakeCase(): string
+    {
+        return 'SPEAKER';
+    }
+
     public function applyAsSpeaker(): ResponseInterface
     {
         $event = $this->getEventForNewSpeakerApplication();
@@ -87,27 +93,30 @@ class SpeakerDashboard extends ContributorDashboard
         // - There must be an event to apply for.
         $rolesModel = model(RolesModel::class);
         if ($rolesModel->hasRole($this->getLoggedInUserId(), Role::SPEAKER)) {
+            // User cannot apply as speaker since they already are a speaker.
             return $this
                 ->response
-                ->setJSON(['error' => 'User cannot apply as speaker since they already are a speaker.'])
+                ->setJSON(['error' => 'USER_ALREADY_IS_SPEAKER'])
                 ->setStatusCode(403);
         }
 
         $speakerModel = model(SpeakerModel::class);
         $eventsForUser = $speakerModel->getAllForUser($this->getLoggedInUserId());
         if (!empty($eventsForUser)) {
+            // User cannot apply as speaker since they already have a pending application.
             return $this
                 ->response
-                ->setJSON(['error' => 'User cannot apply as speaker since they already have a pending application.'])
+                ->setJSON(['error' => 'USER_ALREADY_HAS_PENDING_APPLICATION'])
                 ->setStatusCode(403);
         }
 
         $eventModel = model(EventModel::class);
         $latestPublishedEvent = $eventModel->getLatestPublished();
         if ($latestPublishedEvent === null) {
+            // No event to apply for.
             return $this
                 ->response
-                ->setJSON(['error' => 'No event to apply for.'])
+                ->setJSON(['error' => 'NO_EVENT_TO_APPLY_FOR'])
                 ->setStatusCode(404);
         }
 
@@ -115,9 +124,10 @@ class SpeakerDashboard extends ContributorDashboard
         // This depends on the "call_for_papers_start" and "call_for_papers_end" fields of the event.
         $currentDate = date('Y-m-d H:i:s');
         if ($currentDate < $latestPublishedEvent['call_for_papers_start'] || $currentDate > $latestPublishedEvent['call_for_papers_end']) {
+            // Speaker applications are not accepted at this time.
             return $this
                 ->response
-                ->setJSON(['error' => 'Speaker applications are not accepted at this time.'])
+                ->setJSON(['error' => 'CURRENTLY_NOT_ACCEPTING_SPEAKER_APPLICATIONS'])
                 ->setStatusCode(403);
         }
 

@@ -24,7 +24,7 @@ class AuthFilter implements FilterInterface
         $userId = $session->get('user_id');
         if ($userId === null) {
             $response = Services::response();
-            $response->setJSON(['error' => 'Not logged in']);
+            $response->setJSON(['error' => 'NOT_LOGGED_IN']);
             $response->setStatusCode(401);
             return $response;
         }
