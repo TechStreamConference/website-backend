@@ -17,4 +17,10 @@ class TeamMemberDashboard extends ContributorDashboard
     {
         return 'team member';
     }
+
+    #[\Override]
+    protected function getRoleNameScreamingSnakeCase(): string
+    {
+        return 'TEAM_MEMBER';
+    }
 }

@@ -30,7 +30,7 @@ class RoleAuthFilter extends AuthFilter
         $actualRoles = $rolesModel->getByUserId($userIdOrErrorResponse);
         if ($actualRoles === null || !$this->hasExpectedRole($actualRoles)) {
             $response = Services::response();
-            $response->setJSON(['error' => 'Forbidden']);
+            $response->setJSON(['error' => 'FORBIDDEN']);
             $response->setStatusCode(403);
             return $response;
         }

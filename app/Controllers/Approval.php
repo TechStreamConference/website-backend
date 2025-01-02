@@ -108,9 +108,10 @@ class Approval extends BaseController
 
         $result = $roleModel->approve($id);
         if (!$result) {
+            // Id not found or entry was already approved.
             return $this
                 ->response
-                ->setJSON(["error" => "Id not found or entry was already approved."])
+                ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
         return $this->response->setStatusCode(204);
@@ -132,9 +133,10 @@ class Approval extends BaseController
 
         $result = $roleModel->requestChanges($id, $message);
         if (!$result) {
+            // Id not found or entry was already approved.
             return $this
                 ->response
-                ->setJSON(["error" => "Id not found or entry was already approved."])
+                ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
         return $this->response->setStatusCode(204);
@@ -190,9 +192,10 @@ class Approval extends BaseController
         $socialMediaLinkModel = model(SocialMediaLinkModel::class);
         $result = $socialMediaLinkModel->approve($id);
         if (!$result) {
+            // Id not found or entry was already approved.
             return $this
                 ->response
-                ->setJSON(["error" => "Id not found or entry was already approved."])
+                ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
         return $this->response->setStatusCode(204);
@@ -211,9 +214,10 @@ class Approval extends BaseController
 
         $result = $socialMediaLinkModel->requestChanges($id, $message);
         if (!$result) {
+            // Id not found or entry was already approved.
             return $this
                 ->response
-                ->setJSON(["error" => "Id not found or entry was already approved."])
+                ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
         return $this->response->setStatusCode(204);
