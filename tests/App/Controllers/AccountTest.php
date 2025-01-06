@@ -306,6 +306,28 @@ class AccountTest extends CIUnitTestCase
         $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
+    function testRegister_ExistingUser_ValidToken_Returns201()
+    {
+        $result = $this->withBodyFormat('json')->post('account/register', [
+            'username' => 'codingPurpurTentakel',
+            'password' => 'CodingPurpurTentakel123!',
+            'email' => 'tentakel@test-conf.de',
+            'token' => 'd9f05f981302c5d8dcdd165cbd6b627ed33677207614e6fd6a1e9a68def5b6fd4180332e00475421e3bb7b6810bb2d1e6b6fa592cd613bee1b215b304a8a7b1a',
+        ]);
+        $result->assertStatus(201);
+    }
+
+    function testRegister_ExistingUser_InvalidToken_Returns404()
+    {
+        $result = $this->withBodyFormat('json')->post('account/register', [
+            'username' => 'codingPurpurTentakel',
+            'password' => 'CodingPurpurTentakel123!',
+            'email' => 'tentakel@test-conf.de',
+            'token' => '123',
+        ]);
+        $result->assertStatus(404);
+    }
+
     // *************************************
     // * usernameExists()
     // *************************************
