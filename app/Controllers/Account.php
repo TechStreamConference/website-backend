@@ -49,8 +49,8 @@ class Account extends BaseController
 
         $validationToken = $this->storeValidationToken($userId);
         if ($validationToken === null) {
-            // This could only happen if the token is already in use. So, this should never happen.
-            // But if it does, we need to clean up the database.
+            // This could only happen if the token is already in use, or if the random generator
+            // fails. So, this should never happen. But if it does, we need to clean up the database.
             $accountModel->deleteAccount($userId);
             $userModel->deleteUser($userId);
             return $this->response->setStatusCode(500);
@@ -190,7 +190,11 @@ class Account extends BaseController
 
     private function storeValidationToken(int $userId): string|null
     {
-        $token = bin2hex(random_bytes(64));
+        try {
+            $token = bin2hex(random_bytes(64));
+        } catch (RandomException $e) {
+            return null;
+        }
         $expiresAt = date('Y-m-d H:i:s', strtotime('+1 day'));
         $model = model(VerificationTokenModel::class);
         if (!$model->store($token, $userId, $expiresAt)) {
