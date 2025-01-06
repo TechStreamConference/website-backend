@@ -12,6 +12,12 @@ use App\Models\VerificationTokenModel;
 
 class Account extends BaseController
 {
+    const REGISTER_RULES = [
+        'username' => 'required|trim|alpha_dash|min_length[3]|max_length[30]',
+        'password' => 'required|valid_password',
+        'email' => 'required|trim|valid_email|max_length[320]',
+    ];
+
     const VERIFICATION_RULES = [
         'token' => 'required|trim',
     ];
@@ -25,13 +31,7 @@ class Account extends BaseController
 
         $data = $this->request->getJSON(assoc: true);
 
-        $rules = [
-            'username' => 'required|trim|alpha_dash|min_length[3]|max_length[30]',
-            'password' => 'required|valid_password',
-            'email' => 'required|trim|valid_email|max_length[320]',
-        ];
-
-        if (!$this->validateData($data, $rules)) {
+        if (!$this->validateData($data, self::REGISTER_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
