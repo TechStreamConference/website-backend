@@ -4,16 +4,33 @@ namespace App\Controllers;
 
 use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
+use App\Models\PasswordResetTokenModel;
 use App\Models\RolesModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
 use App\Models\VerificationTokenModel;
+use Random\RandomException;
 
 class Account extends BaseController
 {
+    const REGISTER_RULES = [
+        'username' => 'required|trim|alpha_dash|min_length[3]|max_length[30]',
+        'password' => 'required|valid_password',
+        'email' => 'required|trim|valid_email|max_length[320]',
+    ];
+
     const VERIFICATION_RULES = [
         'token' => 'required|trim',
+    ];
+
+    const FORGOT_PASSWORD_RULES = [
+        'username_or_email' => 'required|max_length[320]',
+    ];
+
+    const RESET_PASSWORD_RULES = [
+        'token' => 'required|trim',
+        'new_password' => 'required|valid_password',
     ];
 
     public function register()
@@ -25,13 +42,7 @@ class Account extends BaseController
 
         $data = $this->request->getJSON(assoc: true);
 
-        $rules = [
-            'username' => 'required|trim|alpha_dash|min_length[3]|max_length[30]',
-            'password' => 'required|valid_password',
-            'email' => 'required|trim|valid_email|max_length[320]',
-        ];
-
-        if (!$this->validateData($data, $rules)) {
+        if (!$this->validateData($data, self::REGISTER_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -49,8 +60,8 @@ class Account extends BaseController
 
         $validationToken = $this->storeValidationToken($userId);
         if ($validationToken === null) {
-            // This could only happen if the token is already in use. So, this should never happen.
-            // But if it does, we need to clean up the database.
+            // This could only happen if the token is already in use, or if the random generator
+            // fails. So, this should never happen. But if it does, we need to clean up the database.
             $accountModel->deleteAccount($userId);
             $userModel->deleteUser($userId);
             return $this->response->setStatusCode(500);
@@ -83,6 +94,120 @@ class Account extends BaseController
         );
 
         return $this->response->setJSON(['message' => 'success'])->setStatusCode(201);
+    }
+
+    /**
+     * Sends an email to the user with a link to reset the password.
+     * @return ResponseInterface The response.
+     */
+    public function forgotPassword(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+
+        if (!$this->validateData($data, self::FORGOT_PASSWORD_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+
+        $validData = $this->validator->getValidated();
+        $username_or_email = $validData['username_or_email'];
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->getAccountByUsernameOrEmail($username_or_email);
+        if ($account === null) {
+            // We could "pretend" that the email was sent successfully, but it wouldn't be reasonable,
+            // because it's possible to find out if an email address is registered or not, anyway. So
+            // this wouldn't give us any security advantage, but it would make the user experience worse.
+            return $this->response->setJSON(['error' => 'UNKNOWN_USERNAME_OR_EMAIL'])->setStatusCode(404);
+        }
+
+        // Create a password reset token. It is possible that there are multiple reset tokens for the
+        // same user. They all remain valid until they expire. But when a user uses any of those tokens
+        // to reset their password, all other tokens are deleted (see the resetPassword method).
+        $passwordResetTokenModel = model(PasswordResetTokenModel::class);
+        try {
+            $token = bin2hex(random_bytes(64));
+        } catch (RandomException) {
+            return $this->response->setStatusCode(500);
+        }
+        $expiresAt = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $passwordResetTokenModel->store($token, $account['user_id'], $expiresAt);
+
+        // Base URL is something that ends with /api/, so we need to remove api/ from the base URL.
+        $baseUrl = base_url();
+        $suffix = "api/";
+        if (str_ends_with($baseUrl, $suffix)) {
+            $baseUrl = substr($baseUrl, 0, -strlen($suffix));
+        }
+
+        $resetPasswordLink = $baseUrl . 'reset-password' . '?token=' . $token;
+
+        // We could avoid including the username in the email, because at first glance
+        // a hacker who has control over the email account, could find out the username.
+        // But after the hacker has reset the password, they could find out the username
+        // anyway, because they could log in.
+        EmailHelper::send(
+            $account['email'],
+            'Passwort zurücksetzen',
+            view(
+                'email/account/forgot_password',
+                [
+                    'username' => $account['username'],
+                    'resetPasswordLink' => $resetPasswordLink,
+                ]
+            )
+        );
+        return $this->response->setJSON(['message' => 'success']);
+    }
+
+    /**
+     * Resets the password of a user that has requested a password reset.
+     * @return ResponseInterface The response.
+     */
+    public function resetPassword(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+
+        if (!$this->validateData($data, self::RESET_PASSWORD_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+
+        $validData = $this->validator->getValidated();
+        $token = $validData['token'];
+        $newPassword = $validData['new_password'];
+
+        $passwordResetTokenModel = model(PasswordResetTokenModel::class);
+        // Delete all expired tokens so that we don't have to check if the token is expired.
+        $passwordResetTokenModel->deleteExpiredTokens();
+
+        $entry = $passwordResetTokenModel->get($token);
+        if ($entry === null) {
+            return $this->response->setJSON(['error' => 'TOKEN_EXPIRED_OR_DOES_NOT_EXIST'])->setStatusCode(404);
+        }
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($entry['user_id']);
+        if ($account === null) {
+            // This should never happen, because the token is only created when the account exists.
+            return $this->response->setStatusCode(500);
+        }
+
+        $accountModel->changePasswordHash($entry['user_id'], password_hash($newPassword, PASSWORD_DEFAULT));
+
+        // Delete the used token as well as all other tokens of the same user that may exist.
+        $passwordResetTokenModel->deleteTokensOfUser($entry['user_id']);
+
+        EmailHelper::send(
+            $account['email'],
+            'Dein Passwort wurde geändert',
+            view(
+                'email/account/password_reset',
+                [
+                    'username' => $account['username'],
+                ]
+            )
+        );
+
+        return $this->response->setJSON(['message' => 'success']);
     }
 
     public function usernameExists()
@@ -122,6 +247,11 @@ class Account extends BaseController
 
     public function login()
     {
+        // On each login, we delete all expired password reset tokens. There's no deeper reason  to
+        // do it exactly here, but we have to do it somewhere. ¯\_(ツ)_/¯
+        $passwordResetTokenModel = model(PasswordResetTokenModel::class);
+        $passwordResetTokenModel->deleteExpiredTokens();
+
         $usernameOrEmail = trim($this->request->getJsonVar('username_or_email'));
         $password = $this->request->getJsonVar('password');
 
@@ -190,7 +320,11 @@ class Account extends BaseController
 
     private function storeValidationToken(int $userId): string|null
     {
-        $token = bin2hex(random_bytes(64));
+        try {
+            $token = bin2hex(random_bytes(64));
+        } catch (RandomException $e) {
+            return null;
+        }
         $expiresAt = date('Y-m-d H:i:s', strtotime('+1 day'));
         $model = model(VerificationTokenModel::class);
         if (!$model->store($token, $userId, $expiresAt)) {
