@@ -21,7 +21,7 @@ class Account extends BaseController
     ];
 
     const VERIFICATION_RULES = [
-        'token' => 'required|trim',
+        'token' => 'required|trim|alpha_numeric|max_length[128]',
     ];
 
     const FORGOT_PASSWORD_RULES = [
