@@ -82,4 +82,9 @@ class AccountModel extends Model
             ->join('Admin', 'Admin.user_id = Account.user_id')
             ->findAll();
     }
+
+    public function changePasswordHash(int $userId, string $newPasswordHash): void
+    {
+        $this->update($userId, ['password' => $newPasswordHash]);
+    }
 }

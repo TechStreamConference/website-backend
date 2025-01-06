@@ -23,6 +23,8 @@ $routes->get('account/username/exists', [Account::class, 'usernameExists']);
 $routes->get('account/email/exists', [Account::class, 'emailExists']);
 $routes->get('account/roles', [Account::class, 'roles'], ['filter' => AuthFilter::class]);
 $routes->post('account/register', [Account::class, 'register']);
+$routes->post('account/forgot-password', [Account::class, 'forgotPassword']);
+$routes->post('account/reset-password', [Account::class, 'resetPassword']);
 $routes->post('account/login', [Account::class, 'login']);
 $routes->post('account/logout', [Account::class, 'logout']);
 $routes->post('account/verify', [Account::class, 'verify']);
