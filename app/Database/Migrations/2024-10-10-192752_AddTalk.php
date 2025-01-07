@@ -8,8 +8,6 @@ class AddTalk extends Migration
 {
     public function up()
     {
-        // A talk is connected to an event and a speaker (both are foreign keys). It need's
-        // data about the starting date and time, the duration, the title, and a description.
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
