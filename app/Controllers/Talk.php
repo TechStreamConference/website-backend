@@ -17,10 +17,15 @@ class Talk extends BaseController
      */
     public function canSubmitTalk(int $eventId): ResponseInterface
     {
-        $speakerModel = model(SpeakerModel::class);
-        if ($speakerModel->hasApprovedEntry($this->getLoggedInUserId(), $eventId)) {
+        if ($this->canLoggedInUserSubmitTalk($eventId)) {
             return $this->response->setJSON(['can_submit_talk' => true])->setStatusCode(200);
         }
         return $this->response->setJSON(['error' => 'NO_APPROVED_SPEAKER_ENTRY'])->setStatusCode(403);
+    }
+
+    private function canLoggedInUserSubmitTalk(int $eventId): bool
+    {
+        $speakerModel = model(SpeakerModel::class);
+        return $speakerModel->hasApprovedEntry($this->getLoggedInUserId(), $eventId);
     }
 }
