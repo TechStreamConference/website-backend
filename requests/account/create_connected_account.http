@@ -1,0 +1,9 @@
+POST localhost:8080/api/account/register
+
+{
+  "username": "codingPurpurTentakel",
+  "email": "tentakel@test-conf.de",
+  "password": "CodingPurpurTentakel123!",
+  "token": "d9f05f981302c5d8dcdd165cbd6b627ed33677207614e6fd6a1e9a68def5b6fd4180332e00475421e3bb7b6810bb2d1e6b6fa592cd613bee1b215b304a8a7b1a"
+}
+###

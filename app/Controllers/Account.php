@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
+use App\Models\ConnectedRegistrationTokenModel;
 use App\Models\PasswordResetTokenModel;
 use App\Models\RolesModel;
 use App\Models\UserModel;
@@ -18,10 +19,11 @@ class Account extends BaseController
         'username' => 'required|trim|alpha_dash|min_length[3]|max_length[30]',
         'password' => 'required|valid_password',
         'email' => 'required|trim|valid_email|max_length[320]',
+        'token' => 'permit_empty|trim|alpha_numeric|max_length[128]',
     ];
 
     const VERIFICATION_RULES = [
-        'token' => 'required|trim',
+        'token' => 'required|trim|alpha_numeric|max_length[128]',
     ];
 
     const FORGOT_PASSWORD_RULES = [
@@ -51,10 +53,29 @@ class Account extends BaseController
         $passwordHash = password_hash($validData['password'], PASSWORD_DEFAULT);
         $email = $validData['email'];
 
-        $userId = $userModel->createUser();
+        // If a token was provided, we won't create a new user during this registration, but
+        // instead connect the new account to an existing user. This is used for speakers
+        // that have already been created by the admins, before the site goes live.
+        $token = $validData['token'] ?? null;
+        $isConnectedRegistration = $token !== null;
+        if (!$isConnectedRegistration) {
+            $userId = $userModel->createUser();
+        } else {
+            // Check which user the provided token belongs to.
+            $connectedRegistrationTokenModel = model(ConnectedRegistrationTokenModel::class);
+            $entry = $connectedRegistrationTokenModel->get($token);
+            if ($entry === null) {
+                return $this->response->setJSON(['error' => 'TOKEN_NOT_FOUND'])->setStatusCode(404);
+            }
+            $userId = $entry['user_id'];
+            // We will delete the token further down, after everything else was successful.
+        }
+
         if ($accountModel->createAccount($userId, $username, $passwordHash, $email) === false) {
             // Username or email already taken.
-            $userModel->deleteUser($userId);
+            if (!$isConnectedRegistration) {
+                $userModel->deleteUser($userId);
+            }
             return $this->response->setJSON(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN'])->setStatusCode(400);
         }
 
@@ -63,7 +84,9 @@ class Account extends BaseController
             // This could only happen if the token is already in use, or if the random generator
             // fails. So, this should never happen. But if it does, we need to clean up the database.
             $accountModel->deleteAccount($userId);
-            $userModel->deleteUser($userId);
+            if (!$isConnectedRegistration) {
+                $userModel->deleteUser($userId);
+            }
             return $this->response->setStatusCode(500);
         }
 
@@ -92,6 +115,10 @@ class Account extends BaseController
                 ]
             )
         );
+
+        if ($isConnectedRegistration) {
+            $connectedRegistrationTokenModel->deleteToken($token);
+        }
 
         return $this->response->setJSON(['message' => 'success'])->setStatusCode(201);
     }
