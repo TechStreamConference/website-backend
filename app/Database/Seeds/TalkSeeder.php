@@ -85,7 +85,6 @@ class TalkSeeder extends Seeder
             'user_id' => 1,
             'title' => 'Ressourcenverwaltung unter C++',
             'description' => 'In diesem Talk geht es darum, wie man in C++ Ressourcensicherheit erreicht.',
-            'is_special' => true,
             'requested_changes' => null,
             'is_approved' => true,
             'time_slot_id' => 7,
