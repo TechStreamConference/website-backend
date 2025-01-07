@@ -486,15 +486,6 @@ abstract class ContributorDashboard extends BaseController
         return $model;
     }
 
-    /** This function returns the ID of the currently logged in user. We don't check their role here.
-     * @return int The ID of the currently logged in user.
-     */
-    protected function getLoggedInUserId(): int
-    {
-        $session = session();
-        return $session->get('user_id');
-    }
-
     /** This function uploads the photo of the contributor. It returns the path to the uploaded file
      * and the MIME type of the file. If an error occurs, it returns a string with an error message.
      * @return array|string The path to the uploaded file and the MIME type, or an error message.

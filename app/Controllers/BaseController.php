@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 /**
  * Class BaseController
@@ -54,5 +55,17 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+    }
+
+    /** This function returns the ID of the currently logged in user. We don't check their role here.
+     * @return int The ID of the currently logged in user.
+     */
+    protected function getLoggedInUserId(): int
+    {
+        $session = session();
+        if (!$session->has('user_id')) {
+            throw new RuntimeException("User is not logged in.");
+        }
+        return $session->get('user_id');
     }
 }
