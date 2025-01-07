@@ -74,8 +74,7 @@ class Event extends BaseController
             return $this->response->setStatusCode(404);
         }
 
-        $talkModel = model(TalkModel::class);
-        $talks = $talkModel->getApprovedByEventId($event['id']);
+        $talks = $this->getApprovedTalks($event['id'], $this->getPublishedContributors($event['id'], Role::SPEAKER));
 
         // Generate ICS file content
         $icsContent = "BEGIN:VCALENDAR\n";
@@ -132,6 +131,8 @@ class Event extends BaseController
             $talk['duration'] = $timeSlot->duration;
             $talk['tags'] = $tagMapping[$talk['id']];
         }
+
+        usort($talks, fn($a, $b) => $a['starts_at'] <=> $b['starts_at']);
 
         return $talks;
     }

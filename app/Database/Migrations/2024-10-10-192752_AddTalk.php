@@ -27,10 +27,6 @@ class AddTalk extends Migration
                 'null' => false,
                 'after' => 'event_id',
             ],
-            'starts_at' => [
-                'type' => 'DATETIME',
-                'null' => false,
-            ],
             'title' => [
                 'type' => 'VARCHAR',
                 'constraint' => 256,

@@ -10,7 +10,6 @@ class TalkModel extends Model
     protected $allowedFields = [
         'event_id',
         'user_id',
-        'starts_at',
         'title',
         'description',
         'is_special',
@@ -34,13 +33,12 @@ class TalkModel extends Model
     public function getApprovedByEventId(int $eventId): array
     {
         return $this
-            ->select('id, user_id, starts_at, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, user_id, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
             ->where('event_id', $eventId)
             ->where('requested_changes IS NULL')
             ->where('is_approved', true)
             ->where('time_slot_id IS NOT NULL')
             ->where('time_slot_accepted', true)
-            ->orderBy('starts_at', 'ASC')
             ->findAll();
     }
 }
