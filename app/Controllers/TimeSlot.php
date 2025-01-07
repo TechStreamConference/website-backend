@@ -65,9 +65,7 @@ class TimeSlot extends BaseController
         $timeSlotModel = model(TimeSlotModel::class);
         $timeSlots = $timeSlotModel->getByEventId($eventId);
         $timeSlotsArray = array_map(
-            function ($timeSlot) {
-                return $timeSlot->toArray();
-            },
+            fn($timeSlot) => $timeSlot->toArray(),
             $timeSlots,
         );
         return $this->response->setJSON($timeSlotsArray);
