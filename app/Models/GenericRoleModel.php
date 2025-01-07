@@ -56,6 +56,16 @@ class GenericRoleModel extends Model
             ->findAll();
     }
 
+    public function hasApprovedEntry(int $userId, int $eventId): bool
+    {
+        return $this
+            ->select('id')
+            ->where('user_id', $userId)
+            ->where('event_id', $eventId)
+            ->where('is_approved', true)
+            ->countAllResults() > 0;
+    }
+
     public function getLatestPerUserPerEvent(): array {
         $subQuery = $this->db->table($this->table)
             ->select('MAX(id) as id')
