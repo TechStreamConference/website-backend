@@ -1,10 +1,10 @@
 POST http://localhost:8080/api/account/login
 
 {
-  "username_or_email": "ClausKleber",
-  "password": "ClausKleber123!"
+  "username_or_email": "coder2k",
+  "password": "password"
 }
 
 ###
 
-GET localhost:8080/api/dashboard/speaker/can-submit-talk/2
+GET localhost:8080/api/dashboard/speaker/can-submit-talk/1

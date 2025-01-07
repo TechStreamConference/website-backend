@@ -65,6 +65,7 @@ $routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'creat
 
 // For better organization, the following routes are defined in the Talk controller.
 $routes->get('dashboard/speaker/can-submit-talk/(:num)', [Talk::class, 'canSubmit'], ['filter' => SpeakerAuthFilter::class]);
+$routes->post('dashboard/speaker/submit-talk/(:num)', [Talk::class, 'submit'], ['filter' => SpeakerAuthFilter::class]);
 
 $routes->get('dashboard/team-member/all-events', [TeamMemberDashboard::class, 'getAll'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->get('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'get'], ['filter' => TeamMemberAuthFilter::class]);

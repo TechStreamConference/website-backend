@@ -12,6 +12,7 @@ class TalkModel extends Model
         'user_id',
         'title',
         'description',
+        'notes',
         'is_special',
         'requested_changes',
         'is_approved',
@@ -23,10 +24,9 @@ class TalkModel extends Model
         'id' => 'int',
         'event_id' => 'int',
         'user_id' => 'int',
-        'duration' => 'int',
         'is_special' => 'bool',
         'is_approved' => 'bool',
-        'time_slot_id' => 'int',
+        'time_slot_id' => '?int',
         'time_slot_accepted' => 'bool',
     ];
 
@@ -40,5 +40,32 @@ class TalkModel extends Model
             ->where('time_slot_id IS NOT NULL')
             ->where('time_slot_accepted', true)
             ->findAll();
+    }
+
+    public function create(
+        int     $eventId,
+        int     $userId,
+        string  $title,
+        string  $description,
+        ?string $notes,
+        bool    $isSpecial,
+        ?string $requestedChanges,
+        bool    $isApproved,
+        ?int    $timeSlotId,
+        bool    $timeSlotAccepted,
+    ): int
+    {
+        return $this->insert([
+            'event_id' => $eventId,
+            'user_id' => $userId,
+            'title' => $title,
+            'description' => $description,
+            'notes' => $notes,
+            'is_special' => $isSpecial,
+            'requested_changes' => $requestedChanges,
+            'is_approved' => $isApproved,
+            'time_slot_id' => $timeSlotId,
+            'time_slot_accepted' => $timeSlotAccepted,
+        ]);
     }
 }
