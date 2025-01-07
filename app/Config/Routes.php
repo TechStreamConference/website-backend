@@ -9,6 +9,7 @@ use App\Controllers\Image;
 use App\Controllers\HealthCheck;
 use App\Controllers\SpeakerDashboard;
 use App\Controllers\TeamMemberDashboard;
+use App\Controllers\TimeSlot;
 use App\Filters\AdminAuthFilter;
 use App\Filters\AuthFilter;
 use App\Filters\SpeakerAuthFilter;
@@ -53,6 +54,9 @@ $routes->put('dashboard/admin/approval/team-member/(:num)/request-changes', [App
 $routes->get('dashboard/admin/approval/social-media-link', [Approval::class, 'getPendingSocialMediaLinks'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/social-media-link/(:num)', [Approval::class, 'approveSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/social-media-link/(:num)/request-changes', [Approval::class, 'requestChangesForSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
+
+$routes->get('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'get'], ['filter' => AdminAuthFilter::class]);
+$routes->post('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'create_or_replace'], ['filter' => AdminAuthFilter::class]);
 
 $routes->get('dashboard/speaker/all-events', [SpeakerDashboard::class, 'getAll'], ['filter' => SpeakerAuthFilter::class]);
 $routes->get('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'get'], ['filter' => SpeakerAuthFilter::class]);
