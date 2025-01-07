@@ -15,7 +15,7 @@ class Talk extends BaseController
      * @return ResponseInterface The response to return to the client (200 if the user can
      *                           submit a talk, 403 otherwise).
      */
-    public function canSubmitTalk(int $eventId): ResponseInterface
+    public function canSubmit(int $eventId): ResponseInterface
     {
         if ($this->canLoggedInUserSubmitTalk($eventId)) {
             return $this->response->setJSON(['can_submit_talk' => true])->setStatusCode(200);
