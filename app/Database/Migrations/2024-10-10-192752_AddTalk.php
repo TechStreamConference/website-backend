@@ -31,11 +31,6 @@ class AddTalk extends Migration
                 'type' => 'DATETIME',
                 'null' => false,
             ],
-            'duration' => [
-                'type' => 'INT',
-                'unsigned' => true,
-                'null' => false,
-            ],
             'title' => [
                 'type' => 'VARCHAR',
                 'constraint' => 256,
@@ -49,6 +44,27 @@ class AddTalk extends Migration
                 'type' => 'BOOLEAN',
                 'null' => false,
                 'default' => false,
+            ],
+            'requested_changes' => [
+                'type' => 'TEXT',
+                'null' => true,
+                'after' => 'is_special',
+            ],
+            'is_approved' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
+                'after' => 'requested_changes',
+            ],
+            'time_slot_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => true,
+                'after' => 'is_approved',
+            ],
+            'time_slot_accepted' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
+                'after' => 'time_slot_id',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -66,7 +82,7 @@ class AddTalk extends Migration
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('event_id', 'Event', 'id');
         $this->forge->addForeignKey('user_id', 'User', 'id');
-        $this->forge->addForeignKey('duration', 'TalkDurationChoice', 'duration');
+        $this->forge->addForeignKey('time_slot_id', 'TimeSlot', 'id');
         $this->forge->createTable('Talk');
     }
 

@@ -62,4 +62,17 @@ class TimeSlotModel extends Model
             $this->where('event_id', $eventId)->orderBy('start_time')->findAll(),
         );
     }
+
+    /**
+     * Gets time slots by their IDs.
+     * @param int[] $ids The IDs of the time slots.
+     * @return TimeSlotData[] An array of TimeSlot objects.
+     */
+    public function getByIds(array $ids): array
+    {
+        return array_map(
+            TimeSlotData::fromArray(...),
+            $this->whereIn('id', $ids)->orderBy('start_time')->findAll(),
+        );
+    }
 }

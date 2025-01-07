@@ -11,53 +11,36 @@ class TalkModel extends Model
         'event_id',
         'user_id',
         'starts_at',
-        'duration',
         'title',
         'description',
-        'is_special'
+        'is_special',
+        'requested_changes',
+        'is_approved',
+        'time_slot_id',
+        'time_slot_accepted',
     ];
     protected $useTimestamps = true;
+    protected array $casts = [
+        'id' => 'int',
+        'event_id' => 'int',
+        'user_id' => 'int',
+        'duration' => 'int',
+        'is_special' => 'bool',
+        'is_approved' => 'bool',
+        'time_slot_id' => 'int',
+        'time_slot_accepted' => 'bool',
+    ];
 
-    public function getByEventId(int $eventId): array
+    public function getApprovedByEventId(int $eventId): array
     {
-        // get all talks for the given event
-        $talks = $this->db->table('Talk')
-            ->select('id, user_id, starts_at, duration, title, description, is_special')
+        return $this
+            ->select('id, user_id, starts_at, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
             ->where('event_id', $eventId)
+            ->where('requested_changes IS NULL')
+            ->where('is_approved', true)
+            ->where('time_slot_id IS NOT NULL')
+            ->where('time_slot_accepted', true)
             ->orderBy('starts_at', 'ASC')
-            ->get()
-            ->getResultArray();
-
-        // get all tags
-        $tags = $this->db->table('TalkHasTag')
-            ->join('Tag', 'Tag.id = TalkHasTag.tag_id')
-            ->select('TalkHasTag.talk_id, Tag.text, Tag.color_index')
-            ->get()
-            ->getResultArray();
-
-        // add tags to the talks
-        foreach ($talks as &$talk) {
-            $tagsForThisTalk = array_filter($tags, function ($tag) use ($talk) {
-                return $tag['talk_id'] === $talk['id'];
-            });
-
-            // remove the talk_id from the tags
-            foreach ($tagsForThisTalk as &$tag) {
-                $tag['color_index'] = intval($tag['color_index']);
-                unset($tag['talk_id']);
-            }
-
-            $talk['tags'] = array_values($tagsForThisTalk);
-            $talk['user_id'] = intval($talk['user_id']);
-            $talk['duration'] = intval($talk['duration']);
-            $talk['is_special'] = boolval($talk['is_special']);
-        }
-
-        // remove the id from the talks
-        foreach ($talks as &$talk) {
-            unset($talk['id']);
-        }
-
-        return $talks;
+            ->findAll();
     }
 }
