@@ -21,10 +21,11 @@ class AddTalk extends Migration
                 'unsigned' => true,
                 'null' => false,
             ],
-            'speaker_id' => [
+            'user_id' => [
                 'type' => 'INT',
                 'unsigned' => true,
                 'null' => false,
+                'after' => 'event_id',
             ],
             'starts_at' => [
                 'type' => 'DATETIME',
@@ -64,7 +65,8 @@ class AddTalk extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('event_id', 'Event', 'id');
-        $this->forge->addForeignKey('speaker_id', 'Speaker', 'id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->addForeignKey('duration', 'TalkDurationChoice', 'duration');
         $this->forge->createTable('Talk');
     }
 
