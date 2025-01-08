@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class PossibleTalkDurationModel extends Model
 {
-    protected $table = 'TalkDurationChoice';
+    protected $table = 'PossibleTalkDuration';
     protected $allowedFields = [
         'talk_id',
         'duration',

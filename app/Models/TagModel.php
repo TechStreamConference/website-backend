@@ -8,7 +8,6 @@ class TagModel extends Model
 {
     protected $table = 'Tag';
     protected $allowedFields = [
-        'id',
         'text',
         'color_index',
         'created_at',
@@ -43,5 +42,27 @@ class TagModel extends Model
         }
 
         return $result;
+    }
+
+    /** Deletes all tags for a talk.
+     * @param int $talkId The ID of the talk.
+     */
+    public function deleteAllTagsForTalk(int $talkId): void
+    {
+        $this->db->table('TalkHasTag')->where('talk_id', $talkId)->delete();
+    }
+
+    /** Stores the tags for a talk.
+     * @param int $talkId The ID of the talk.
+     * @param int[] $tagIds The IDs of the tags.
+     */
+    public function storeTagsForTalk(int $talkId, array $tagIds): void
+    {
+        $this->db->table('TalkHasTag')->insertBatch(
+            array_map(
+                fn($tagId) => ['talk_id' => $talkId, 'tag_id' => $tagId],
+                $tagIds
+            )
+        );
     }
 }

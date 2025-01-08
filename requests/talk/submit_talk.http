@@ -7,7 +7,7 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-POST localhost:8080/api/dashboard/speaker/submit-talk/1
+POST localhost:8080/api/dashboard/speaker/submit-talk
 
 {
     "title": "Programmieren wie ein Profi",

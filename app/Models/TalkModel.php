@@ -33,12 +33,21 @@ class TalkModel extends Model
     public function getApprovedByEventId(int $eventId): array
     {
         return $this
-            ->select('id, user_id, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, event_id, user_id, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
             ->where('event_id', $eventId)
             ->where('requested_changes IS NULL')
             ->where('is_approved', true)
             ->where('time_slot_id IS NOT NULL')
             ->where('time_slot_accepted', true)
+            ->findAll();
+    }
+
+    public function findAllByTitle(string $title, int $eventId): array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->where('title', $title)
+            ->where('event_id', $eventId)
             ->findAll();
     }
 

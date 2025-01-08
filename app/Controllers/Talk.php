@@ -5,7 +5,9 @@ namespace App\Controllers;
 use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
 use App\Models\EventModel;
+use App\Models\PossibleTalkDurationModel;
 use App\Models\SpeakerModel;
+use App\Models\TagModel;
 use App\Models\TalkDurationChoiceModel;
 use App\Models\TalkModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -22,21 +24,27 @@ class Talk extends BaseController
 
     /** Checks if the current user can submit a talk. It's not enough to have the
      * speaker role, but the user must also have an approved speaker entry for the
-     * given event.
-     * @param int $eventId The ID of the event in question.
+     * currently open event.
      * @return ResponseInterface The response to return to the client (200 if the user can
      *                           submit a talk, 403 otherwise).
      */
-    public function canSubmit(int $eventId): ResponseInterface
+    public function canSubmit(): ResponseInterface
     {
-        $canSubmit = $this->canLoggedInUserSubmitTalk($eventId);
-        if ($canSubmit instanceof ResponseInterface) {
-            return $canSubmit;
+        $openEventId = $this->canLoggedInUserSubmitTalk();
+        if ($openEventId instanceof ResponseInterface) {
+            // The user can't submit a talk.
+            return $openEventId;
         }
-        return $this->response->setJSON(['can_submit_talk' => true])->setStatusCode(200);
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->get($openEventId);
+        $responseData = [
+            'can_submit_talk' => true,
+            'event' => $event,
+        ];
+        return $this->response->setJSON($responseData)->setStatusCode(200);
     }
 
-    public function submit(int $eventId): ResponseInterface
+    public function submit(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data, self::TALK_RULES)) {
@@ -44,18 +52,32 @@ class Talk extends BaseController
         }
         $validData = $this->validator->getValidated();
 
-        $canSubmit = $this->canLoggedInUserSubmitTalk($eventId);
-        if ($canSubmit instanceof ResponseInterface) {
-            return $canSubmit;
+        $openEventId = $this->canLoggedInUserSubmitTalk();
+        if ($openEventId instanceof ResponseInterface) {
+            // The user can't submit a talk.
+            return $openEventId;
         }
 
+        // The speaker has to provide at least one possible duration for the talk (e.g. 30 minutes).
+        // The possible durations have to be valid (i.e. they have to be available choices).
         if (!$this->areDurationsValid($validData['possible_durations'])) {
             return $this->response->setJSON(['error' => 'INVALID_DURATION'])->setStatusCode(400);
         }
 
+        if (count($validData['tag_ids']) < 1) {
+            return $this->response->setJSON(['error' => 'NO_TAGS'])->setStatusCode(400);
+        }
+
         $talkModel = model(TalkModel::class);
-        $talkModel->create(
-            eventId: $eventId,
+
+        // Let's do a quick check to see if there's already a talk with the same title for the same event.
+        // This is just to avoid problems due to people re-sending the data (e.g. by refreshing the page).
+        if (count($talkModel->findAllByTitle($validData['title'], $openEventId)) > 0) {
+            return $this->response->setJSON(['error' => 'DUPLICATE_TALK'])->setStatusCode(400);
+        }
+
+        $talkId = $talkModel->create(
+            eventId: $openEventId,
             userId: $this->getLoggedInUserId(),
             title: $validData['title'],
             description: $validData['description'],
@@ -66,6 +88,12 @@ class Talk extends BaseController
             timeSlotId: null,
             timeSlotAccepted: false,
         );
+
+        $possibleTalkDurationModel = model(PossibleTalkDurationModel::class);
+        $possibleTalkDurationModel->store($talkId, $validData['possible_durations']);
+
+        $tagModel = model(TagModel::class);
+        $tagModel->storeTagsForTalk($talkId, $validData['tag_ids']);
 
         $accountModel = model(AccountModel::class);
         $account = $accountModel->get($this->getLoggedInUserId());
@@ -98,19 +126,20 @@ class Talk extends BaseController
         return $this->response->setJSON(['success' => 'TALK_SUBMITTED'])->setStatusCode(201);
     }
 
-    private function canLoggedInUserSubmitTalk(int $eventId): true|ResponseInterface
+    /** Checks whether the currently logged in user could submit a talk for an event.
+     * @return int|ResponseInterface The ID of the event if the user can submit a talk,
+     *                               a response object containing the error response otherwise.
+     */
+    private function canLoggedInUserSubmitTalk(): int|ResponseInterface
     {
-        if (!$this->loggedInUserHasApprovedSpeakerEntry($eventId)) {
-            return $this->response->setJSON(['error' => 'NO_APPROVED_SPEAKER_ENTRY'])->setStatusCode(403);
-        }
         $openEventId = $this->getOpenEventId();
         if ($openEventId === null) {
             return $this->response->setJSON(['error' => 'NO_OPEN_EVENT'])->setStatusCode(403);
         }
-        if ($openEventId !== $eventId) {
-            return $this->response->setJSON(['error' => 'EVENT_NOT_OPEN'])->setStatusCode(403);
+        if (!$this->loggedInUserHasApprovedSpeakerEntry($openEventId)) {
+            return $this->response->setJSON(['error' => 'NO_APPROVED_SPEAKER_ENTRY'])->setStatusCode(403);
         }
-        return true;
+        return $openEventId;
     }
 
     private function loggedInUserHasApprovedSpeakerEntry(int $eventId): bool
@@ -140,6 +169,9 @@ class Talk extends BaseController
 
     private function areDurationsValid(array $durations): bool
     {
+        if (count($durations) < 1) {
+            return false;
+        }
         $talkDurationChoiceModel = model(TalkDurationChoiceModel::class);
         $availableChoices = $talkDurationChoiceModel->getAll();
         $availableDurations = array_column($availableChoices, 'duration');
