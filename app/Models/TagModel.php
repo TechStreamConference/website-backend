@@ -25,6 +25,29 @@ class TagModel extends Model
         return $this->select('id, text, color_index')->orderBy('text')->findAll();
     }
 
+    /** Returns an associative array with the talk IDs as keys and the corresponding
+     * tags (as an array) as values.
+     * @param int[] $talkIds The IDs of the talks.
+     * @return array The associative array.
+     */
+    public function getTagMapping(array $talkIds): array
+    {
+        $tags = $this->getAllByTalkIds($talkIds);
+        $mapping = [];
+        foreach ($tags as $tag) {
+            $mapping[$tag['talk_id']][] = $tag;
+        }
+
+        // Remove redundant talk_id values.
+        foreach ($mapping as &$tags) {
+            foreach ($tags as &$tag) {
+                unset($tag['talk_id']);
+            }
+        }
+
+        return $mapping;
+    }
+
     public function getAllByTalkIds(array $talkIds): array
     {
         $result = $this

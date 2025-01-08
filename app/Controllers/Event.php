@@ -123,7 +123,8 @@ class Event extends BaseController
         }
         unset($talk);
 
-        $tagMapping = $this->getTagMapping($talkIds);
+        $tagModel = model(TagModel::class);
+        $tagMapping = $tagModel->getTagMapping($talkIds);
 
         foreach ($talks as &$talk) {
             $timeSlot = $timeSlotById[$talk['time_slot_id']];
@@ -150,25 +151,6 @@ class Event extends BaseController
             $timeSlotById[$timeSlot->id] = $timeSlot;
         }
         return $timeSlotById;
-    }
-
-    private function getTagMapping(array $talkIds): array
-    {
-        $tagModel = model(TagModel::class);
-        $tags = $tagModel->getAllByTalkIds($talkIds);
-        $mapping = [];
-        foreach ($tags as $tag) {
-            $mapping[$tag['talk_id']][] = $tag;
-        }
-
-        // Remove redundant talk_id values.
-        foreach ($mapping as &$tags) {
-            foreach ($tags as &$tag) {
-                unset($tag['talk_id']);
-            }
-        }
-
-        return $mapping;
     }
 
     private function getPublishedContributors(int $eventId, Role $role): array
