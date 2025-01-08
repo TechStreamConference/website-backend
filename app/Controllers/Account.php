@@ -99,11 +99,6 @@ class Account extends BaseController
 
         $verificationLink = $baseUrl . 'verify-email-address' . '?token=' . $validationToken;
 
-        EmailHelper::sendToAdmins(
-            'Neues Benutzerkonto',
-            view('email/admin/new_user', ['username' => $username])
-        );
-
         EmailHelper::send(
             $email,
             'Deine Registrierung bei der Tech Stream Conference',
@@ -332,7 +327,15 @@ class Account extends BaseController
         }
 
         $accountModel = model(AccountModel::class);
-        $accountModel->markAsVerified($entry['user_id']);
+        $userId = $entry['user_id'];
+        $account = $accountModel->get($userId);
+        $username = $account['username'];
+        $accountModel->markAsVerified($userId);
+
+        EmailHelper::sendToAdmins(
+            'Neues Benutzerkonto',
+            view('email/admin/new_user', ['username' => $username])
+        );
 
         return $this->response->setJSON(['message' => 'success']);
     }
