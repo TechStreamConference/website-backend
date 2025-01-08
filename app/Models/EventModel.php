@@ -67,10 +67,23 @@ class EventModel extends Model
     public function getLatestPublished(): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, call_for_papers_start, call_for_papers_end')
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->orderBy('start_date', 'DESC')
             ->first();
+    }
+
+    public function get(int $eventId): array|null
+    {
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, call_for_papers_start, call_for_papers_end')
+            ->where('id', $eventId)
+            ->first();
+    }
+
+    public function doesExist(int $eventId): bool
+    {
+        return $this->where('id', $eventId)->countAllResults() > 0;
     }
 
     public function updateEvent(
