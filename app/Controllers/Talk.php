@@ -71,6 +71,13 @@ class Talk extends BaseController
         if (count($validData['tag_ids']) < 1) {
             return $this->response->setJSON(['error' => 'NO_TAGS'])->setStatusCode(400);
         }
+        $tagModel = model(TagModel::class);
+        $allTags = $tagModel->getAll();
+        foreach ($validData['tag_ids'] as $tagId) {
+            if (!in_array($tagId, array_column($allTags, 'id'))) {
+                return $this->response->setJSON(['error' => 'INVALID_TAG'])->setStatusCode(400);
+            }
+        }
 
         $talkModel = model(TalkModel::class);
 
