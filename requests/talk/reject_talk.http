@@ -1,0 +1,14 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "password"
+}
+
+### The `reason` field is optional (can be ommitted, null, or string).
+
+POST localhost:8080/api/dashboard/admin/talk/10/reject
+
+{
+    "reason": "Der Vortrag ist nicht für unser Publikum geeignet."
+}

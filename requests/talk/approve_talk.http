@@ -7,4 +7,4 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-PUT localhost:8080/api/dashboard/admin/talk/10/approve
+PUT localhost:8080/api/dashboard/admin/talk/12/approve

@@ -27,6 +27,10 @@ class Talk extends BaseController
         'requested_changes' => 'required|string',
     ];
 
+    private const REJECT_RULES = [
+        'reason' => 'permit_empty|string',
+    ];
+
     /** Checks if the current user can submit a talk. It's not enough to have the
      * speaker role, but the user must also have an approved speaker entry for the
      * currently open event.
@@ -94,7 +98,6 @@ class Talk extends BaseController
             title: $validData['title'],
             description: $validData['description'],
             notes: $validData['notes'] ?? null,
-            isSpecial: false,
             requestedChanges: null,
             isApproved: false,
             timeSlotId: null,
@@ -273,6 +276,103 @@ class Talk extends BaseController
         return $this->response->setJSON(['success' => 'TALK_APPROVED'])->setStatusCode(200);
     }
 
+    public function reject(int $talkId): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::REJECT_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+        }
+
+        // We don't check whether or not the talk is already approved here, because we want to allow
+        // admins to reject talks that have already been approved.
+
+        $tagModel = model(TagModel::class);
+        $tagModel->deleteAllTagsForTalk($talkId);
+
+        $possibleDurationModel = model(PossibleTalkDurationModel::class);
+        $possibleDurationModel->deleteAllForTalk($talkId);
+
+        if (!$talkModel->delete($talkId)) {
+            return $this->response->setJSON(['error' => 'TALK_DELETION_FAILED'])->setStatusCode(500);
+        }
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($talk['user_id']);
+        $username = $account['username'];
+        $userEmail = $account['email'];
+
+        $adminAccount = $accountModel->get($this->getLoggedInUserId());
+        $adminUsername = $adminAccount['username'];
+
+        // Depending on whether the talk was approved before or not, we will send a different email.
+        // Also, for tentative (i.e. approved) talks, we don't mention a reason for the rejection.
+
+        if ($talk['is_approved']) {
+            // Tentative talk.
+
+            EmailHelper::send(
+                to: $userEmail,
+                subject: 'Dein Vortrag bei der Tech Stream Conference',
+                message: view(
+                    'email/talk/tentative_talk_rejected',
+                    [
+                        'username' => $username,
+                        'title' => $talk['title'],
+                    ]
+                )
+            );
+
+            EmailHelper::sendToAdmins(
+                subject: 'Vortrag abgelehnt',
+                message: view(
+                    'email/admin/tentative_talk_rejected',
+                    [
+                        'username' => $username,
+                        'title' => $talk['title'],
+                        'admin' => $adminUsername,
+                    ]
+                )
+            );
+        } else {
+            // Pending talk.
+
+            EmailHelper::send(
+                to: $userEmail,
+                subject: 'Dein Vortrag bei der Tech Stream Conference',
+                message: view(
+                    'email/talk/pending_talk_rejected',
+                    [
+                        'username' => $username,
+                        'title' => $talk['title'],
+                        'reason' => $validData['reason'] ?? null,
+                    ]
+                )
+            );
+
+            EmailHelper::sendToAdmins(
+                subject: 'Vortrag abgelehnt',
+                message: view(
+                    'email/admin/pending_talk_rejected',
+                    [
+                        'username' => $username,
+                        'title' => $talk['title'],
+                        'reason' => $validData['reason'] ?? null,
+                        'admin' => $adminUsername,
+                    ]
+                )
+            );
+        }
+
+        return $this->response->setJSON(['success' => 'TALK_REJECTED'])->setStatusCode(200);
+    }
+
     public function change(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
@@ -408,7 +508,6 @@ class Talk extends BaseController
             title: $validData['title'],
             description: $validData['description'],
             notes: $validData['notes'] ?? null,
-            isSpecial: $talk['is_special'],
             requestedChanges: null,
             isApproved: false,
             timeSlotId: null,
