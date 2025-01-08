@@ -154,22 +154,7 @@ class Talk extends BaseController
         $talkModel = model(TalkModel::class);
         $pendingTalks = $talkModel->getAllPending();
 
-        $tagModel = model(TagModel::class);
-        $tagMapping = $tagModel->getTagMapping(array_column($pendingTalks, 'id'));
-
-        $possibleTalkDurationModel = model(PossibleTalkDurationModel::class);
-
-        $speakerModel = model(SpeakerModel::class);
-        foreach ($pendingTalks as &$pendingTalk) {
-            $speaker = $speakerModel->getLatestApprovedForEvent($pendingTalk['user_id'], $pendingTalk['event_id']);
-            $pendingTalk['speaker'] = $speaker;
-            unset($pendingTalk['user_id']);
-            $pendingTalk['tags'] = $tagMapping[$pendingTalk['id']];
-            $pendingTalk['possible_durations'] = array_column(
-                $possibleTalkDurationModel->get($pendingTalk['id']),
-                'duration'
-            );
-        }
+        $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
         return $this->response->setJSON(['pending_talks' => $pendingTalks])->setStatusCode(200);
     }
 
@@ -576,5 +561,31 @@ class Talk extends BaseController
             }
         }
         return true;
+    }
+
+    /** Collects additional data for the passed talks (speaker, tags, possible durations).
+     * @param array $pendingTalks The talks to collect additional data for.
+     * @return array The talks with additional data.
+     */
+    private function addAdditionalDataToTalks(array $pendingTalks): array
+    {
+        $tagModel = model(TagModel::class);
+        $tagMapping = $tagModel->getTagMapping(array_column($pendingTalks, 'id'));
+
+        $possibleTalkDurationModel = model(PossibleTalkDurationModel::class);
+
+        $speakerModel = model(SpeakerModel::class);
+        foreach ($pendingTalks as &$pendingTalk) {
+            $speaker = $speakerModel->getLatestApprovedForEvent($pendingTalk['user_id'], $pendingTalk['event_id']);
+            $pendingTalk['speaker'] = $speaker;
+            unset($pendingTalk['user_id']);
+            $pendingTalk['tags'] = $tagMapping[$pendingTalk['id']];
+            $pendingTalk['possible_durations'] = array_column(
+                $possibleTalkDurationModel->get($pendingTalk['id']),
+                'duration'
+            );
+        }
+
+        return $pendingTalks;
     }
 }
