@@ -77,4 +77,13 @@ class TalkModel extends Model
             'time_slot_accepted' => $timeSlotAccepted,
         ]);
     }
+
+    public function getAllPending(): array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at')
+            ->where('is_approved', false)
+            ->orderBy('created_at')
+            ->findAll();
+    }
 }
