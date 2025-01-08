@@ -130,4 +130,14 @@ class TalkModel extends Model
     {
         $this->update($talkId, ['requested_changes' => $requestedChanges]);
     }
+
+    public function deleteRequestedChanges(int $talkId): void
+    {
+        $this->update($talkId, ['requested_changes' => null]);
+    }
+
+    public function approve(int $talkId): void
+    {
+        $this->update($talkId, ['is_approved' => true]);
+    }
 }

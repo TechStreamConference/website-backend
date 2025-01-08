@@ -225,6 +225,54 @@ class Talk extends BaseController
         return $this->response->setJSON(['success' => 'CHANGES_REQUESTED'])->setStatusCode(200);
     }
 
+    public function approve(int $talkId): ResponseInterface
+    {
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+        }
+        if ($talk['is_approved']) {
+            return $this->response->setJSON(['error' => 'TALK_ALREADY_APPROVED'])->setStatusCode(400);
+        }
+        $talkModel->deleteRequestedChanges($talkId);
+        $talkModel->approve($talkId);
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($talk['user_id']);
+        $username = $account['username'];
+        $userEmail = $account['email'];
+
+        $adminAccount = $accountModel->get($this->getLoggedInUserId());
+        $adminUsername = $adminAccount['username'];
+
+        EmailHelper::send(
+            to: $userEmail,
+            subject: 'Dein Vortrag bei der Tech Stream Conference',
+            message: view(
+                'email/talk/talk_approved',
+                [
+                    'username' => $username,
+                    'title' => $talk['title'],
+                ]
+            )
+        );
+
+        EmailHelper::sendToAdmins(
+            subject: 'Vortrag genehmigt',
+            message: view(
+                'email/admin/talk_approved',
+                [
+                    'username' => $username,
+                    'title' => $talk['title'],
+                    'admin' => $adminUsername,
+                ]
+            )
+        );
+
+        return $this->response->setJSON(['success' => 'TALK_APPROVED'])->setStatusCode(200);
+    }
+
     public function change(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
