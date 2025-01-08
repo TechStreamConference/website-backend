@@ -177,6 +177,22 @@ class GenericRoleModel extends Model
             ->first();
     }
 
+    /** Returns the latest approved entry for the given user and the given event.
+     * @param int $userId The ID of the user.
+     * @param int $eventId The ID of the event.
+     * @return array|null The entry, or null if no entry was found.
+     */
+    public function getLatestApprovedForEvent(int $userId, int $eventId): array|null
+    {
+        return $this
+            ->select('id, user_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
+            ->where('event_id', $eventId)
+            ->where('user_id', $userId)
+            ->where('is_approved', true)
+            ->orderBy('updated_at', 'DESC')
+            ->first();
+    }
+
     public function create(
         string  $name,
         int     $userId,
