@@ -78,6 +78,37 @@ class TalkModel extends Model
         ]);
     }
 
+    public function change(
+        int     $talkId,
+        int     $eventId,
+        int     $userId,
+        string  $title,
+        string  $description,
+        ?string $notes,
+        bool    $isSpecial,
+        ?string $requestedChanges,
+        bool    $isApproved,
+        ?int    $timeSlotId,
+        bool    $timeSlotAccepted,
+    ): bool
+    {
+        return $this->update(
+            $talkId,
+            [
+                'event_id' => $eventId,
+                'user_id' => $userId,
+                'title' => $title,
+                'description' => $description,
+                'notes' => $notes,
+                'is_special' => $isSpecial,
+                'requested_changes' => $requestedChanges,
+                'is_approved' => $isApproved,
+                'time_slot_id' => $timeSlotId,
+                'time_slot_accepted' => $timeSlotAccepted,
+            ],
+        );
+    }
+
     public function getAllPending(): array
     {
         return $this
@@ -90,7 +121,7 @@ class TalkModel extends Model
     public function get(int $talkdId): ?array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, event_id, user_id, title, description, notes, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
             ->where('id', $talkdId)
             ->first();
     }

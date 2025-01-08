@@ -89,4 +89,13 @@ class TagModel extends Model
             )
         );
     }
+
+    /** Returns the tags with the given IDs.
+     * @param int[] $tagIds The IDs of the tags.
+     * @return array The tags.
+     */
+    public function getByIds(array $tagIds): array
+    {
+        return $this->select('text, color_index')->whereIn('id', $tagIds)->findAll();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\Difference;
 use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
 use App\Models\EventModel;
@@ -222,6 +223,156 @@ class Talk extends BaseController
         );
 
         return $this->response->setJSON(['success' => 'CHANGES_REQUESTED'])->setStatusCode(200);
+    }
+
+    public function change(int $talkId): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::TALK_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null || $talk['user_id'] !== $this->getLoggedInUserId()) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+        }
+
+        if ($talk['is_approved']) {
+            return $this->response->setJSON(['error' => 'TALK_ALREADY_APPROVED'])->setStatusCode(400);
+        }
+
+        if (count($validData['tag_ids']) < 1) {
+            return $this->response->setJSON(['error' => 'NO_TAGS'])->setStatusCode(400);
+        }
+
+        if (count($validData['possible_durations']) < 1) {
+            return $this->response->setJSON(['error' => 'NO_DURATIONS'])->setStatusCode(400);
+        }
+
+        $tagModel = model(TagModel::class);
+        $allTags = $tagModel->getAll();
+        foreach ($validData['tag_ids'] as $tagId) {
+            if (!in_array($tagId, array_column($allTags, 'id'))) {
+                return $this->response->setJSON(['error' => 'INVALID_TAG'])->setStatusCode(400);
+            }
+        }
+
+        /** @var Difference[] $differences */
+        $differences = [];
+        if ($talk['title'] !== $validData['title']) {
+            $differences[] = new Difference('Titel', $talk['title'], $validData['title']);
+        }
+        if ($talk['description'] !== $validData['description']) {
+            $differences[] = new Difference('Beschreibung', $talk['description'], $validData['description']);
+        }
+        if ($talk['notes'] !== $validData['notes']) {
+            $differences[] = new Difference('Notizen', $talk['notes'], $validData['notes']);
+        }
+
+        $possibleDurationModel = model(PossibleTalkDurationModel::class);
+        $oldPossibleDurations = array_column($possibleDurationModel->get($talkId), 'duration');
+        $newPossibleDurations = $validData['possible_durations'];
+
+        sort($oldPossibleDurations);
+        sort($newPossibleDurations);
+
+        if ($oldPossibleDurations !== $newPossibleDurations) {
+            $differences[] = new Difference(
+                'Mögliche Dauer',
+                implode(
+                    ', ',
+                    array_map(
+                        fn($duration) => strval($duration),
+                        $oldPossibleDurations
+                    ),
+                ),
+                implode(
+                    ', ',
+                    array_map(
+                        fn($duration) => strval($duration),
+                        $newPossibleDurations,
+                    )
+                ),
+            );
+        }
+
+        $tagMapping = $tagModel->getTagMapping([$talkId]);
+        $oldTags = array_column($tagMapping[$talkId], 'text');
+        $newTags = array_column($tagModel->getByIds($validData['tag_ids']), 'text');
+
+        sort($oldTags);
+        sort($newTags);
+
+        if ($oldTags !== $newTags) {
+            $differences[] = new Difference(
+                'Tags',
+                implode(', ', $oldTags),
+                implode(', ', $newTags),
+            );
+        }
+
+        if (count($differences) === 0) {
+            return $this->response->setJSON(['error' => 'NO_CHANGES'])->setStatusCode(400);
+        }
+
+        $requestedChanges = $talk['requested_changes'];
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($this->getLoggedInUserId());
+        $username = $account['username'];
+        $email = $account['email'];
+
+        EmailHelper::send(
+            to: $email,
+            subject: 'Änderungen an deinem Vortrag',
+            message: view(
+                'email/talk/talk_changed',
+                [
+                    'username' => $username,
+                    'differences' => $differences,
+                ]
+            )
+        );
+
+        EmailHelper::sendToAdmins(
+            subject: 'Änderungen an Vortrag',
+            message: view(
+                'email/admin/talk_changed',
+                [
+                    'title' => $validData['title'],
+                    'username' => $username,
+                    'requested_changes' => $requestedChanges,
+                    'differences' => $differences,
+                ]
+            )
+        );
+
+        // Instead of updating the possible talk durations and tags, we will just remove all of them
+        // and re-add them immediately. This is easier and less error-prone.
+        $possibleDurationModel->deleteAllForTalk($talkId);
+        $tagModel->deleteAllTagsForTalk($talkId);
+        if (!$talkModel->change(
+            talkId: $talkId,
+            eventId: $talk['event_id'],
+            userId: $talk['user_id'],
+            title: $validData['title'],
+            description: $validData['description'],
+            notes: $validData['notes'] ?? null,
+            isSpecial: $talk['is_special'],
+            requestedChanges: null,
+            isApproved: false,
+            timeSlotId: null,
+            timeSlotAccepted: false,
+        )) {
+            return $this->response->setJSON(['error' => 'TALK_CHANGE_FAILED'])->setStatusCode(500);
+        }
+
+        $possibleDurationModel->store($talkId, $validData['possible_durations']);
+        $tagModel->storeTagsForTalk($talkId, $validData['tag_ids']);
+
+        return $this->response->setJSON(['success' => 'TALK_CHANGED'])->setStatusCode(200);
     }
 
     /** Checks whether the currently logged in user could submit a talk for an event.
