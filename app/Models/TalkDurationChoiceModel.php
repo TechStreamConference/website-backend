@@ -20,6 +20,6 @@ class TalkDurationChoiceModel extends Model
 
     public function getAll(): array
     {
-        return $this->orderBy('duration')->findAll();
+        return array_column($this->select('duration')->orderBy('duration')->findAll(), 'duration');
     }
 }
