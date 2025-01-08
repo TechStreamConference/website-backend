@@ -173,8 +173,7 @@ class Talk extends BaseController
             return false;
         }
         $talkDurationChoiceModel = model(TalkDurationChoiceModel::class);
-        $availableChoices = $talkDurationChoiceModel->getAll();
-        $availableDurations = array_column($availableChoices, 'duration');
+        $availableDurations = $talkDurationChoiceModel->getAll();
         foreach ($durations as $duration) {
             if (!in_array($duration, $availableDurations, strict: true)) {
                 return false;
