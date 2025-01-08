@@ -22,6 +22,10 @@ class Talk extends BaseController
         'notes' => 'permit_empty|string',
     ];
 
+    private const REQUEST_CHANGES_RULES = [
+        'requested_changes' => 'required|string',
+    ];
+
     /** Checks if the current user can submit a talk. It's not enough to have the
      * speaker role, but the user must also have an approved speaker entry for the
      * currently open event.
@@ -152,6 +156,61 @@ class Talk extends BaseController
             );
         }
         return $this->response->setJSON(['pending_talks' => $pendingTalks])->setStatusCode(200);
+    }
+
+    public function requestChanges(int $talkId): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::REQUEST_CHANGES_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+        }
+        if ($talk['is_approved']) {
+            return $this->response->setJSON(['error' => 'TALK_ALREADY_APPROVED'])->setStatusCode(400);
+        }
+        $talkModel->requestChanges($talkId, $validData['requested_changes']);
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($talk['user_id']);
+        $username = $account['username'];
+        $userEmail = $account['email'];
+
+        $adminAccount = $accountModel->get($this->getLoggedInUserId());
+        $admin = $adminAccount['username'];
+
+        EmailHelper::send(
+            to: $userEmail,
+            subject: 'Dein Vortrag bei der Tech Stream Conference',
+            message: view(
+                'email/talk/changes_requested',
+                [
+                    'username' => $username,
+                    'title' => $talk['title'],
+                    'requested_changes' => $validData['requested_changes'],
+                ]
+            )
+        );
+
+        EmailHelper::sendToAdmins(
+            subject: 'Änderungswünsche für Vortrag',
+            message: view(
+                'email/admin/changes_requested',
+                [
+                    'username' => $username,
+                    'title' => $talk['title'],
+                    'requested_changes' => $validData['requested_changes'],
+                    'admin' => $admin,
+                ]
+            )
+        );
+
+        return $this->response->setJSON(['success' => 'CHANGES_REQUESTED'])->setStatusCode(200);
     }
 
     /** Checks whether the currently logged in user could submit a talk for an event.

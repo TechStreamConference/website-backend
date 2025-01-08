@@ -86,4 +86,17 @@ class TalkModel extends Model
             ->orderBy('created_at')
             ->findAll();
     }
+
+    public function get(int $talkdId): ?array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->where('id', $talkdId)
+            ->first();
+    }
+
+    public function requestChanges(int $talkId, string $requestedChanges): void
+    {
+        $this->update($talkId, ['requested_changes' => $requestedChanges]);
+    }
 }
