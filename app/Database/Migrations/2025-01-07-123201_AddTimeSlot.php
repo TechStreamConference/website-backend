@@ -25,6 +25,9 @@ class AddTimeSlot extends Migration
                 'type' => 'INT',
                 'unsigned' => true,
             ],
+            'is_special' => [
+                'type' => 'BOOLEAN',
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
             ],
