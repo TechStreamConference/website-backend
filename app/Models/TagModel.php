@@ -16,12 +16,13 @@ class TagModel extends Model
     ];
     protected $useTimestamps = true;
     protected array $casts = [
+        'id' => 'int',
         'color_index' => 'int',
     ];
 
     public function getAll(): array
     {
-        return $this->orderBy('text')->findAll();
+        return $this->select('id, text, color_index')->orderBy('text')->findAll();
     }
 
     public function getAllByTalkIds(array $talkIds): array
