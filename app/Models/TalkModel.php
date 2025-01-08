@@ -112,6 +112,16 @@ class TalkModel extends Model
             ->findAll();
     }
 
+    public function getAllTentative(): array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at')
+            ->where('is_approved', true)
+            ->where('time_slot_accepted', false)
+            ->orderBy('created_at')
+            ->findAll();
+    }
+
     public function get(int $talkdId): ?array
     {
         return $this

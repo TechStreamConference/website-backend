@@ -70,6 +70,7 @@ $routes->get('dashboard/speaker/can-submit-talk', [Talk::class, 'canSubmit'], ['
 $routes->post('dashboard/speaker/submit-talk', [Talk::class, 'submit'], ['filter' => SpeakerAuthFilter::class]);
 $routes->put('dashboard/speaker/talk/(:num)', [Talk::class, 'change'], ['filter' => SpeakerAuthFilter::class]);
 $routes->get('dashboard/admin/pending-talks', [Talk::class, 'getAllPendingTalks'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/admin/tentative-talks', [Talk::class, 'getAllTentativeTalks'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/talk/(:num)/request-changes', [Talk::class, 'requestChanges'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/talk/(:num)/approve', [Talk::class, 'approve'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/talk/(:num)/reject', [Talk::class, 'reject'], ['filter' => AdminAuthFilter::class]);
