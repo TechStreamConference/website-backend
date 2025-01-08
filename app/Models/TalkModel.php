@@ -33,7 +33,7 @@ class TalkModel extends Model
     public function getApprovedByEventId(int $eventId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, event_id, user_id, title, description, is_special, time_slot_id')
             ->where('event_id', $eventId)
             ->where('requested_changes IS NULL')
             ->where('is_approved', true)
