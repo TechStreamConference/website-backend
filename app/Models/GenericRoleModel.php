@@ -59,14 +59,15 @@ class GenericRoleModel extends Model
     public function hasApprovedEntry(int $userId, int $eventId): bool
     {
         return $this
-            ->select('id')
-            ->where('user_id', $userId)
-            ->where('event_id', $eventId)
-            ->where('is_approved', true)
-            ->countAllResults() > 0;
+                ->select('id')
+                ->where('user_id', $userId)
+                ->where('event_id', $eventId)
+                ->where('is_approved', true)
+                ->countAllResults() > 0;
     }
 
-    public function getLatestPerUserPerEvent(): array {
+    public function getLatestPerUserPerEvent(): array
+    {
         $subQuery = $this->db->table($this->table)
             ->select('MAX(id) as id')
             ->where("$this->table.user_id = outer_table.user_id", null, false)
@@ -173,14 +174,14 @@ class GenericRoleModel extends Model
     }
 
     public function create(
-        string $name,
-        int    $userId,
-        int    $eventId,
-        string $shortBio,
-        string $bio,
-        string $photo,
-        string $photoMimeType,
-        bool   $isApproved,
+        string  $name,
+        int     $userId,
+        int     $eventId,
+        string  $shortBio,
+        string  $bio,
+        string  $photo,
+        string  $photoMimeType,
+        bool    $isApproved,
         ?string $visibleFrom,
     ): int
     {
