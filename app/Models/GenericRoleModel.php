@@ -161,10 +161,14 @@ class GenericRoleModel extends Model
         return $query;
     }
 
+    /** Returns the latest entry for the given user and the given event,
+     * regardless of whether it is approved or not.
+     * @param int $userId The ID of the user.
+     * @param int $eventId The ID of the event.
+     * @return array|null The entry, or null if no entry was found.
+     */
     public function getLatestForEvent(int $userId, int $eventId): array|null
     {
-        // This returns the latest entry for the given user and the given event,
-        // regardless of whether it is approved or not.
         return $this
             ->select('id, user_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
             ->where('event_id', $eventId)
