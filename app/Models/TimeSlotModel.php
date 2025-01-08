@@ -77,4 +77,10 @@ class TimeSlotModel extends Model
             $this->whereIn('id', $ids)->orderBy('start_time')->findAll(),
         );
     }
+
+    public function get(int $timeSlotId): ?TimeSlotData
+    {
+        $timeSlot = $this->find($timeSlotId);
+        return $timeSlot === null ? null : TimeSlotData::fromArray($timeSlot);
+    }
 }

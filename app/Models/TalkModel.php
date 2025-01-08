@@ -115,7 +115,7 @@ class TalkModel extends Model
     public function getAllTentative(): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, created_at')
             ->where('is_approved', true)
             ->where('time_slot_accepted', false)
             ->orderBy('created_at')
@@ -143,5 +143,23 @@ class TalkModel extends Model
     public function approve(int $talkId): void
     {
         $this->update($talkId, ['is_approved' => true]);
+    }
+
+    public function findByTimeSlot(int $timeSlotId): ?array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->where('time_slot_id', $timeSlotId)
+            ->first();
+    }
+
+    public function setTimeSlot(int $talkId, int $timeSlotId): void
+    {
+        $this->update($talkId, ['time_slot_id' => $timeSlotId]);
+    }
+
+    public function deleteTimeSlot(int $talkId): void
+    {
+        $this->update($talkId, ['time_slot_id' => null]);
     }
 }

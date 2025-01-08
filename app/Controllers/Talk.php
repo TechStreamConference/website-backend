@@ -11,6 +11,7 @@ use App\Models\SpeakerModel;
 use App\Models\TagModel;
 use App\Models\TalkDurationChoiceModel;
 use App\Models\TalkModel;
+use App\Models\TimeSlotModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Talk extends BaseController
@@ -29,6 +30,10 @@ class Talk extends BaseController
 
     private const REJECT_RULES = [
         'reason' => 'permit_empty|string',
+    ];
+
+    private const TIME_SLOT_SUGGESTION_RULES = [
+        'time_slot_id' => 'required|is_natural_no_zero',
     ];
 
     /** Checks if the current user can submit a talk. It's not enough to have the
@@ -367,6 +372,79 @@ class Talk extends BaseController
         return $this->response->setJSON(['success' => 'TALK_REJECTED'])->setStatusCode(200);
     }
 
+    public function suggestTimeSlot(int $talkId): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::TIME_SLOT_SUGGESTION_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+        }
+        if (!$talk['is_approved']) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_APPROVED'])->setStatusCode(400);
+        }
+
+        // We neither check whether there already is an assigned time slot for this talk, nor whether
+        // the time slot is already accepted. We want to allow admins to suggest a new time slot even
+        // if there already is one.
+
+        $timeSlotModel = model(TimeSlotModel::class);
+        $timeSlot = $timeSlotModel->get($validData['time_slot_id']);
+        if ($timeSlot === null) {
+            return $this->response->setJSON(['error' => 'TIME_SLOT_NOT_FOUND'])->setStatusCode(404);
+        }
+
+        if ($timeSlot->eventId !== $talk['event_id']) {
+            return $this->response->setJSON(['error' => 'TIME_SLOT_WRONG_EVENT'])->setStatusCode(400);
+        }
+
+        if ($this->isTimeSlotOccupied($validData['time_slot_id'])) {
+            return $this->response->setJSON(['error' => 'TIME_SLOT_ALREADY_OCCUPIED'])->setStatusCode(400);
+        }
+
+        $talkModel->setTimeSlot($talkId, $validData['time_slot_id']);
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($talk['user_id']);
+        $username = $account['username'];
+        $email = $account['email'];
+        $adminAccount = $accountModel->get($this->getLoggedInUserId());
+        $adminUsername = $adminAccount['username'];
+
+        EmailHelper::send(
+            to: $email,
+            subject: 'Zeitfenster für deinen Vortrag',
+            message: view(
+                'email/talk/time_slot_suggested',
+                [
+                    'username' => $username,
+                    'title' => $talk['title'],
+                    'timeSlot' => $timeSlot,
+                ]
+            )
+        );
+
+        EmailHelper::sendToAdmins(
+            subject: 'Zeitfenster für Vortrag vorgeschlagen',
+            message: view(
+                'email/admin/time_slot_suggested',
+                [
+                    'admin' => $adminUsername,
+                    'username' => $username,
+                    'title' => $talk['title'],
+                    'timeSlot' => $timeSlot,
+                ]
+            )
+        );
+
+        return $this->response->setJSON(['success' => 'TIME_SLOT_SUGGESTED'])->setStatusCode(200);
+    }
+
     public function change(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
@@ -572,29 +650,44 @@ class Talk extends BaseController
         return true;
     }
 
-    /** Collects additional data for the passed talks (speaker, tags, possible durations).
-     * @param array $pendingTalks The talks to collect additional data for.
+    /** Collects additional data for the passed talks (speaker, tags, possible durations,
+     *  suggested time slot).
+     * @param array $talks The talks to collect additional data for.
      * @return array The talks with additional data.
      */
-    private function addAdditionalDataToTalks(array $pendingTalks): array
+    private function addAdditionalDataToTalks(array $talks): array
     {
         $tagModel = model(TagModel::class);
-        $tagMapping = $tagModel->getTagMapping(array_column($pendingTalks, 'id'));
+        $tagMapping = $tagModel->getTagMapping(array_column($talks, 'id'));
 
         $possibleTalkDurationModel = model(PossibleTalkDurationModel::class);
 
+        $timeSlotModel = model(TimeSlotModel::class);
+
         $speakerModel = model(SpeakerModel::class);
-        foreach ($pendingTalks as &$pendingTalk) {
-            $speaker = $speakerModel->getLatestApprovedForEvent($pendingTalk['user_id'], $pendingTalk['event_id']);
-            $pendingTalk['speaker'] = $speaker;
-            unset($pendingTalk['user_id']);
-            $pendingTalk['tags'] = $tagMapping[$pendingTalk['id']];
-            $pendingTalk['possible_durations'] = array_column(
-                $possibleTalkDurationModel->get($pendingTalk['id']),
+        foreach ($talks as &$talk) {
+            $speaker = $speakerModel->getLatestApprovedForEvent($talk['user_id'], $talk['event_id']);
+            $talk['speaker'] = $speaker;
+            unset($talk['user_id']);
+            $talk['tags'] = $tagMapping[$talk['id']];
+            $talk['possible_durations'] = array_column(
+                $possibleTalkDurationModel->get($talk['id']),
                 'duration'
             );
+            $talk['suggested_time_slot'] =
+                isset($talk['time_slot_id']) && $talk['time_slot_id'] != null
+                    ? $timeSlotModel->get($talk['time_slot_id'])
+                    : null;
+            unset($talk['time_slot_id']);
         }
 
-        return $pendingTalks;
+        return $talks;
+    }
+
+    private function isTimeSlotOccupied(int $timeSlotId): bool
+    {
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->findByTimeSlot($timeSlotId);
+        return $talk !== null;
     }
 }
