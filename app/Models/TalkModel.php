@@ -42,13 +42,13 @@ class TalkModel extends Model
             ->findAll();
     }
 
-    public function findAllByTitle(string $title, int $eventId): array
+    public function doesTitleExist(string $title, int $eventId): bool
     {
         return $this
-            ->select('id, event_id, user_id, title, description, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
-            ->where('title', $title)
-            ->where('event_id', $eventId)
-            ->findAll();
+                ->select('id')
+                ->where('title', $title)
+                ->where('event_id', $eventId)
+                ->countAllResults() > 0;
     }
 
     public function create(

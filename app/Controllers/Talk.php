@@ -72,7 +72,7 @@ class Talk extends BaseController
 
         // Let's do a quick check to see if there's already a talk with the same title for the same event.
         // This is just to avoid problems due to people re-sending the data (e.g. by refreshing the page).
-        if (count($talkModel->findAllByTitle($validData['title'], $openEventId)) > 0) {
+        if ($talkModel->doesTitleExist($validData['title'], $openEventId)) {
             return $this->response->setJSON(['error' => 'DUPLICATE_TALK'])->setStatusCode(400);
         }
 
