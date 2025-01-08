@@ -13,7 +13,6 @@ class TalkModel extends Model
         'title',
         'description',
         'notes',
-        'is_special',
         'requested_changes',
         'is_approved',
         'time_slot_id',
@@ -24,7 +23,6 @@ class TalkModel extends Model
         'id' => 'int',
         'event_id' => 'int',
         'user_id' => 'int',
-        'is_special' => 'bool',
         'is_approved' => 'bool',
         'time_slot_id' => '?int',
         'time_slot_accepted' => 'bool',
@@ -33,7 +31,7 @@ class TalkModel extends Model
     public function getApprovedByEventId(int $eventId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, is_special, time_slot_id')
+            ->select('id, event_id, user_id, title, description, time_slot_id')
             ->where('event_id', $eventId)
             ->where('requested_changes IS NULL')
             ->where('is_approved', true)
@@ -57,7 +55,6 @@ class TalkModel extends Model
         string  $title,
         string  $description,
         ?string $notes,
-        bool    $isSpecial,
         ?string $requestedChanges,
         bool    $isApproved,
         ?int    $timeSlotId,
@@ -70,7 +67,6 @@ class TalkModel extends Model
             'title' => $title,
             'description' => $description,
             'notes' => $notes,
-            'is_special' => $isSpecial,
             'requested_changes' => $requestedChanges,
             'is_approved' => $isApproved,
             'time_slot_id' => $timeSlotId,
@@ -85,7 +81,6 @@ class TalkModel extends Model
         string  $title,
         string  $description,
         ?string $notes,
-        bool    $isSpecial,
         ?string $requestedChanges,
         bool    $isApproved,
         ?int    $timeSlotId,
@@ -100,7 +95,6 @@ class TalkModel extends Model
                 'title' => $title,
                 'description' => $description,
                 'notes' => $notes,
-                'is_special' => $isSpecial,
                 'requested_changes' => $requestedChanges,
                 'is_approved' => $isApproved,
                 'time_slot_id' => $timeSlotId,
@@ -121,7 +115,7 @@ class TalkModel extends Model
     public function get(int $talkdId): ?array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, is_special, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
             ->where('id', $talkdId)
             ->first();
     }

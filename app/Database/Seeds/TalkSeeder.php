@@ -8,7 +8,7 @@ class TalkSeeder extends Seeder
 {
     public function run()
     {
-        // first day
+        // Day 1.
         $this->db->table('Talk')->insert([
             'event_id' => 1,
             'user_id' => 4,
@@ -43,19 +43,20 @@ class TalkSeeder extends Seeder
             'created_at' => '2024-03-10 19:19:55',
         ]);
 
-        // second day
+        // Special talks day 1.
         $this->db->table('Talk')->insert([
             'event_id' => 1,
             'user_id' => 4,
             'title' => 'Der Mythos „Diamond Problem“',
             'description' => 'Auch wenn es um Mehrfachvererbung geht, ist es nicht nur OOP. C++ ist eine Multiparadigmen-Sprache und auch hier verbinden wir Möglichkeiten der verschiedenen Paradigmen zu Lösungen.',
-            'is_special' => true,
             'requested_changes' => null,
             'is_approved' => true,
             'time_slot_id' => 4,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
         ]);
+
+        // Day 2.
         $this->db->table('Talk')->insert([
             'event_id' => 1,
             'user_id' => 1,
@@ -79,7 +80,6 @@ class TalkSeeder extends Seeder
             'created_at' => '2024-03-10 19:19:55',
         ]);
 
-        // special talks
         $this->db->table('Talk')->insert([
             'event_id' => 1,
             'user_id' => 1,
@@ -91,25 +91,24 @@ class TalkSeeder extends Seeder
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
         ]);
+
+        // Special talks day 2.
         $this->db->table('Talk')->insert([
             'event_id' => 1,
             'user_id' => 1,
             'title' => 'Wie man eine Konferenz organisiert',
             'description' => 'Das wissen wir selbst noch nicht so ganz genau Kappa',
-            'is_special' => true,
             'requested_changes' => null,
             'is_approved' => true,
             'time_slot_id' => 8,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
         ]);
-
         $this->db->table('Talk')->insert([
             'event_id' => 1,
             'user_id' => 1,
             'title' => 'Ein Talk zu einem fantastischen Thema',
             'description' => 'Richtig gutes Zeug!',
-            'is_special' => true,
             'requested_changes' => null,
             'is_approved' => true,
             'time_slot_id' => 9,

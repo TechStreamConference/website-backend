@@ -130,6 +130,7 @@ class Event extends BaseController
             $timeSlot = $timeSlotById[$talk['time_slot_id']];
             $talk['starts_at'] = $timeSlot->startTime;
             $talk['duration'] = $timeSlot->duration;
+            $talk['is_special'] = $timeSlot->isSpecial;
             $talk['tags'] = $tagMapping[$talk['id']];
         }
 

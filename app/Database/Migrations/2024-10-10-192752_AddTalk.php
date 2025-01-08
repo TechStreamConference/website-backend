@@ -38,11 +38,6 @@ class AddTalk extends Migration
                 'type' => 'TEXT',
                 'null' => true,
             ],
-            'is_special' => [
-                'type' => 'BOOLEAN',
-                'null' => false,
-                'default' => false,
-            ],
             'requested_changes' => [
                 'type' => 'TEXT',
                 'null' => true,

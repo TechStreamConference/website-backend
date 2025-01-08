@@ -12,6 +12,7 @@ class TimeSlotModel extends Model
         'event_id',
         'start_time',
         'duration',
+        'is_special',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -21,6 +22,7 @@ class TimeSlotModel extends Model
         'id' => 'int',
         'event_id' => 'int',
         'duration' => 'int',
+        'is_special' => 'bool',
     ];
 
     /**
