@@ -32,6 +32,9 @@ class TagModel extends Model
      */
     public function getTagMapping(array $talkIds): array
     {
+        if (count($talkIds) === 0) {
+            return [];
+        }
         $tags = $this->getAllByTalkIds($talkIds);
         $mapping = [];
         foreach ($tags as $tag) {
