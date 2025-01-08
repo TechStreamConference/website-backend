@@ -62,7 +62,7 @@ class TalkModel extends Model
         bool    $isApproved,
         ?int    $timeSlotId,
         bool    $timeSlotAccepted,
-    ): int
+    ): int|bool
     {
         return $this->insert([
             'event_id' => $eventId,

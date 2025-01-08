@@ -100,6 +100,10 @@ class Talk extends BaseController
             timeSlotAccepted: false,
         );
 
+        if ($talkId === false) {
+            return $this->response->setJSON(['error' => 'TALK_CREATION_FAILED'])->setStatusCode(500);
+        }
+
         $possibleTalkDurationModel = model(PossibleTalkDurationModel::class);
         $possibleTalkDurationModel->store($talkId, $validData['possible_durations']);
 
