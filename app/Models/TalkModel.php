@@ -162,4 +162,9 @@ class TalkModel extends Model
     {
         $this->update($talkId, ['time_slot_id' => null]);
     }
+
+    public function acceptTimeSlot(int $talkId): void
+    {
+        $this->update($talkId, ['time_slot_accepted' => true]);
+    }
 }

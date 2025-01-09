@@ -71,5 +71,12 @@ class TimeSlotSeeder extends Seeder
             'duration' => 60,
             'is_special' => true,
         ]);
+        // id: 10
+        $this->db->table('TimeSlot')->insert([
+            'event_id' => 1,
+            'start_time' => '2024-06-23 20:45:00',
+            'duration' => 45,
+            'is_special' => true,
+        ]);
     }
 }

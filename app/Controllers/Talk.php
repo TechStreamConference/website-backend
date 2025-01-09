@@ -594,6 +594,61 @@ class Talk extends BaseController
         return $this->response->setJSON(['success' => 'TALK_CHANGED'])->setStatusCode(200);
     }
 
+    public function acceptTimeSlot(int $talkId): ResponseInterface
+    {
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null || $talk['user_id'] !== $this->getLoggedInUserId()) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+        }
+        if (!$talk['is_approved']) {
+            return $this->response->setJSON(['error' => 'TALK_NOT_APPROVED'])->setStatusCode(400);
+        }
+        if ($talk['time_slot_id'] === null) {
+            return $this->response->setJSON(['error' => 'NO_TIME_SLOT'])->setStatusCode(400);
+        }
+        if ($talk['time_slot_accepted']) {
+            return $this->response->setJSON(['error' => 'TIME_SLOT_ALREADY_ACCEPTED'])->setStatusCode(400);
+        }
+
+        $timeSlotModel = model(TimeSlotModel::class);
+        $timeSlot = $timeSlotModel->get($talk['time_slot_id']);
+
+        $talkModel->acceptTimeSlot($talkId);
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($talk['user_id']);
+        $username = $account['username'];
+        $email = $account['email'];
+
+        EmailHelper::send(
+            to: $email,
+            subject: 'Zeitfenster für deinen Vortrag',
+            message: view(
+                'email/talk/time_slot_accepted',
+                [
+                    'username' => $username,
+                    'title' => $talk['title'],
+                    'timeSlot' => $timeSlot,
+                ]
+            )
+        );
+
+        EmailHelper::sendToAdmins(
+            subject: 'Zeitfenster für Vortrag akzeptiert',
+            message: view(
+                'email/admin/time_slot_accepted',
+                [
+                    'username' => $username,
+                    'title' => $talk['title'],
+                    'timeSlot' => $timeSlot,
+                ]
+            )
+        );
+
+        return $this->response->setJSON(['success' => 'TIME_SLOT_ACCEPTED'])->setStatusCode(200);
+    }
+
     /** Checks whether the currently logged in user could submit a talk for an event.
      * @return int|ResponseInterface The ID of the event if the user can submit a talk,
      *                               a response object containing the error response otherwise.
