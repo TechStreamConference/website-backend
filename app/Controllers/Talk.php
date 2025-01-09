@@ -28,7 +28,7 @@ class Talk extends BaseController
         'requested_changes' => 'required|string',
     ];
 
-    private const REJECT_RULES = [
+    private const REJECT_TALK_RULES = [
         'reason' => 'permit_empty|string',
     ];
 
@@ -278,7 +278,7 @@ class Talk extends BaseController
     public function reject(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::REJECT_RULES)) {
+        if (!$this->validateData($data, self::REJECT_TALK_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
