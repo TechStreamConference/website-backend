@@ -596,6 +596,82 @@ class Talk extends BaseController
 
     public function acceptTimeSlot(int $talkId): ResponseInterface
     {
+        $talk = $this->tryGetTentativeTalk($talkId);
+        if ($talk instanceof ResponseInterface) {
+            return $talk;
+        }
+
+        $timeSlotModel = model(TimeSlotModel::class);
+        $timeSlot = $timeSlotModel->get($talk['time_slot_id']);
+
+        $talkModel = model(TalkModel::class);
+        $talkModel->acceptTimeSlot($talkId);
+
+        $this->sendEmailToSpeaker(
+            talk: $talk,
+            subject: 'Zeitfenster für deinen Vortrag',
+            view: 'email/talk/time_slot_accepted',
+            data: ['timeSlot' => $timeSlot]
+        );
+
+        $this->sendEmailToAdmins(
+            talk: $talk,
+            subject: 'Zeitfenster für Vortrag akzeptiert',
+            view: 'email/admin/time_slot_accepted',
+            data: ['timeSlot' => $timeSlot]
+        );
+
+        return $this->response->setJSON(['success' => 'TIME_SLOT_ACCEPTED'])->setStatusCode(200);
+    }
+    private function sendEmailToSpeaker(
+        array  $talk,
+        string $subject,
+        string $view,
+        ?array $data = null
+    ): void
+    {
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($talk['user_id']);
+        $username = $account['username'];
+        $email = $account['email'];
+
+        $data = $data ?? [];
+        $data['username'] = $username;
+        $data['title'] = $talk['title'];
+
+        EmailHelper::send(
+            to: $email,
+            subject: $subject,
+            message: view($view, $data)
+        );
+    }
+
+    private function sendEmailToAdmins(
+        array  $talk,
+        string $subject,
+        string $view,
+        ?array $data = null
+    ): void
+    {
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($talk['user_id']);
+        $username = $account['username'];
+        $adminAccount = $accountModel->get($this->getLoggedInUserId());
+        $adminUsername = $adminAccount['username'];
+
+        $data = $data ?? [];
+        $data['admin'] = $adminUsername;
+        $data['username'] = $username;
+        $data['title'] = $talk['title'];
+
+        EmailHelper::sendToAdmins(
+            subject: $subject,
+            message: view($view, $data)
+        );
+    }
+
+    private function tryGetTentativeTalk(int $talkId): array|ResponseInterface
+    {
         $talkModel = model(TalkModel::class);
         $talk = $talkModel->get($talkId);
         if ($talk === null || $talk['user_id'] !== $this->getLoggedInUserId()) {
@@ -610,43 +686,7 @@ class Talk extends BaseController
         if ($talk['time_slot_accepted']) {
             return $this->response->setJSON(['error' => 'TIME_SLOT_ALREADY_ACCEPTED'])->setStatusCode(400);
         }
-
-        $timeSlotModel = model(TimeSlotModel::class);
-        $timeSlot = $timeSlotModel->get($talk['time_slot_id']);
-
-        $talkModel->acceptTimeSlot($talkId);
-
-        $accountModel = model(AccountModel::class);
-        $account = $accountModel->get($talk['user_id']);
-        $username = $account['username'];
-        $email = $account['email'];
-
-        EmailHelper::send(
-            to: $email,
-            subject: 'Zeitfenster für deinen Vortrag',
-            message: view(
-                'email/talk/time_slot_accepted',
-                [
-                    'username' => $username,
-                    'title' => $talk['title'],
-                    'timeSlot' => $timeSlot,
-                ]
-            )
-        );
-
-        EmailHelper::sendToAdmins(
-            subject: 'Zeitfenster für Vortrag akzeptiert',
-            message: view(
-                'email/admin/time_slot_accepted',
-                [
-                    'username' => $username,
-                    'title' => $talk['title'],
-                    'timeSlot' => $timeSlot,
-                ]
-            )
-        );
-
-        return $this->response->setJSON(['success' => 'TIME_SLOT_ACCEPTED'])->setStatusCode(200);
+        return $talk;
     }
 
     /** Checks whether the currently logged in user could submit a talk for an event.
