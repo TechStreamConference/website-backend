@@ -44,7 +44,7 @@ class Account extends BaseController
 
         $data = $this->request->getJSON(assoc: true);
 
-        if (!$this->validateData($data, self::REGISTER_RULES)) {
+        if (!$this->validateData($data ?? [], self::REGISTER_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -126,7 +126,7 @@ class Account extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
 
-        if (!$this->validateData($data, self::FORGOT_PASSWORD_RULES)) {
+        if (!$this->validateData($data ?? [], self::FORGOT_PASSWORD_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -189,7 +189,7 @@ class Account extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
 
-        if (!$this->validateData($data, self::RESET_PASSWORD_RULES)) {
+        if (!$this->validateData($data ?? [], self::RESET_PASSWORD_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -306,7 +306,7 @@ class Account extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
 
-        if (!$this->validateData($data, self::VERIFICATION_RULES)) {
+        if (!$this->validateData($data ?? [], self::VERIFICATION_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 

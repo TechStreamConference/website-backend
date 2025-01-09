@@ -18,7 +18,7 @@ class TimeSlot extends BaseController
     {
         $data = $this->request->getJSON(true);
 
-        if (!$this->validateData($data, self::TIME_SLOT_RULES)) {
+        if (!$this->validateData($data ?? [], self::TIME_SLOT_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 

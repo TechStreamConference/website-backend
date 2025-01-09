@@ -94,7 +94,7 @@ abstract class ContributorDashboard extends BaseController
     public function createSocialMediaLinkForCurrentUser(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::SOCIAL_MEDIA_LINK_CREATION_RULES)) {
+        if (!$this->validateData($data ?? [], self::SOCIAL_MEDIA_LINK_CREATION_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -132,7 +132,7 @@ abstract class ContributorDashboard extends BaseController
         if ($data instanceof ResponseInterface) {
             return $data;
         }
-        if (!$this->validateData($data, self::APPLICATION_SOCIAL_MEDIA_LINK_RULES)) {
+        if (!$this->validateData($data ?? [], self::APPLICATION_SOCIAL_MEDIA_LINK_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -159,7 +159,7 @@ abstract class ContributorDashboard extends BaseController
     public function updateSocialMediaLinksForCurrentUser(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::SOCIAL_MEDIA_LINK_UPDATE_RULES)) {
+        if (!$this->validateData($data ?? [], self::SOCIAL_MEDIA_LINK_UPDATE_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -314,7 +314,7 @@ abstract class ContributorDashboard extends BaseController
         if ($data instanceof ResponseInterface) {
             return $data;
         }
-        if (!$this->validateData($data, self::RULES)) {
+        if (!$this->validateData($data ?? [], self::RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();

@@ -65,7 +65,7 @@ class Talk extends BaseController
     public function submit(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::TALK_RULES)) {
+        if (!$this->validateData($data ?? [], self::TALK_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -179,7 +179,7 @@ class Talk extends BaseController
     public function requestChanges(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::REQUEST_CHANGES_RULES)) {
+        if (!$this->validateData($data ?? [], self::REQUEST_CHANGES_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -282,7 +282,7 @@ class Talk extends BaseController
     public function reject(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::REJECT_TALK_RULES)) {
+        if (!$this->validateData($data ?? [], self::REJECT_TALK_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -379,7 +379,7 @@ class Talk extends BaseController
     public function suggestTimeSlot(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::TIME_SLOT_SUGGESTION_RULES)) {
+        if (!$this->validateData($data ?? [], self::TIME_SLOT_SUGGESTION_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -452,7 +452,7 @@ class Talk extends BaseController
     public function change(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::TALK_RULES)) {
+        if (!$this->validateData($data ?? [], self::TALK_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -631,7 +631,7 @@ class Talk extends BaseController
     public function rejectTimeSlot(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::REJECT_TIME_SLOT_RULES)) {
+        if (!$this->validateData($data ?? [], self::REJECT_TIME_SLOT_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();

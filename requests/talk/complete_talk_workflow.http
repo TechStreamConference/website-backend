@@ -41,8 +41,6 @@ POST localhost:8080/api/dashboard/speaker/submit-talk
 
 POST localhost:8080/api/dashboard/admin/talk/11/reject
 
-{}
-
 ### Submit talk 12.
 
 POST localhost:8080/api/dashboard/speaker/submit-talk
@@ -106,8 +104,6 @@ PUT localhost:8080/api/dashboard/admin/talk/12/suggest-time-slot
 ### Reject time slot for talk 12 without reason.
 
 PUT localhost:8080/api/dashboard/speaker/talk/12/reject-time-slot
-
-{}
 
 ### Suggest new time slot for talk 12.
 
