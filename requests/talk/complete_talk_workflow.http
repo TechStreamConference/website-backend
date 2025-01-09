@@ -5,7 +5,7 @@ POST http://localhost:8080/api/account/login
   "password": "password"
 }
 
-###
+### Submit Talk 10.
 
 POST localhost:8080/api/dashboard/speaker/submit-talk
 
@@ -17,18 +17,106 @@ POST localhost:8080/api/dashboard/speaker/submit-talk
     "notes": "Ich kann nur am zweiten Tag der Konferenz."
 }
 
-###
+### Reject pending talk with reason.
 
-PUT localhost:8080/api/dashboard/admin/talk/10/approve
+POST localhost:8080/api/dashboard/admin/talk/10/reject
 
-###
+{
+    "reason": "Der Vortrag ist nicht geeignet für unsere Konferenz."
+}
 
-PUT localhost:8080/api/dashboard/admin/talk/10/suggest-time-slot
+### Submit talk 11.
+
+POST localhost:8080/api/dashboard/speaker/submit-talk
+
+{
+    "title": "Programmieren wie ein Profi",
+    "description": "In diesem Vortrag lernst du, wie du professionell programmierst.",
+    "tag_ids": [5, 1, 3],
+    "possible_durations": [30, 45, 60],
+    "notes": "Ich kann nur am zweiten Tag der Konferenz."
+}
+
+### Reject pending talk without reason.
+
+POST localhost:8080/api/dashboard/admin/talk/11/reject
+
+{}
+
+### Submit talk 12.
+
+POST localhost:8080/api/dashboard/speaker/submit-talk
+
+{
+    "title": "Programmieren wie ein Profi",
+    "description": "In diesem Vortrag lernst du, wie du professionell programmierst.",
+    "tag_ids": [5, 1, 3],
+    "possible_durations": [30, 45, 60],
+    "notes": "Ich kann nur am zweiten Tag der Konferenz."
+}
+
+### Request changes for talk 12.
+
+POST localhost:8080/api/dashboard/admin/talk/12/request-changes
+
+{
+    "requested_changes": "Deine Nase passt mir nicht."
+}
+
+### Submit changes for talk 12.
+
+PUT localhost:8080/api/dashboard/speaker/talk/12
+
+{
+    "title": "Programmieren wie ein Kalfaktor",
+    "description": "In diesem Vortrag lernst du, wie du professionell programmierst.",
+    "tag_ids": [5, 1, 3],
+    "possible_durations": [15, 30, 45],
+    "notes": "Ich kann nur am zweiten Tag der Konferenz."
+}
+
+### Approve talk 12.
+
+PUT localhost:8080/api/dashboard/admin/talk/12/approve
+
+### Suggest time slot for talk 12.
+
+PUT localhost:8080/api/dashboard/admin/talk/12/suggest-time-slot
 
 {
     "time_slot_id": 10
 }
 
-###
+### Reject time slot for talk 12 with reason.
 
-PUT localhost:8080/api/dashboard/speaker/talk/10/accept-time-slot
+PUT localhost:8080/api/dashboard/speaker/talk/12/reject-time-slot
+
+{
+    "reason": "Dieser Termin passt mir nicht, weil ich da gerade zum Friseur muss."
+}
+
+### Suggest new time slot for talk 12.
+
+PUT localhost:8080/api/dashboard/admin/talk/12/suggest-time-slot
+
+{
+    "time_slot_id": 10
+}
+
+### Reject time slot for talk 12 without reason.
+
+PUT localhost:8080/api/dashboard/speaker/talk/12/reject-time-slot
+
+{}
+
+### Suggest new time slot for talk 12.
+
+PUT localhost:8080/api/dashboard/admin/talk/12/suggest-time-slot
+
+{
+    "time_slot_id": 10
+}
+
+### Accept time slot for talk 12.
+
+PUT localhost:8080/api/dashboard/speaker/talk/12/accept-time-slot

@@ -36,6 +36,10 @@ class Talk extends BaseController
         'time_slot_id' => 'required|is_natural_no_zero',
     ];
 
+    private const REJECT_TIME_SLOT_RULES = [
+        'reason' => 'permit_empty|string',
+    ];
+
     /** Checks if the current user can submit a talk. It's not enough to have the
      * speaker role, but the user must also have an approved speaker entry for the
      * currently open event.
@@ -623,6 +627,50 @@ class Talk extends BaseController
 
         return $this->response->setJSON(['success' => 'TIME_SLOT_ACCEPTED'])->setStatusCode(200);
     }
+
+    public function rejectTimeSlot(int $talkId): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data, self::REJECT_TIME_SLOT_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+        $validData = $this->validator->getValidated();
+
+        $talk = $this->tryGetTentativeTalk($talkId);
+        if ($talk instanceof ResponseInterface) {
+            return $talk;
+        }
+
+        $timeSlotModel = model(TimeSlotModel::class);
+        $timeSlot = $timeSlotModel->get($talk['time_slot_id']);
+
+        $talkModel = model(TalkModel::class);
+        $talkModel->deleteTimeSlot($talkId);
+        $talkModel->rejectTimeSlot($talkId); // Should be unnecessary, but better safe than sorry.
+
+        $this->sendEmailToSpeaker(
+            talk: $talk,
+            subject: 'Zeitfenster für deinen Vortrag',
+            view: 'email/talk/time_slot_rejected',
+            data: [
+                'timeSlot' => $timeSlot,
+                'reason' => $validData['reason'] ?? null
+            ]
+        );
+
+        $this->sendEmailToAdmins(
+            talk: $talk,
+            subject: 'Zeitfenster für Vortrag abgelehnt',
+            view: 'email/admin/time_slot_rejected',
+            data: [
+                'timeSlot' => $timeSlot,
+                'reason' => $validData['reason'] ?? null
+            ]
+        );
+
+        return $this->response->setJSON(['success' => 'TIME_SLOT_REJECTED'])->setStatusCode(200);
+    }
+
     private function sendEmailToSpeaker(
         array  $talk,
         string $subject,
