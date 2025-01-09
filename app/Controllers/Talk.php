@@ -261,7 +261,7 @@ class Talk extends BaseController
         );
 
         EmailHelper::sendToAdmins(
-            subject: 'Vortrag genehmigt',
+            subject: 'Vortrag angenommen',
             message: view(
                 'email/admin/talk_approved',
                 [
