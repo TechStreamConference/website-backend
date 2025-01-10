@@ -388,7 +388,22 @@ class Account extends BaseController
             return $this->response->setJSON(['error' => 'USERNAME_ALREADY_TAKEN'])->setStatusCode(400);
         }
 
+        $account = $accountModel->get($userId);
+        $oldUsername = $account['username'];
+
         $accountModel->changeUsername($userId, $username);
+
+        EmailHelper::sendToAdmins(
+            subject: "Benutzername geändert",
+            message: view(
+                'email/admin/username_changed',
+                [
+                    'oldUsername' => $oldUsername,
+                    'newUsername' => $username,
+                ]
+            )
+        );
+
         return $this->response->setJSON(['message' => 'USERNAME_CHANGED']);
     }
 
