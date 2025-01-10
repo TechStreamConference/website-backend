@@ -12,7 +12,13 @@ class AccountModel extends Model
     // according to the docs, the primary key should never be part of the allowedFields
     // array, but it doesn't seem to work without having it in there (the reason could be
     // that it is also a foreign key)
-    protected $allowedFields = ['user_id', 'email', 'is_verified', 'username', 'password', 'password_change_required'];
+    protected $allowedFields = [
+        'user_id',
+        'email',
+        'is_verified',
+        'username',
+        'password_change_required'
+    ];
     protected array $casts = [
         'user_id' => 'int',
         'is_verified' => 'bool',
@@ -73,6 +79,12 @@ class AccountModel extends Model
             ->select('username, email')
             ->where('user_id', $userId)
             ->first();
+    }
+
+    public function checkPassword(int $userId, string $password): bool
+    {
+        $account = $this->find($userId);
+        return password_verify($password, $account['password']);
     }
 
     public function getAdmins(): array
