@@ -19,6 +19,11 @@ class Account extends BaseController
     const PASSWORD_RULE = 'required|valid_password';
     const EMAIL_RULE = 'required|trim|valid_email|max_length[320]';
 
+    const LOGIN_RULES = [
+        'username_or_email' => 'required|trim|max_length[320]',
+        'password' => self::PASSWORD_RULE,
+    ];
+
     const REGISTER_RULES = [
         'username' => self::USERNAME_RULE,
         'password' => self::PASSWORD_RULE,
@@ -283,28 +288,30 @@ class Account extends BaseController
         $passwordResetTokenModel = model(PasswordResetTokenModel::class);
         $passwordResetTokenModel->deleteExpiredTokens();
 
-        $usernameOrEmail = trim($this->request->getJsonVar('username_or_email'));
-        $password = $this->request->getJsonVar('password');
-
-        if (empty($usernameOrEmail) || empty($password)) {
-            // Username/email or password missing.
-            return $this->response->setJSON(['error' => 'USERNAME_OR_EMAIL_FIELD_MISSING'])->setStatusCode(400);
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data ?? [], self::LOGIN_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
+        $validData = $this->validator->getValidated();
 
-        $model = model(AccountModel::class);
-        $account = $model->getAccountByUsernameOrEmail($usernameOrEmail);
+        $usernameOrEmail = trim($validData['username_or_email']);
+        $password = $validData['password'];
+
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->getAccountByUsernameOrEmail($usernameOrEmail);
         if ($account === null || $account['is_verified'] === false) {
             // Unknown username or email.
             return $this->response->setJSON(['error' => 'UNKNOWN_USERNAME_OR_EMAIL'])->setStatusCode(404);
         }
 
-        if (!password_verify($password, $account['password'])) {
+        $userId = $account['user_id'];
+        if (!$accountModel->checkPassword($userId, $password)) {
             return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
         }
 
         $session = session();
         $sessionData = [
-            'user_id' => $account['user_id'],
+            'user_id' => $userId,
         ];
         $session->set($sessionData);
 
@@ -371,8 +378,7 @@ class Account extends BaseController
         $session = session();
         $userId = $session->get('user_id');
         $accountModel = model(AccountModel::class);
-        $account = $accountModel->get($userId);
-        if (!password_verify($password, $account['password'])) {
+        if (!$accountModel->checkPassword($userId, $password)) {
             return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
         }
 

@@ -480,7 +480,7 @@ class AccountTest extends CIUnitTestCase
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'username_or_email' => 'unknown',
-            'password' => 'password',
+            'password' => 'Password123!',
         ]);
         $result->assertStatus(404);
         $result->assertSessionMissing('user_id');
@@ -490,7 +490,7 @@ class AccountTest extends CIUnitTestCase
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'username_or_email' => 'coder2k',
-            'password' => 'wrongpassword',
+            'password' => 'WrongPassword123!',
         ]);
         $result->assertStatus(401);
         $result->assertSessionMissing('user_id');
