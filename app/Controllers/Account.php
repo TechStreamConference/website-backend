@@ -33,6 +33,7 @@ class Account extends BaseController
 
     const VERIFICATION_RULES = [
         'token' => 'required|trim|alpha_numeric|max_length[128]',
+        'new_email' => 'permit_empty|trim|valid_email|max_length[320]',
     ];
 
     const FORGOT_PASSWORD_RULES = [
@@ -52,6 +53,11 @@ class Account extends BaseController
     const CHANGE_PASSWORD_RULES = [
         'old_password' => self::PASSWORD_RULE,
         'new_password' => self::PASSWORD_RULE,
+    ];
+
+    const CHANGE_EMAIL_RULES = [
+        'email' => self::EMAIL_RULE,
+        'password' => self::PASSWORD_RULE,
     ];
 
     public function register()
@@ -98,8 +104,8 @@ class Account extends BaseController
             return $this->response->setJSON(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN'])->setStatusCode(400);
         }
 
-        $validationToken = $this->storeValidationToken($userId);
-        if ($validationToken === null) {
+        $verificationToken = $this->storeVerificationToken($userId);
+        if ($verificationToken === null) {
             // This could only happen if the token is already in use, or if the random generator
             // fails. So, this should never happen. But if it does, we need to clean up the database.
             $accountModel->deleteAccount($userId);
@@ -109,25 +115,10 @@ class Account extends BaseController
             return $this->response->setStatusCode(500);
         }
 
-        // Base URL is something that ends with /api/, so we need to remove api/ from the base URL.
-        $baseUrl = base_url();
-        $suffix = "api/";
-        if (str_ends_with($baseUrl, $suffix)) {
-            $baseUrl = substr($baseUrl, 0, -strlen($suffix));
-        }
-
-        $verificationLink = $baseUrl . 'verify-email-address' . '?token=' . $validationToken;
-
-        EmailHelper::send(
-            $email,
-            'Deine Registrierung bei der Tech Stream Conference',
-            view(
-                'email/account/verify_email_address',
-                [
-                    'username' => $username,
-                    'verificationLink' => $verificationLink,
-                ]
-            )
+        $this->sendVerificationEmail(
+            email: $email,
+            username: $username,
+            verificationToken: $verificationToken,
         );
 
         if ($isConnectedRegistration) {
@@ -353,10 +344,16 @@ class Account extends BaseController
         $username = $account['username'];
         $accountModel->markAsVerified($userId);
 
-        EmailHelper::sendToAdmins(
-            'Neues Benutzerkonto',
-            view('email/admin/new_user', ['username' => $username])
-        );
+        $newEmail = $entry['new_email'];
+
+        if ($newEmail == null) {
+            EmailHelper::sendToAdmins(
+                'Neues Benutzerkonto',
+                view('email/admin/new_user', ['username' => $username])
+            );
+        } else {
+            $accountModel->changeEmail($userId, $newEmail);
+        }
 
         return $this->response->setJSON(['message' => 'success']);
     }
@@ -421,7 +418,53 @@ class Account extends BaseController
         return $this->response->setJSON(['message' => 'PASSWORD_CHANGED']);
     }
 
-    private function storeValidationToken(int $userId): string|null
+    public function changeEmail(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data ?? [], self::CHANGE_EMAIL_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+
+        $validData = $this->validator->getValidated();
+        $newEmail = $validData['email'];
+        $password = $validData['password'];
+
+        $session = session();
+        $userId = $session->get('user_id');
+        $accountModel = model(AccountModel::class);
+        if (!$accountModel->checkPassword($userId, $password)) {
+            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
+        }
+
+        $account = $accountModel->get($userId);
+        if ($account['email'] === $newEmail) {
+            return $this->response->setJSON(['error' => 'EMAILS_EQUAL'])->setStatusCode(400);
+        }
+
+        if ($accountModel->isEmailTaken($newEmail)) {
+            return $this->response->setJSON(['error' => 'EMAIL_ALREADY_TAKEN'])->setStatusCode(400);
+        }
+
+        $verificationToken = $this->storeVerificationToken($userId, $newEmail);
+        if ($verificationToken === null) {
+            // This could only happen if the token is already in use, or if the random generator
+            // fails. So, this should never happen. But if it does, we need to clean up the database.
+            return $this->response->setJSON(['error' => 'FAILED_TO_STORE_VERIFICATION_TOKEN'])->setStatusCode(500);
+        }
+
+        $this->sendVerificationEmail(
+            email: $newEmail,
+            username: $account['username'],
+            verificationToken: $verificationToken,
+        );
+
+        return $this->response->setJSON(['message' => 'VERIFICATION_TOKEN_SENT']);
+    }
+
+    private function storeVerificationToken(
+        int     $userId,
+        ?string $newEmail = null,
+    ): string|null
     {
         try {
             $token = bin2hex(random_bytes(64));
@@ -430,7 +473,7 @@ class Account extends BaseController
         }
         $expiresAt = date('Y-m-d H:i:s', strtotime('+1 day'));
         $model = model(VerificationTokenModel::class);
-        if (!$model->store($token, $userId, $expiresAt)) {
+        if (!$model->store($token, $userId, $expiresAt, $newEmail)) {
             // This could only happen if the token is already in use, but this is
             // very unlikely because the token is generated randomly.
             return null;
@@ -449,5 +492,27 @@ class Account extends BaseController
             $accountModel->deleteAccount($expiredToken['user_id']);
             $userModel->deleteUser($expiredToken['user_id']);
         }
+    }
+
+    private function sendVerificationEmail(mixed $email, mixed $username, string $verificationToken): void
+    {
+        // Base URL is something that ends with /api/, so we need to remove api/ from the base URL.
+        $baseUrl = base_url();
+        $suffix = "api/";
+        if (str_ends_with($baseUrl, $suffix)) {
+            $baseUrl = substr($baseUrl, 0, -strlen($suffix));
+        }
+        $verificationLink = $baseUrl . 'verify-email-address' . '?token=' . $verificationToken;
+        EmailHelper::send(
+            $email,
+            'Bestätige deine E-Mail-Adresse',
+            view(
+                'email/account/verify_email_address',
+                [
+                    'username' => $username,
+                    'verificationLink' => $verificationLink,
+                ]
+            )
+        );
     }
 }

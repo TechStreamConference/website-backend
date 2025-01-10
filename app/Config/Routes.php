@@ -32,6 +32,7 @@ $routes->post('account/logout', [Account::class, 'logout']);
 $routes->post('account/verify', [Account::class, 'verify']);
 $routes->put('account/change-username', [Account::class, 'changeUsername'], ['filter' => AuthFilter::class]);
 $routes->put('account/change-password', [Account::class, 'changePassword'], ['filter' => AuthFilter::class]);
+$routes->put('account/change-email', [Account::class, 'changeEmail'], ['filter' => AuthFilter::class]);
 $routes->get('images/(:segment)', [Image::class, 'get']);
 $routes->get('events', [Event::class, 'get']);
 $routes->get('events/(:num)', [Event::class, 'get']);
