@@ -41,7 +41,7 @@ class TimeSlot extends BaseController
                     $eventId,
                     $slot['start_time'],
                     $slot['duration'],
-                    $slot['is_special'] == 'true',
+                    $slot['is_special'],
                 );
             },
             $validData['time_slots'],
