@@ -95,8 +95,9 @@ class AccountModel extends Model
             ->findAll();
     }
 
-    public function changePasswordHash(int $userId, string $newPasswordHash): void
+    public function changePassword(int $userId, string $newPassword): void
     {
+        $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
         $this->update($userId, ['password' => $newPasswordHash]);
     }
 

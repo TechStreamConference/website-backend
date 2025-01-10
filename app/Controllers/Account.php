@@ -227,7 +227,7 @@ class Account extends BaseController
             return $this->response->setStatusCode(500);
         }
 
-        $accountModel->changePasswordHash($entry['user_id'], password_hash($newPassword, PASSWORD_DEFAULT));
+        $accountModel->changePassword($entry['user_id'], $newPassword);
 
         // Delete the used token as well as all other tokens of the same user that may exist.
         $passwordResetTokenModel->deleteTokensOfUser($entry['user_id']);
