@@ -15,10 +15,14 @@ use Random\RandomException;
 
 class Account extends BaseController
 {
+    const USERNAME_RULE = 'required|trim|alpha_dash|min_length[3]|max_length[30]';
+    const PASSWORD_RULE = 'required|valid_password';
+    const EMAIL_RULE = 'required|trim|valid_email|max_length[320]';
+
     const REGISTER_RULES = [
-        'username' => 'required|trim|alpha_dash|min_length[3]|max_length[30]',
-        'password' => 'required|valid_password',
-        'email' => 'required|trim|valid_email|max_length[320]',
+        'username' => self::USERNAME_RULE,
+        'password' => self::PASSWORD_RULE,
+        'email' => self::EMAIL_RULE,
         'token' => 'permit_empty|trim|alpha_numeric|max_length[128]',
     ];
 
@@ -32,7 +36,7 @@ class Account extends BaseController
 
     const RESET_PASSWORD_RULES = [
         'token' => 'required|trim',
-        'new_password' => 'required|valid_password',
+        'new_password' => self::PASSWORD_RULE,
     ];
 
     public function register()
