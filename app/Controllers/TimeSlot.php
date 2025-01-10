@@ -54,6 +54,8 @@ class TimeSlot extends BaseController
 
         $timeSlotModel->deleteAllOfEvent($eventId);
         if (!$timeSlotModel->store($timeSlots)) {
+            // This happens when trying to store new time slots, even though there already are talks
+            // that have been assigned to time slots (violation of foreign key constraint).
             return $this->response->setJSON(['error' => 'FAILED_TO_STORE_TIME_SLOTS'])->setStatusCode(500);
         }
         return $this->response->setStatusCode(204);
