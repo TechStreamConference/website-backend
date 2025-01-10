@@ -49,6 +49,11 @@ class Account extends BaseController
         'password' => self::PASSWORD_RULE,
     ];
 
+    const CHANGE_PASSWORD_RULES = [
+        'old_password' => self::PASSWORD_RULE,
+        'new_password' => self::PASSWORD_RULE,
+    ];
+
     public function register()
     {
         $this->deleteExpiredAccounts();
@@ -388,6 +393,32 @@ class Account extends BaseController
 
         $accountModel->changeUsername($userId, $username);
         return $this->response->setJSON(['message' => 'USERNAME_CHANGED']);
+    }
+
+    public function changePassword(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data ?? [], self::CHANGE_PASSWORD_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+
+        $validData = $this->validator->getValidated();
+        $oldPassword = $validData['old_password'];
+        $newPassword = $validData['new_password'];
+
+        if ($oldPassword == $newPassword) {
+            return $this->response->setJSON(['error' => 'PASSWORDS_EQUAL'])->setStatusCode(400);
+        }
+
+        $session = session();
+        $userId = $session->get('user_id');
+        $accountModel = model(AccountModel::class);
+        if (!$accountModel->checkPassword($userId, $oldPassword)) {
+            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
+        }
+
+        $accountModel->changePassword($userId, $newPassword);
+        return $this->response->setJSON(['message' => 'PASSWORD_CHANGED']);
     }
 
     private function storeValidationToken(int $userId): string|null
