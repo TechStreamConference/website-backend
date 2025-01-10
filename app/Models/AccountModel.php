@@ -17,7 +17,8 @@ class AccountModel extends Model
         'email',
         'is_verified',
         'username',
-        'password_change_required'
+        'password',
+        'password_change_required',
     ];
     protected array $casts = [
         'user_id' => 'int',
@@ -40,7 +41,12 @@ class AccountModel extends Model
                 ->countAllResults() > 0;
     }
 
-    public function createAccount(int $userId, string $username, string $passwordHash, string $email): bool
+    public function createAccount(
+        int    $userId,
+        string $username,
+        string $passwordHash,
+        string $email
+    ): bool
     {
         try {
             $this->insert([
@@ -68,6 +74,7 @@ class AccountModel extends Model
     public function getAccountByUsernameOrEmail(string $usernameOrEmail): array|null
     {
         return $this
+            ->select('user_id, username, email, is_verified, password_change_required')
             ->where('username', $usernameOrEmail)
             ->orWhere('email', $usernameOrEmail)
             ->first();
