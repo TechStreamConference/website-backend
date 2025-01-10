@@ -12,6 +12,9 @@ class TimeSlot extends BaseController
     const TIME_SLOT_RULES = [
         'time_slots.*.start_time' => 'required|valid_date[Y-m-d H:i:s]',
         'time_slots.*.duration' => 'required|is_natural_no_zero',
+        // We cannot use `required` for `is_special` because the `required`
+        // validator returns false if the value is false.
+        'time_slots.*.is_special' => 'field_exists|is_bool',
     ];
 
     public function create_or_replace(int $eventId): ResponseInterface
@@ -38,6 +41,7 @@ class TimeSlot extends BaseController
                     $eventId,
                     $slot['start_time'],
                     $slot['duration'],
+                    $slot['is_special'] == 'true',
                 );
             },
             $validData['time_slots'],
