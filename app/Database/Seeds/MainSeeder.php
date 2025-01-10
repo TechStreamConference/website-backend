@@ -8,6 +8,8 @@ class MainSeeder extends Seeder
 {
     public function run()
     {
+        $this->call('GlobalsSeeder');
+        $this->call('TalkDurationChoiceSeeder');
         $this->call('UserSeeder');
         $this->call('AccountSeeder');
         $this->call('EventSeeder');
@@ -18,10 +20,10 @@ class MainSeeder extends Seeder
         $this->call('SponsorSeeder');
         $this->call('MediaPartnerSeeder');
         $this->call('TagSeeder');
+        $this->call('TimeSlotSeeder');
         $this->call('TalkSeeder');
         $this->call('TalkHasTagSeeder');
         $this->call('AdminSeeder');
-        $this->call('GlobalsSeeder');
         $this->call('ConnectedRegistrationTokenSeeder');
     }
 }

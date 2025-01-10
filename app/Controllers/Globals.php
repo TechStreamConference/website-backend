@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
 use App\Models\SocialMediaTypeModel;
+use App\Models\TagModel;
+use App\Models\TalkDurationChoiceModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Globals extends BaseController
@@ -36,5 +38,16 @@ class Globals extends BaseController
     {
         $model = model(SocialMediaTypeModel::class);
         return $this->response->setJSON($model->all());
+    }
+
+    public function getTags(): ResponseInterface {
+        $model = model(TagModel::class);
+        return $this->response->setJSON($model->getAll());
+    }
+
+    public function getTalkDurationChoices(): ResponseInterface
+    {
+        $model = model(TalkDurationChoiceModel::class);
+        return $this->response->setJSON($model->getAll());
     }
 }

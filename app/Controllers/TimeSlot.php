@@ -12,13 +12,16 @@ class TimeSlot extends BaseController
     const TIME_SLOT_RULES = [
         'time_slots.*.start_time' => 'required|valid_date[Y-m-d H:i:s]',
         'time_slots.*.duration' => 'required|is_natural_no_zero',
+        // We cannot use `required` for `is_special` because the `required`
+        // validator returns false if the value is false.
+        'time_slots.*.is_special' => 'field_exists|is_bool',
     ];
 
     public function create_or_replace(int $eventId): ResponseInterface
     {
         $data = $this->request->getJSON(true);
 
-        if (!$this->validateData($data, self::TIME_SLOT_RULES)) {
+        if (!$this->validateData($data ?? [], self::TIME_SLOT_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -38,6 +41,7 @@ class TimeSlot extends BaseController
                     $eventId,
                     $slot['start_time'],
                     $slot['duration'],
+                    $slot['is_special'],
                 );
             },
             $validData['time_slots'],
@@ -50,6 +54,8 @@ class TimeSlot extends BaseController
 
         $timeSlotModel->deleteAllOfEvent($eventId);
         if (!$timeSlotModel->store($timeSlots)) {
+            // This happens when trying to store new time slots, even though there already are talks
+            // that have been assigned to time slots (violation of foreign key constraint).
             return $this->response->setJSON(['error' => 'FAILED_TO_STORE_TIME_SLOTS'])->setStatusCode(500);
         }
         return $this->response->setStatusCode(204);

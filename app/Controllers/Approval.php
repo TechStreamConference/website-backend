@@ -120,7 +120,7 @@ class Approval extends BaseController
     private function requestChangesForRoleEntry(Role $role, int $id)
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, ['message' => 'required|string'])) {
+        if (!$this->validateData($data ?? [], ['message' => 'required|string'])) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -204,7 +204,7 @@ class Approval extends BaseController
     public function requestChangesForSocialMediaLink(int $id)
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, ['message' => 'required|string'])) {
+        if (!$this->validateData($data ?? [], ['message' => 'required|string'])) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();

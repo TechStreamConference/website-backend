@@ -22,7 +22,7 @@ class AdminDashboard extends BaseController
             'footer_text' => 'string',
         ];
 
-        if (!$this->validateData($data, $rules)) {
+        if (!$this->validateData($data ?? [], $rules)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -56,7 +56,7 @@ class AdminDashboard extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
 
-        if (!$this->validateData($data, self::EVENT_RULES)) {
+        if (!$this->validateData($data ?? [], self::EVENT_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -96,7 +96,7 @@ class AdminDashboard extends BaseController
 
         $data = $this->request->getJSON(assoc: true);
 
-        if (!$this->validateData($data, self::EVENT_RULES)) {
+        if (!$this->validateData($data ?? [], self::EVENT_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
 
@@ -184,7 +184,7 @@ class AdminDashboard extends BaseController
     public function createSocialMediaType(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::CREATE_SOCIAL_MEDIA_LINK_RULES)) {
+        if (!$this->validateData($data ?? [], self::CREATE_SOCIAL_MEDIA_LINK_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();

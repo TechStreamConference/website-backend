@@ -8,8 +8,6 @@ class AddTalk extends Migration
 {
     public function up()
     {
-        // A talk is connected to an event and a speaker (both are foreign keys). It need's
-        // data about the starting date and time, the duration, the title, and a description.
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',
@@ -21,19 +19,11 @@ class AddTalk extends Migration
                 'unsigned' => true,
                 'null' => false,
             ],
-            'speaker_id' => [
+            'user_id' => [
                 'type' => 'INT',
                 'unsigned' => true,
                 'null' => false,
-            ],
-            'starts_at' => [
-                'type' => 'DATETIME',
-                'null' => false,
-            ],
-            'duration' => [
-                'type' => 'INT',
-                'unsigned' => true,
-                'null' => false,
+                'after' => 'event_id',
             ],
             'title' => [
                 'type' => 'VARCHAR',
@@ -44,10 +34,30 @@ class AddTalk extends Migration
                 'type' => 'TEXT',
                 'null' => false,
             ],
-            'is_special' => [
+            'notes' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],
+            'requested_changes' => [
+                'type' => 'TEXT',
+                'null' => true,
+                'after' => 'is_special',
+            ],
+            'is_approved' => [
                 'type' => 'BOOLEAN',
-                'null' => false,
                 'default' => false,
+                'after' => 'requested_changes',
+            ],
+            'time_slot_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => true,
+                'after' => 'is_approved',
+            ],
+            'time_slot_accepted' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
+                'after' => 'time_slot_id',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -64,7 +74,8 @@ class AddTalk extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('event_id', 'Event', 'id');
-        $this->forge->addForeignKey('speaker_id', 'Speaker', 'id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->addForeignKey('time_slot_id', 'TimeSlot', 'id');
         $this->forge->createTable('Talk');
     }
 

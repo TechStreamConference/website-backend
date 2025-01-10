@@ -24,7 +24,7 @@ class EventSeeder extends Seeder
                 'description' => 'Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.
 Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzunehmen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch "special guests" und Überraschungen. Also sei gespannt!',
                 'call_for_papers_start' => date('2023-12-01 12:00:00'),
-                'call_for_papers_end' => date('2024-03-01 12:00:00'),
+                'call_for_papers_end' => date('2030-03-01 12:00:00'),
             ]
         );
         $this->db->table('Event')->insert(

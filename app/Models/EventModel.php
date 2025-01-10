@@ -41,7 +41,7 @@ class EventModel extends Model
     public function getPublishedByYear(int $year): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, call_for_papers_start, call_for_papers_end')
             ->where('YEAR(start_date)', $year)
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->first();

@@ -93,7 +93,7 @@ class AdminDashboardTest extends CIUnitTestCase
                 'schedule_visible_from' => '2024-06-10 12:00:00',
                 'publish_date' => '2024-01-01 12:00:00',
                 'call_for_papers_start' => '2023-12-01 12:00:00',
-                'call_for_papers_end' => '2024-03-01 12:00:00',
+                'call_for_papers_end' => '2030-03-01 12:00:00',
             ],
         ]);
     }
@@ -348,7 +348,7 @@ class AdminDashboardTest extends CIUnitTestCase
                 'schedule_visible_from' => '2024-06-10 12:00:00',
                 'publish_date' => '2024-01-01 12:00:00',
                 'call_for_papers_start' => '2023-12-01 12:00:00',
-                'call_for_papers_end' => '2024-03-01 12:00:00',
+                'call_for_papers_end' => '2030-03-01 12:00:00',
             ],
         ]);
     }
@@ -434,7 +434,7 @@ class AdminDashboardTest extends CIUnitTestCase
                 "schedule_visible_from" => "2024-06-10 12:00:00",
                 "publish_date" => "2024-01-01 12:00:00",
                 "call_for_papers_start" => "2023-12-01 12:00:00",
-                "call_for_papers_end" => "2024-03-01 12:00:00",
+                "call_for_papers_end" => "2030-03-01 12:00:00",
             ],
         ]);
     }

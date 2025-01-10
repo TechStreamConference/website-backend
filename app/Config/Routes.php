@@ -8,6 +8,7 @@ use App\Controllers\Globals;
 use App\Controllers\Image;
 use App\Controllers\HealthCheck;
 use App\Controllers\SpeakerDashboard;
+use App\Controllers\Talk;
 use App\Controllers\TeamMemberDashboard;
 use App\Controllers\TimeSlot;
 use App\Filters\AdminAuthFilter;
@@ -36,6 +37,8 @@ $routes->get('events/(:num)/ics', [Event::class, 'getICalendarFile']);
 $routes->get('health', [HealthCheck::class, 'check']);
 $routes->get('globals', [Globals::class, 'get']);
 $routes->get('social-media-link-types', [Globals::class, 'getSocialMediaLinkTypes']);
+$routes->get('tags', [Globals::class, 'getTags']);
+$routes->get('talk-duration-choices', [Globals::class, 'getTalkDurationChoices']);
 
 $routes->put('dashboard/admin/globals', [AdminDashboard::class, 'setGlobals'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/social-media-link-type', [AdminDashboard::class, 'createSocialMediaType'], ['filter' => AdminAuthFilter::class]);
@@ -61,6 +64,19 @@ $routes->post('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'create_or_
 $routes->get('dashboard/speaker/all-events', [SpeakerDashboard::class, 'getAll'], ['filter' => SpeakerAuthFilter::class]);
 $routes->get('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'get'], ['filter' => SpeakerAuthFilter::class]);
 $routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'createOrUpdate'], ['filter' => SpeakerAuthFilter::class]);
+
+// For better organization, the following routes are defined in the Talk controller.
+$routes->get('dashboard/speaker/can-submit-talk', [Talk::class, 'canSubmit'], ['filter' => SpeakerAuthFilter::class]);
+$routes->post('dashboard/speaker/submit-talk', [Talk::class, 'submit'], ['filter' => SpeakerAuthFilter::class]);
+$routes->put('dashboard/speaker/talk/(:num)', [Talk::class, 'change'], ['filter' => SpeakerAuthFilter::class]);
+$routes->put('dashboard/speaker/talk/(:num)/accept-time-slot', [Talk::class, 'acceptTimeSlot'], ['filter' => SpeakerAuthFilter::class]);
+$routes->put('dashboard/speaker/talk/(:num)/reject-time-slot', [Talk::class, 'rejectTimeSlot'], ['filter' => SpeakerAuthFilter::class]);
+$routes->get('dashboard/admin/pending-talks', [Talk::class, 'getAllPendingTalks'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/admin/tentative-talks', [Talk::class, 'getAllTentativeTalks'], ['filter' => AdminAuthFilter::class]);
+$routes->post('dashboard/admin/talk/(:num)/request-changes', [Talk::class, 'requestChanges'], ['filter' => AdminAuthFilter::class]);
+$routes->put('dashboard/admin/talk/(:num)/approve', [Talk::class, 'approve'], ['filter' => AdminAuthFilter::class]);
+$routes->post('dashboard/admin/talk/(:num)/reject', [Talk::class, 'reject'], ['filter' => AdminAuthFilter::class]);
+$routes->put('dashboard/admin/talk/(:num)/suggest-time-slot', [Talk::class, 'suggestTimeSlot'], ['filter' => AdminAuthFilter::class]);
 
 $routes->get('dashboard/team-member/all-events', [TeamMemberDashboard::class, 'getAll'], ['filter' => TeamMemberAuthFilter::class]);
 $routes->get('dashboard/team-member/event/(:num)', [TeamMemberDashboard::class, 'get'], ['filter' => TeamMemberAuthFilter::class]);

@@ -94,7 +94,7 @@ abstract class ContributorDashboard extends BaseController
     public function createSocialMediaLinkForCurrentUser(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::SOCIAL_MEDIA_LINK_CREATION_RULES)) {
+        if (!$this->validateData($data ?? [], self::SOCIAL_MEDIA_LINK_CREATION_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -132,7 +132,7 @@ abstract class ContributorDashboard extends BaseController
         if ($data instanceof ResponseInterface) {
             return $data;
         }
-        if (!$this->validateData($data, self::APPLICATION_SOCIAL_MEDIA_LINK_RULES)) {
+        if (!$this->validateData($data ?? [], self::APPLICATION_SOCIAL_MEDIA_LINK_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -159,7 +159,7 @@ abstract class ContributorDashboard extends BaseController
     public function updateSocialMediaLinksForCurrentUser(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
-        if (!$this->validateData($data, self::SOCIAL_MEDIA_LINK_UPDATE_RULES)) {
+        if (!$this->validateData($data ?? [], self::SOCIAL_MEDIA_LINK_UPDATE_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -314,7 +314,7 @@ abstract class ContributorDashboard extends BaseController
         if ($data instanceof ResponseInterface) {
             return $data;
         }
-        if (!$this->validateData($data, self::RULES)) {
+        if (!$this->validateData($data ?? [], self::RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
@@ -484,15 +484,6 @@ abstract class ContributorDashboard extends BaseController
             throw new RuntimeException("Invalid model class name.");
         }
         return $model;
-    }
-
-    /** This function returns the ID of the currently logged in user. We don't check their role here.
-     * @return int The ID of the currently logged in user.
-     */
-    protected function getLoggedInUserId(): int
-    {
-        $session = session();
-        return $session->get('user_id');
     }
 
     /** This function uploads the photo of the contributor. It returns the path to the uploaded file

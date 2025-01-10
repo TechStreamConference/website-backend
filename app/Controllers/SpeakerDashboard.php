@@ -68,7 +68,7 @@ class SpeakerDashboard extends ContributorDashboard
 
     private function createFromApplication(int $eventId, array $data): ResponseInterface
     {
-        if (!$this->validateData($data, self::APPLICATION_RULES)) {
+        if (!$this->validateData($data ?? [], self::APPLICATION_RULES)) {
             return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
         }
         $validData = $this->validator->getValidated();
