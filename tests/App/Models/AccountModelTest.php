@@ -128,7 +128,7 @@ class AccountModelTest extends CIUnitTestCase
         $result = $model->getAccountByUsernameOrEmail('coder2k');
         $this->assertIsArray($result);
         $this->assertEquals('coder2k', $result['username']);
-        $this->assertTrue(password_verify('password', $result['password']));
+        $this->assertTrue(password_verify('Coder2k123!', $result['password']));
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 
@@ -138,7 +138,7 @@ class AccountModelTest extends CIUnitTestCase
         $result = $model->getAccountByUsernameOrEmail('CoDeR2k');
         $this->assertIsArray($result);
         $this->assertEquals('coder2k', $result['username']);
-        $this->assertTrue(password_verify('password', $result['password']));
+        $this->assertTrue(password_verify('Coder2k123!', $result['password']));
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 
@@ -148,7 +148,7 @@ class AccountModelTest extends CIUnitTestCase
         $result = $model->getAccountByUsernameOrEmail('coder2k@test-conf.de');
         $this->assertIsArray($result);
         $this->assertEquals('coder2k', $result['username']);
-        $this->assertTrue(password_verify('password', $result['password']));
+        $this->assertTrue(password_verify('Coder2k123!', $result['password']));
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 
@@ -158,7 +158,7 @@ class AccountModelTest extends CIUnitTestCase
         $result = $model->getAccountByUsernameOrEmail('CoDeR2k@TEST-conf.de');
         $this->assertIsArray($result);
         $this->assertEquals('coder2k', $result['username']);
-        $this->assertTrue(password_verify('password', $result['password']));
+        $this->assertTrue(password_verify('Coder2k123!', $result['password']));
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 

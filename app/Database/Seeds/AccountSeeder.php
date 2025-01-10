@@ -14,7 +14,7 @@ class AccountSeeder extends Seeder
                 'email' => 'coder2k@test-conf.de',
                 'username' => 'coder2k',
                 'is_verified' => true,
-                'password' => password_hash('password', null),
+                'password' => password_hash('Coder2k123!', null),
                 'created_at' => date('2024-08-17 13:00:00'),
                 'updated_at' => date('2024-08-17 13:00:00'),
             ]
@@ -25,7 +25,7 @@ class AccountSeeder extends Seeder
                 'email' => 'gyrosgeier@geier.horst',
                 'username' => 'Gyros Geier',
                 'is_verified' => true,
-                'password' => password_hash('horst', null),
+                'password' => password_hash('GyrosGeier123!', null),
                 'created_at' => date('2024-08-17 14:00:00'),
                 'updated_at' => date('2024-08-17 14:00:00'),
             ]
