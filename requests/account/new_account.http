@@ -1,9 +1,9 @@
 POST localhost:8080/api/account/register
 
 {
-  "username": "ClausKleber",
-  "email": "claus@kleber.de",
-  "password": "ClausKleber123!"
+  "username": "GundulaGause",
+  "email": "gundula@gause.de",
+  "password": "GundulaGause123!"
 }
 
 ###
