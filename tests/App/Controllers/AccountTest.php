@@ -470,7 +470,7 @@ class AccountTest extends CIUnitTestCase
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'username_or_email' => 'coder2k',
-            'password' => 'password',
+            'password' => 'Coder2k123!',
         ]);
         $result->assertStatus(200);
         $result->assertSessionHas('user_id');
