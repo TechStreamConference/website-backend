@@ -1,0 +1,15 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "Coder2k123!"
+}
+
+###
+
+PUT localhost:8080/api/account/change-username
+
+{
+    "username": "coder4k",
+    "password": "Coder2k123!"
+}
