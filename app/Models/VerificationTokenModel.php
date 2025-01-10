@@ -11,6 +11,7 @@ class VerificationTokenModel extends Model
     protected $allowedFields = [
         'user_id',
         'token',
+        'new_email',
         'expires_at',
         'created_at',
         'updated_at',
@@ -27,13 +28,19 @@ class VerificationTokenModel extends Model
             ->first();
     }
 
-    public function store(string $token, int $userId, string $expiresAt): bool
+    public function store(
+        string  $token,
+        int     $userId,
+        string  $expiresAt,
+        ?string $newEmail,
+    ): bool
     {
         try {
             $this->insert([
                 'token' => $token,
                 'user_id' => $userId,
                 'expires_at' => $expiresAt,
+                'new_email' => $newEmail,
             ]);
             return true;
         } catch (DatabaseException) {

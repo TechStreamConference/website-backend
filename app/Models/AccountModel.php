@@ -112,4 +112,9 @@ class AccountModel extends Model
     {
         $this->update($userId, ['username' => $newUsername]);
     }
+
+    public function changeEmail(int $userId, string $newEmail): void
+    {
+        $this->update($userId, ['email' => $newEmail]);
+    }
 }

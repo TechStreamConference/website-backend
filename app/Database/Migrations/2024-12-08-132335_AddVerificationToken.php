@@ -20,6 +20,11 @@ class AddVerificationToken extends Migration
             'expires_at' => [
                 'type' => 'DATETIME',
             ],
+            'new_email' => [
+                'type' => 'VARCHAR',
+                'constraint' => 320,
+                'null' => true,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,
