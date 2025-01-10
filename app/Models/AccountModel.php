@@ -87,4 +87,9 @@ class AccountModel extends Model
     {
         $this->update($userId, ['password' => $newPasswordHash]);
     }
+
+    public function changeUsername(int $userId, string $newUsername): void
+    {
+        $this->update($userId, ['username' => $newUsername]);
+    }
 }
