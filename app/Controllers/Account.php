@@ -39,6 +39,11 @@ class Account extends BaseController
         'new_password' => self::PASSWORD_RULE,
     ];
 
+    const CHANGE_USERNAME_RULES = [
+        'username' => self::USERNAME_RULE,
+        'password' => self::PASSWORD_RULE,
+    ];
+
     public function register()
     {
         $this->deleteExpiredAccounts();
@@ -350,6 +355,33 @@ class Account extends BaseController
         $session->remove('user_id');
         $session->destroy();
         return $this->response->setJSON(['logout' => 'success']);
+    }
+
+    public function changeUsername(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data ?? [], self::CHANGE_USERNAME_RULES)) {
+            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+        }
+
+        $validData = $this->validator->getValidated();
+        $username = $validData['username'];
+        $password = $validData['password'];
+
+        $session = session();
+        $userId = $session->get('user_id');
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($userId);
+        if (!password_verify($password, $account['password'])) {
+            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
+        }
+
+        if ($accountModel->isUsernameTaken($username)) {
+            return $this->response->setJSON(['error' => 'USERNAME_ALREADY_TAKEN'])->setStatusCode(400);
+        }
+
+        $accountModel->changeUsername($userId, $username);
+        return $this->response->setJSON(['message' => 'USERNAME_CHANGED']);
     }
 
     private function storeValidationToken(int $userId): string|null
