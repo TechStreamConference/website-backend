@@ -122,11 +122,11 @@ class TalkModel extends Model
             ->findAll();
     }
 
-    public function get(int $talkdId): ?array
+    public function get(int $talkId): ?array
     {
         return $this
             ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
-            ->where('id', $talkdId)
+            ->where('id', $talkId)
             ->first();
     }
 
