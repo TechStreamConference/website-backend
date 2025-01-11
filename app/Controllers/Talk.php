@@ -154,6 +154,24 @@ class Talk extends BaseController
         return $this->response->setJSON(['success' => 'TALK_SUBMITTED'])->setStatusCode(201);
     }
 
+    public function getPendingTalksForSpeaker(): ResponseInterface
+    {
+        $talkModel = model(TalkModel::class);
+        $pendingTalks = $talkModel->getPendingForSpeaker($this->getLoggedInUserId());
+
+        $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
+        return $this->response->setJSON(['pending_talks' => $pendingTalks])->setStatusCode(200);
+    }
+
+    public function getTentativeOrAcceptedTalksForSpeaker(int $eventId): ResponseInterface
+    {
+        $talkModel = model(TalkModel::class);
+        $tentativeTalks = $talkModel->getTentativeOrAcceptedForSpeaker($this->getLoggedInUserId(), $eventId);
+
+        $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
+        return $this->response->setJSON(['tentative_talks' => $tentativeTalks])->setStatusCode(200);
+    }
+
     /** Gets all pending talks of all users. A pending talk is a talk that has been submitted
      * but hasn't been approved yet. It may contain requested changes.
      * @return ResponseInterface The response to return to the client.

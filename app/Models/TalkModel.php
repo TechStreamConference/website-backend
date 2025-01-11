@@ -112,7 +112,27 @@ class TalkModel extends Model
             ->findAll();
     }
 
-    public function getAllTentative(): array
+    public function getPendingForSpeaker(int $userId): array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at')
+            ->where('user_id', $userId)
+            ->where('is_approved', false)
+            ->orderBy('created_at')
+            ->findAll();
+    }
+
+    public function getTentativeOrAcceptedForSpeaker(int $userId, int $eventId): array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at')
+            ->where('event_id', $eventId)
+            ->where('user_id', $userId)
+            ->where('is_approved', true)
+            ->orderBy('created_at')
+            ->findAll();
+    }
+
     public function getAllTentativeOrAccepted(int $eventId): array
     {
         return $this
