@@ -25,6 +25,16 @@ class TagModel extends Model
         return $this->select('id, text, color_index')->orderBy('text')->findAll();
     }
 
+    public function createTag(string $text, int $colorIndex): int
+    {
+        return $this->insert(['text' => $text, 'color_index' => $colorIndex]);
+    }
+
+    public function change(int $id, string $text, int $colorIndex): void
+    {
+        $this->update($id, ['text' => $text, 'color_index' => $colorIndex]);
+    }
+
     /** Returns an associative array with the talk IDs as keys and the corresponding
      * tags (as an array) as values.
      * @param int[] $talkIds The IDs of the talks.

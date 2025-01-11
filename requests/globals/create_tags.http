@@ -1,0 +1,23 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "password"
+}
+
+###
+
+POST http://localhost:8080/api/tags
+
+{
+  "tags": [
+    {
+        "text": "Garbage Collection",
+        "color_index": 4
+    },
+    {
+        "text": "RAII",
+        "color_index": 2
+    }
+  ]
+}
