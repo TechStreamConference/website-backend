@@ -167,13 +167,13 @@ class Talk extends BaseController
         return $this->response->setJSON(['pending_talks' => $pendingTalks])->setStatusCode(200);
     }
 
-    public function getAllTentativeTalks(): ResponseInterface
+    public function getAllTentativeOrAcceptedTalks(int $eventId): ResponseInterface
     {
         $talkModel = model(TalkModel::class);
-        $tentativeTalks = $talkModel->getAllTentative();
+        $tentativeTalks = $talkModel->getAllTentativeOrAccepted($eventId);
 
         $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
-        return $this->response->setJSON(['tentative_talks' => $tentativeTalks])->setStatusCode(200);
+        return $this->response->setJSON(['tentative_or_accepted_talks' => $tentativeTalks])->setStatusCode(200);
     }
 
     public function requestChanges(int $talkId): ResponseInterface

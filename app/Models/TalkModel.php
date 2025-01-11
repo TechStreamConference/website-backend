@@ -113,11 +113,12 @@ class TalkModel extends Model
     }
 
     public function getAllTentative(): array
+    public function getAllTentativeOrAccepted(int $eventId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at')
             ->where('is_approved', true)
-            ->where('time_slot_accepted', false)
+            ->where('event_id', $eventId)
             ->orderBy('created_at')
             ->findAll();
     }
