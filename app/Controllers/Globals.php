@@ -44,7 +44,8 @@ class Globals extends BaseController
         return $this->response->setJSON($model->all());
     }
 
-    public function getTags(): ResponseInterface {
+    public function getTags(): ResponseInterface
+    {
         $model = model(TagModel::class);
         return $this->response->setJSON($model->getAll());
     }
