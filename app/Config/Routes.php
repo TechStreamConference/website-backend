@@ -39,6 +39,7 @@ $routes->get('globals', [Globals::class, 'get']);
 $routes->get('social-media-link-types', [Globals::class, 'getSocialMediaLinkTypes']);
 $routes->get('tags', [Globals::class, 'getTags']);
 $routes->get('talk-duration-choices', [Globals::class, 'getTalkDurationChoices']);
+$routes->post('talk-duration-choices', [Globals::class, 'addTalkDurationChoices'], ['filter' => AdminAuthFilter::class]);
 
 $routes->put('dashboard/admin/globals', [AdminDashboard::class, 'setGlobals'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/social-media-link-type', [AdminDashboard::class, 'createSocialMediaType'], ['filter' => AdminAuthFilter::class]);

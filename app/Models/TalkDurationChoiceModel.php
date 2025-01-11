@@ -22,4 +22,9 @@ class TalkDurationChoiceModel extends Model
     {
         return array_column($this->select('duration')->orderBy('duration')->findAll(), 'duration');
     }
+
+    public function add(int $duration): void
+    {
+        $this->insert(['duration' => $duration]);
+    }
 }
