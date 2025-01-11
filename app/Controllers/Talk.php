@@ -165,6 +165,11 @@ class Talk extends BaseController
 
     public function getTentativeOrAcceptedTalksForSpeaker(int $eventId): ResponseInterface
     {
+        $eventModel = model(EventModel::class);
+        if ($eventModel->getPublished($eventId) === null) {
+            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+        }
+
         $talkModel = model(TalkModel::class);
         $tentativeTalks = $talkModel->getTentativeOrAcceptedForSpeaker($this->getLoggedInUserId(), $eventId);
 
@@ -187,6 +192,11 @@ class Talk extends BaseController
 
     public function getAllTentativeOrAcceptedTalks(int $eventId): ResponseInterface
     {
+        $eventModel = model(EventModel::class);
+        if ($eventModel->getPublished($eventId) === null) {
+            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+        }
+
         $talkModel = model(TalkModel::class);
         $tentativeTalks = $talkModel->getAllTentativeOrAccepted($eventId);
 
