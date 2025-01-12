@@ -847,7 +847,7 @@ class Talk extends BaseController
             );
             $talk['suggested_time_slot'] =
                 isset($talk['time_slot_id']) && $talk['time_slot_id'] != null
-                    ? $timeSlotModel->get($talk['time_slot_id'])
+                    ? $timeSlotModel->get($talk['time_slot_id'])->toArray()
                     : null;
             unset($talk['time_slot_id']);
         }
