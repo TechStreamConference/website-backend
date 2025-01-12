@@ -48,7 +48,7 @@ class TagModel extends Model
         $tags = $this->getAllByTalkIds($talkIds);
         $mapping = [];
         foreach ($tags as $tag) {
-            $mapping[$tag['talk_id']][] = $tag;
+            $mapping[(int)$tag['talk_id']][] = $tag;
         }
 
         // Remove redundant talk_id values.
@@ -66,7 +66,7 @@ class TagModel extends Model
         $result = $this
             ->db
             ->table('Talk')
-            ->select('Talk.id as talk_id, Tag.color_index, Tag.text')
+            ->select('Talk.id as talk_id, Tag.id, Tag.color_index, Tag.text')
             ->whereIn('Talk.id', $talkIds)
             ->join('TalkHasTag', 'TalkHasTag.talk_id = Talk.id')
             ->join('Tag', 'Tag.id = TalkHasTag.tag_id')
@@ -75,6 +75,7 @@ class TagModel extends Model
 
         // Automatic casts won't work because we are using a query on another table.
         foreach ($result as &$row) {
+            $row['id'] = (int)$row['id'];
             $row['color_index'] = (int)$row['color_index'];
         }
 
