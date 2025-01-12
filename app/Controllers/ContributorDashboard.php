@@ -405,7 +405,7 @@ abstract class ContributorDashboard extends BaseController
         );
         return $this
             ->response
-            ->setJSON(['message' => "Created new {$this->getRoleName()} entry."])
+            ->setJSON(['message' => "CREATED_NEW_{$this->getRoleNameScreamingSnakeCase()}_ENTRY"])
             ->setStatusCode(201);
     }
 
@@ -532,7 +532,7 @@ abstract class ContributorDashboard extends BaseController
             return $this->response->setJSON(['error' => 'IMAGE_MUST_BE_SQUARE'])->setStatusCode(400);
         }
 
-        $pathForDatabase = 'images' . DIRECTORY_SEPARATOR . $filename;
+        $pathForDatabase = $filename;
         return [$pathForDatabase, $mimeType];
     }
 }
