@@ -8,7 +8,9 @@ use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
+use App\Models\TalkModel;
 use App\Models\TeamMemberModel;
+use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class Approval extends BaseController
@@ -178,6 +180,43 @@ class Approval extends BaseController
         return $this->getPendingRoleEntries(Role::SPEAKER);
     }
 
+    public function canReject(int $userId, int $eventId): ResponseInterface
+    {
+        $canBeRejected = $this->checkIfSpeakerCanBeRejected($userId, $eventId);
+        if ($canBeRejected instanceof ResponseInterface) {
+            return $canBeRejected;
+        }
+        return $this->response->setJSON(['can_reject' => $canBeRejected]);
+    }
+
+    public function reject(int $userId, int $eventId): ResponseInterface
+    {
+        $canBeRejected = $this->checkIfSpeakerCanBeRejected($userId, $eventId);
+        if ($canBeRejected instanceof ResponseInterface) {
+            return $canBeRejected;
+        }
+        if (!$canBeRejected) {
+            return $this->response->setJSON(['error' => 'SPEAKER_CANNOT_BE_REJECTED'])->setStatusCode(400);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $speakerEntries = $speakerModel->getAllForUserAndEvent($userId, $eventId);
+        $imageFilenames = array_column($speakerEntries, 'photo');
+
+        $error = false;
+        foreach ($imageFilenames as $imageFilename) {
+            if (!$this->deleteImage($imageFilename)) {
+                $error = true;
+            }
+        }
+
+        $speakerModel->deleteAllForEvent($userId, $eventId);
+        if ($error) {
+            return $this->response->setJSON(['error' => 'IMAGE_DELETION_FAILED'])->setStatusCode(500);
+        }
+        return $this->response->setStatusCode(204);
+    }
+
     public function getPendingTeamMembers(): ResponseInterface
     {
         return $this->getPendingRoleEntries(Role::TEAM_MEMBER);
@@ -280,6 +319,43 @@ class Approval extends BaseController
         return $this
             ->response
             ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
+    }
+
+    private function checkIfSpeakerCanBeRejected(int $userId, int $eventId): bool|ResponseInterface
+    {
+        $userModel = model(UserModel::class);
+        $user = $userModel->getUser($userId);
+        if ($user === null) {
+            return $this->response->setJSON(['error' => 'USER_NOT_FOUND'])->setStatusCode(404);
+        }
+
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->getPublished($eventId);
+        if ($event === null) {
+            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $canReject = $speakerModel->hasEntry($userId, $eventId) && !$speakerModel->hasApprovedEntry($userId, $eventId);
+
+        if (!$canReject) {
+            return false;
+        }
+
+        $talkModel = model(TalkModel::class);
+        if ($talkModel->speakerHasTalks($userId, $eventId)) {
+            return $this->response->setJSON(['error' => 'SPEAKER_HAS_TALKS'])->setStatusCode(500);
+        }
+        return true;
+    }
+
+    private function deleteImage(string $filename): bool
+    {
+        $path = PathHelper::getImagePath($filename);
+        if ($path == null) {
+            return false;
+        }
+        return unlink($path);
     }
 
     private function sendMailsToUserAndAdmins(
