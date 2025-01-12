@@ -1,0 +1,25 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "password"
+}
+
+###
+
+PUT http://localhost:8080/api/tags
+
+{
+  "tags": [
+    {
+        "id": 1,
+        "text": "Bastelclub",
+        "color_index": 1
+    },
+    {
+        "id": 2,
+        "text": "Forward Engineering",
+        "color_index": 3
+    }
+  ]
+}

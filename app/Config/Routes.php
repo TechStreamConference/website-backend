@@ -41,6 +41,8 @@ $routes->get('health', [HealthCheck::class, 'check']);
 $routes->get('globals', [Globals::class, 'get']);
 $routes->get('social-media-link-types', [Globals::class, 'getSocialMediaLinkTypes']);
 $routes->get('tags', [Globals::class, 'getTags']);
+$routes->put('tags', [Globals::class, 'updateTags'], ['filter' => AdminAuthFilter::class]);
+$routes->post('tags', [Globals::class, 'createTags'], ['filter' => AdminAuthFilter::class]);
 $routes->get('talk-duration-choices', [Globals::class, 'getTalkDurationChoices']);
 $routes->post('talk-duration-choices', [Globals::class, 'addTalkDurationChoices'], ['filter' => AdminAuthFilter::class]);
 
