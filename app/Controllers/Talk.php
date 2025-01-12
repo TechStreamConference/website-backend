@@ -160,7 +160,7 @@ class Talk extends BaseController
         $pendingTalks = $talkModel->getPendingForSpeaker($this->getLoggedInUserId());
 
         $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
-        return $this->response->setJSON(['pending_talks' => $pendingTalks])->setStatusCode(200);
+        return $this->response->setJSON($pendingTalks)->setStatusCode(200);
     }
 
     public function getTentativeOrAcceptedTalksForSpeaker(int $eventId): ResponseInterface
@@ -174,7 +174,7 @@ class Talk extends BaseController
         $tentativeTalks = $talkModel->getTentativeOrAcceptedForSpeaker($this->getLoggedInUserId(), $eventId);
 
         $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
-        return $this->response->setJSON(['tentative_talks' => $tentativeTalks])->setStatusCode(200);
+        return $this->response->setJSON($tentativeTalks)->setStatusCode(200);
     }
 
     /** Gets all pending talks of all users. A pending talk is a talk that has been submitted
@@ -187,7 +187,7 @@ class Talk extends BaseController
         $pendingTalks = $talkModel->getAllPending();
 
         $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
-        return $this->response->setJSON(['pending_talks' => $pendingTalks])->setStatusCode(200);
+        return $this->response->setJSON($pendingTalks)->setStatusCode(200);
     }
 
     public function getAllTentativeOrAcceptedTalks(int $eventId): ResponseInterface
@@ -201,7 +201,7 @@ class Talk extends BaseController
         $tentativeTalks = $talkModel->getAllTentativeOrAccepted($eventId);
 
         $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
-        return $this->response->setJSON(['tentative_or_accepted_talks' => $tentativeTalks])->setStatusCode(200);
+        return $this->response->setJSON($tentativeTalks)->setStatusCode(200);
     }
 
     public function requestChanges(int $talkId): ResponseInterface
