@@ -517,7 +517,7 @@ abstract class ContributorDashboard extends BaseController
         );
         return $this
             ->response
-            ->setJSON(['message' => "Created new {$this->getRoleName()} entry."])
+            ->setJSON(['message' => "CREATED_NEW_{$this->getRoleNameScreamingSnakeCase()}_ENTRY"])
             ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
