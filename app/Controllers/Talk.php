@@ -154,6 +154,29 @@ class Talk extends BaseController
         return $this->response->setJSON(['success' => 'TALK_SUBMITTED'])->setStatusCode(201);
     }
 
+    public function getPendingTalksForSpeaker(): ResponseInterface
+    {
+        $talkModel = model(TalkModel::class);
+        $pendingTalks = $talkModel->getPendingForSpeaker($this->getLoggedInUserId());
+
+        $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
+        return $this->response->setJSON($pendingTalks)->setStatusCode(200);
+    }
+
+    public function getTentativeOrAcceptedTalksForSpeaker(int $eventId): ResponseInterface
+    {
+        $eventModel = model(EventModel::class);
+        if ($eventModel->getPublished($eventId) === null) {
+            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+        }
+
+        $talkModel = model(TalkModel::class);
+        $tentativeTalks = $talkModel->getTentativeOrAcceptedForSpeaker($this->getLoggedInUserId(), $eventId);
+
+        $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
+        return $this->response->setJSON($tentativeTalks)->setStatusCode(200);
+    }
+
     /** Gets all pending talks of all users. A pending talk is a talk that has been submitted
      * but hasn't been approved yet. It may contain requested changes.
      * @return ResponseInterface The response to return to the client.
@@ -164,16 +187,21 @@ class Talk extends BaseController
         $pendingTalks = $talkModel->getAllPending();
 
         $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
-        return $this->response->setJSON(['pending_talks' => $pendingTalks])->setStatusCode(200);
+        return $this->response->setJSON($pendingTalks)->setStatusCode(200);
     }
 
-    public function getAllTentativeTalks(): ResponseInterface
+    public function getAllTentativeOrAcceptedTalks(int $eventId): ResponseInterface
     {
+        $eventModel = model(EventModel::class);
+        if ($eventModel->getPublished($eventId) === null) {
+            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+        }
+
         $talkModel = model(TalkModel::class);
-        $tentativeTalks = $talkModel->getAllTentative();
+        $tentativeTalks = $talkModel->getAllTentativeOrAccepted($eventId);
 
         $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
-        return $this->response->setJSON(['tentative_talks' => $tentativeTalks])->setStatusCode(200);
+        return $this->response->setJSON($tentativeTalks)->setStatusCode(200);
     }
 
     public function requestChanges(int $talkId): ResponseInterface
@@ -819,7 +847,7 @@ class Talk extends BaseController
             );
             $talk['suggested_time_slot'] =
                 isset($talk['time_slot_id']) && $talk['time_slot_id'] != null
-                    ? $timeSlotModel->get($talk['time_slot_id'])
+                    ? $timeSlotModel->get($talk['time_slot_id'])->toArray()
                     : null;
             unset($talk['time_slot_id']);
         }
