@@ -48,7 +48,7 @@ class TagModel extends Model
         $tags = $this->getAllByTalkIds($talkIds);
         $mapping = [];
         foreach ($tags as $tag) {
-            $mapping[$tag['talk_id']][] = $tag;
+            $mapping[(int)$tag['talk_id']][] = $tag;
         }
 
         // Remove redundant talk_id values.
