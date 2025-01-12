@@ -532,7 +532,7 @@ abstract class ContributorDashboard extends BaseController
             return $this->response->setJSON(['error' => 'IMAGE_MUST_BE_SQUARE'])->setStatusCode(400);
         }
 
-        $pathForDatabase = 'images' . DIRECTORY_SEPARATOR . $filename;
+        $pathForDatabase = $filename;
         return [$pathForDatabase, $mimeType];
     }
 }
