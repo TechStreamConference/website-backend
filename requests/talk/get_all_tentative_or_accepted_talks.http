@@ -7,4 +7,4 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-GET localhost:8080/api/dashboard/admin/tentative-or-accepted-talks
+GET localhost:8080/api/dashboard/admin/tentative-or-accepted-talks/1
