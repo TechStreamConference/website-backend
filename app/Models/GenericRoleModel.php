@@ -56,6 +56,24 @@ class GenericRoleModel extends Model
             ->findAll();
     }
 
+    public function getAllForUserAndEvent(int $userId, int $eventId): array
+    {
+        return $this
+            ->select('id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes, created_at, updated_at')
+            ->where('user_id', $userId)
+            ->where('event_id', $eventId)
+            ->findAll();
+    }
+
+    public function hasEntry(int $userId, int $eventId): bool
+    {
+        return $this
+                ->select('id')
+                ->where('user_id', $userId)
+                ->where('event_id', $eventId)
+                ->countAllResults() > 0;
+    }
+
     public function hasApprovedEntry(int $userId, int $eventId): bool
     {
         return $this

@@ -130,6 +130,15 @@ class TalkModel extends Model
             ->first();
     }
 
+    public function speakerHasTalks(int $userId, int $eventId): bool
+    {
+        return $this
+            ->select('id')
+            ->where('user_id', $userId)
+            ->where('event_id', $eventId)
+            ->countAllResults() > 0;
+    }
+
     public function requestChanges(int $talkId, string $requestedChanges): void
     {
         $this->update($talkId, ['requested_changes' => $requestedChanges]);
