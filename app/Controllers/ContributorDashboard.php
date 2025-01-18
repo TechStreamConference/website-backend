@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Helpers\EmailHelper;
+use App\Models\AccountModel;
 use App\Models\GenericRoleModel;
 use App\Models\SocialMediaLinkModel;
 use CodeIgniter\HTTP\Files\UploadedFile;
@@ -217,6 +219,20 @@ abstract class ContributorDashboard extends BaseController
             );
         }
 
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($userId);
+        $username = $account['username'];
+
+        EmailHelper::sendToAdmins(
+            subject: "Änderung der Social-Media-Links",
+            message: view(
+                'email/admin/social_media_links_changed',
+                [
+                    'username' => $username,
+                ],
+            )
+        );
+
         return $this
             ->response
             ->setStatusCode(204);
@@ -332,6 +348,18 @@ abstract class ContributorDashboard extends BaseController
                 ->setJSON(['error' => 'NO_CHANGES_DETECTED'])
                 ->setStatusCode(400);
         }
+
+        EmailHelper::sendToAdmins(
+            subject: "{$this->getRoleName()}-Eintrag geändert",
+            message: view(
+                'email/admin/contributor_entry_changed',
+                [
+                    'role' => $this->getRoleName(),
+                    'username' => $entry['name'],
+                ],
+            )
+        );
+
         return $this->updateEntry($validData, $entry, $eventId);
     }
 
