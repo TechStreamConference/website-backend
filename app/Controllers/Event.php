@@ -15,11 +15,12 @@ use App\Models\TagModel;
 use App\Models\TalkModel;
 use App\Models\TeamMemberModel;
 use App\Models\TimeSlotModel;
+use CodeIgniter\HTTP\ResponseInterface;
 use InvalidArgumentException;
 
 class Event extends BaseController
 {
-    public function get(int|null $year = null)
+    public function get(int|null $year = null): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         if ($year === null) {
