@@ -47,7 +47,7 @@ class Event extends BaseController
         if ($scheduleVisibleFrom === null || $scheduleVisibleFrom > date('Y-m-d H:i:s')) {
             $talks = [];
         } else {
-            $talks = $this->getApprovedTalks($eventId, $speakers);
+            $talks = $this->getVisibleApprovedTalks($eventId, $speakers);
         }
 
         $event['year'] = $year;
@@ -75,7 +75,7 @@ class Event extends BaseController
             return $this->response->setStatusCode(404);
         }
 
-        $talks = $this->getApprovedTalks($event['id'], $this->getPublishedContributors($event['id'], Role::SPEAKER));
+        $talks = $this->getVisibleApprovedTalks($event['id'], $this->getPublishedContributors($event['id'], Role::SPEAKER));
 
         // Generate ICS file content
         $icsContent = "BEGIN:VCALENDAR\n";
@@ -103,7 +103,7 @@ class Event extends BaseController
             ->setBody($icsContent);
     }
 
-    private function getApprovedTalks(int $eventId, array $speakers): array
+    private function getVisibleApprovedTalks(int $eventId, array $speakers): array
     {
         $talkModel = model(TalkModel::class);
         $talks = $talkModel->getApprovedByEventId($eventId);
