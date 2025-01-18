@@ -67,9 +67,9 @@ $routes->put('dashboard/admin/approval/social-media-link/(:num)/request-changes'
 $routes->get('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'get'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'create_or_replace'], ['filter' => AdminAuthFilter::class]);
 
-$routes->get('dashboard/speaker/all-events', [SpeakerDashboard::class, 'getAll'], ['filter' => SpeakerAuthFilter::class]);
-$routes->get('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'get'], ['filter' => SpeakerAuthFilter::class]);
-$routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'createOrUpdate'], ['filter' => SpeakerAuthFilter::class]);
+$routes->get('dashboard/speaker/all-events', [SpeakerDashboard::class, 'getAllPublished'], ['filter' => SpeakerAuthFilter::class]);
+$routes->get('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'getIfPublished'], ['filter' => SpeakerAuthFilter::class]);
+$routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'createOrUpdateIfPublished'], ['filter' => SpeakerAuthFilter::class]);
 
 // For better organization, the following routes are defined in the Talk controller.
 $routes->get('dashboard/speaker/can-submit-talk', [Talk::class, 'canSubmit'], ['filter' => SpeakerAuthFilter::class]);

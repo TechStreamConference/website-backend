@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
+use App\Models\EventModel;
 use App\Models\GenericRoleModel;
 use App\Models\SocialMediaLinkModel;
 use CodeIgniter\HTTP\Files\UploadedFile;
@@ -272,8 +273,27 @@ abstract class ContributorDashboard extends BaseController
             ->setJSON($entry);
     }
 
-    /** Returns all events for which the current contributor type has an entry.
+    /** Returns the latest entry for the current contributor type for the given event, if
+     * the event is published.
+     * @param int $eventId The ID of the event for which the entry is retrieved.
      * @return ResponseInterface
+     */
+    public function getIfPublished(int $eventId): ResponseInterface
+    {
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->getPublished($eventId);
+        if ($event === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(404);
+        }
+
+        return $this->get($eventId);
+    }
+
+    /** Returns all events for which the current contributor type has an entry.
+     * @return ResponseInterface The response to return to the client.
      */
     public function getAll(): ResponseInterface
     {
@@ -282,6 +302,26 @@ abstract class ContributorDashboard extends BaseController
         return $this
             ->response
             ->setJSON($entries);
+    }
+
+    /** Returns all published events for which the current contributor type has an entry.
+     * @return ResponseInterface The response to return to the client.
+     * */
+    public function getAllPublished(): ResponseInterface
+    {
+        $eventModel = model(EventModel::class);
+        $publishedEvents = $eventModel->getAllPublished();
+        $publishedEventIds = array_column($publishedEvents, 'id');
+
+        $contributorModel = $this->getModel();
+        $entries = $contributorModel->getAllForUser(userId: $this->getLoggedInUserId());
+
+        $results = array_filter($entries, function ($entry) use ($publishedEvents, $publishedEventIds) {
+            return in_array($entry['event_id'], $publishedEventIds);
+        });
+        return $this
+            ->response
+            ->setJSON($results);
     }
 
     protected function getJsonFromMultipartRequest(): array|ResponseInterface
@@ -361,6 +401,27 @@ abstract class ContributorDashboard extends BaseController
         );
 
         return $this->updateEntry($validData, $entry, $eventId);
+    }
+
+    /**
+     * Creates a new entry or updates an existing one, if the specified event is already published.
+     * If an entry already exists, only the fields that are being updated are required. If no
+     * entry exists yet, all fields are required.
+     * @param int $eventId The ID of the event for which the entry is created or updated.
+     * @return ResponseInterface
+     */
+    public function createOrUpdateIfPublished(int $eventId): ResponseInterface
+    {
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->getPublished($eventId);
+        if ($event === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(404);
+        }
+
+        return $this->createOrUpdate($eventId);
     }
 
     /** Checks if the given data has changes compared to the existing entry.
