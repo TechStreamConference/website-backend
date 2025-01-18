@@ -60,7 +60,7 @@ class Account extends BaseController
         'password' => self::PASSWORD_RULE,
     ];
 
-    public function register()
+    public function register(): ResponseInterface
     {
         $this->deleteExpiredAccounts();
 
@@ -242,7 +242,7 @@ class Account extends BaseController
         return $this->response->setJSON(['message' => 'success']);
     }
 
-    public function usernameExists()
+    public function usernameExists(): ResponseInterface
     {
         $model = model(AccountModel::class);
         $username = trim($this->request->getGet('username'));
@@ -252,7 +252,7 @@ class Account extends BaseController
         return $this->response->setJSON(['exists' => $model->isUsernameTaken($username)]);
     }
 
-    public function emailExists()
+    public function emailExists(): ResponseInterface
     {
         $model = model(AccountModel::class);
         $email = trim($this->request->getGet('email'));
@@ -262,7 +262,7 @@ class Account extends BaseController
         return $this->response->setJSON(['exists' => $model->isEmailTaken($email)]);
     }
 
-    public function roles()
+    public function roles(): ResponseInterface
     {
         $session = session();
         $userId = $session->get('user_id');
@@ -277,7 +277,7 @@ class Account extends BaseController
         return $this->response->setJSON($roles);
     }
 
-    public function login()
+    public function login(): ResponseInterface
     {
         // On each login, we delete all expired password reset tokens. There's no deeper reason  to
         // do it exactly here, but we have to do it somewhere. ¯\_(ツ)_/¯
@@ -314,7 +314,7 @@ class Account extends BaseController
         return $this->response->setJSON(['login' => 'success'])->setStatusCode(200);
     }
 
-    public function verify()
+    public function verify(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
 
@@ -358,7 +358,7 @@ class Account extends BaseController
         return $this->response->setJSON(['message' => 'success']);
     }
 
-    public function logout()
+    public function logout(): ResponseInterface
     {
         $session = session();
         $session->remove('user_id');
@@ -496,7 +496,7 @@ class Account extends BaseController
         return $token;
     }
 
-    private function deleteExpiredAccounts()
+    private function deleteExpiredAccounts(): void
     {
         $accountModel = model(AccountModel::class);
         $userModel = model(UserModel::class);
