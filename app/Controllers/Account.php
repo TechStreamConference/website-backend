@@ -21,7 +21,7 @@ class Account extends BaseController
 
     const LOGIN_RULES = [
         'username_or_email' => 'required|trim|max_length[320]',
-        'password' => self::PASSWORD_RULE,
+        'password' => 'required|string',
     ];
 
     const REGISTER_RULES = [
