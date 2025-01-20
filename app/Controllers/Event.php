@@ -15,11 +15,12 @@ use App\Models\TagModel;
 use App\Models\TalkModel;
 use App\Models\TeamMemberModel;
 use App\Models\TimeSlotModel;
+use CodeIgniter\HTTP\ResponseInterface;
 use InvalidArgumentException;
 
 class Event extends BaseController
 {
-    public function get(int|null $year = null)
+    public function get(int|null $year = null): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         if ($year === null) {
@@ -46,7 +47,7 @@ class Event extends BaseController
         if ($scheduleVisibleFrom === null || $scheduleVisibleFrom > date('Y-m-d H:i:s')) {
             $talks = [];
         } else {
-            $talks = $this->getApprovedTalks($eventId, $speakers);
+            $talks = $this->getVisibleApprovedTalks($eventId, $speakers);
         }
 
         $event['year'] = $year;
@@ -74,7 +75,7 @@ class Event extends BaseController
             return $this->response->setStatusCode(404);
         }
 
-        $talks = $this->getApprovedTalks($event['id'], $this->getPublishedContributors($event['id'], Role::SPEAKER));
+        $talks = $this->getVisibleApprovedTalks($event['id'], $this->getPublishedContributors($event['id'], Role::SPEAKER));
 
         // Generate ICS file content
         $icsContent = "BEGIN:VCALENDAR\n";
@@ -102,13 +103,16 @@ class Event extends BaseController
             ->setBody($icsContent);
     }
 
-    private function getApprovedTalks(int $eventId, array $speakers): array
+    private function getVisibleApprovedTalks(int $eventId, array $speakers): array
     {
         $talkModel = model(TalkModel::class);
         $talks = $talkModel->getApprovedByEventId($eventId);
         $talkIds = array_column($talks, 'id');
 
         $timeSlotById = $this->getTimeSlotMapping(array_column($talks, 'time_slot_id'));
+
+        /* @var array<int, array> $speakerById */
+        $speakerById = [];
 
         foreach ($talks as &$talk) {
             // Find the speaker for this talk based on their user_id.
@@ -117,11 +121,17 @@ class Event extends BaseController
             foreach ($speakers as $speaker) {
                 if ($speaker['user_id'] === $talk['user_id']) {
                     $talk['speaker_id'] = $speaker['id'];
+                    $speakerById[$speaker['id']] = $speaker;
                     break;
                 }
             }
         }
         unset($talk);
+
+        $talks = array_filter(
+            $talks,
+            fn ($talk) => $talk['speaker_id'] !== null
+        );
 
         $tagModel = model(TagModel::class);
         $tagMapping = $tagModel->getTagMapping($talkIds);
