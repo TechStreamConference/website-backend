@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Helpers\EmailHelper;
 use App\Helpers\Role;
 use App\Models\AccountModel;
 use App\Models\EventModel;
@@ -114,6 +115,16 @@ class Approval extends BaseController
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
+
+        $entry = $roleModel->get($id);
+        $userId = $entry['user_id'];
+
+        $this->sendConfirmationEmails(
+            $userId,
+            'Datensatz freigeschaltet',
+            'contributor_entry_approved'
+        );
+
         return $this->response->setStatusCode(204);
     }
 
@@ -139,6 +150,17 @@ class Approval extends BaseController
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
+
+        $entry = $roleModel->get($id);
+        $userId = $entry['user_id'];
+
+        $this->sendRequestedChangesEmails(
+            $userId,
+            'Änderungswünsche für Datensatz',
+            'contributor_entry_requested_changes',
+            $message
+        );
+
         return $this->response->setStatusCode(204);
     }
 
@@ -198,6 +220,16 @@ class Approval extends BaseController
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
+
+        $entry = $socialMediaLinkModel->get($id);
+        $userId = $entry['user_id'];
+
+        $this->sendConfirmationEmails(
+            $userId,
+            'Social-Media-Link freigeschaltet',
+            'social_media_link_approved'
+        );
+
         return $this->response->setStatusCode(204);
     }
 
@@ -220,6 +252,86 @@ class Approval extends BaseController
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
                 ->setStatusCode(400);
         }
+
+        $entry = $socialMediaLinkModel->get($id);
+        $userId = $entry['user_id'];
+
+        $this->sendRequestedChangesEmails(
+            $userId,
+            'Änderungswünsche für Social-Media-Link',
+            'social_media_link_requested_changes',
+            $message
+        );
+
         return $this->response->setStatusCode(204);
+    }
+
+    private function sendMailsToUserAndAdmins(
+        int    $userId,
+        string $subject,
+        string $viewName,
+        array  $additionalData = [],
+    ): void
+    {
+        $accountModel = model(AccountModel::class);
+        $userAccount = $accountModel->get($userId);
+        $username = $userAccount['username'];
+        $userEmail = $userAccount['email'];
+
+        $adminAccount = $accountModel->get($this->getLoggedInUserId());
+        $adminUsername = $adminAccount['username'];
+
+        $data = array_merge(
+            [
+                'admin' => $adminUsername,
+                'username' => $username,
+            ],
+            $additionalData
+        );
+
+        EmailHelper::send(
+            to: $userEmail,
+            subject: $subject,
+            message: view(
+                "email/contributor/$viewName",
+                $data,
+            )
+        );
+
+        EmailHelper::sendToAdmins(
+            subject: $subject,
+            message: view(
+                "email/admin/$viewName",
+                $data,
+            )
+        );
+    }
+
+    private function sendConfirmationEmails(
+        int    $userId,
+        string $subject,
+        string $viewName,
+    ): void
+    {
+        $this->sendMailsToUserAndAdmins(
+            $userId,
+            $subject,
+            $viewName,
+        );
+    }
+
+    private function sendRequestedChangesEmails(
+        int    $userId,
+        string $subject,
+        string $viewName,
+        string $requestedChanges,
+    ): void
+    {
+        $this->sendMailsToUserAndAdmins(
+            $userId,
+            $subject,
+            $viewName,
+            ['requestedChanges' => $requestedChanges],
+        );
     }
 }

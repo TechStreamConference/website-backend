@@ -34,7 +34,7 @@ class GenericRoleModel extends Model
     public function get(int $id): array|null
     {
         return $this
-            ->select('id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
+            ->select('id, name, user_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
             ->where('id', $id)
             ->first();
     }

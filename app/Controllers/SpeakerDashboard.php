@@ -2,7 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Helpers\EmailHelper;
 use App\Helpers\Role;
+use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\RolesModel;
 use App\Models\SpeakerModel;
@@ -63,7 +65,27 @@ class SpeakerDashboard extends ContributorDashboard
             $this->response->setStatusCode(200);
         }
 
-        return $this->createFromApplication($event['id'], $data);
+        $result = $this->createFromApplication($event['id'], $data);
+        $returnCode = $result->getStatusCode();
+
+        if ($returnCode === 201) {
+            $accountModel = model(AccountModel::class);
+            $account = $accountModel->get($this->getLoggedInUserId());
+            $username = $account['username'];
+
+            EmailHelper::sendToAdmins(
+                subject: "{$this->getRoleName()}-Bewerbung",
+                message: view(
+                    'email/admin/contributor_new_entry',
+                    [
+                        'role' => $this->getRoleName(),
+                        'username' => $username,
+                    ],
+                )
+            );
+        }
+
+        return $result;
     }
 
     private function createFromApplication(int $eventId, array $data): ResponseInterface
