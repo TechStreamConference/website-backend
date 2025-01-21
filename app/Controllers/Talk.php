@@ -439,6 +439,11 @@ class Talk extends BaseController
             return $this->response->setJSON(['error' => 'TIME_SLOT_ALREADY_OCCUPIED'])->setStatusCode(400);
         }
 
+        $possibleDurations = array_column(model(PossibleTalkDurationModel::class)->get($talkId), 'duration');
+        if (!in_array($timeSlot->duration, $possibleDurations)) {
+            return $this->response->setJSON(['error' => 'TIME_SLOT_INVALID_DURATION'])->setStatusCode(400);
+        }
+
         $talkModel->setTimeSlot($talkId, $validData['time_slot_id']);
 
         $accountModel = model(AccountModel::class);
