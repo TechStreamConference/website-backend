@@ -366,6 +366,17 @@ class Account extends BaseController
         return $this->response->setJSON(['logout' => 'success']);
     }
 
+    public function get(): ResponseInterface
+    {
+        $userId = $this->getLoggedInUserId();
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($userId);
+        if ($account === null) {
+            return $this->response->setStatusCode(500);
+        }
+        return $this->response->setJSON($account);
+    }
+
     public function changeUsername(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
