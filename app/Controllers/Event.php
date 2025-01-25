@@ -2,11 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Helpers\Role;
 use App\Helpers\TimeSlotData;
 use App\Models\EventModel;
-use App\Models\GlobalsModel;
 use App\Models\MediaPartnerModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;

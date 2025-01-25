@@ -2,8 +2,6 @@
 
 namespace Config;
 
-use App\Filters\SpeakerAuthFilter;
-use App\Filters\TeamMemberAuthFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;

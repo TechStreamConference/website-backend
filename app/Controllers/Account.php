@@ -9,7 +9,6 @@ use App\Models\PasswordResetTokenModel;
 use App\Models\RolesModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
-use Config\Services;
 use App\Models\VerificationTokenModel;
 use Random\RandomException;
 

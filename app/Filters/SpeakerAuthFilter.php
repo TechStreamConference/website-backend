@@ -2,7 +2,6 @@
 
 namespace App\Filters;
 
-use App\Filters\RoleAuthFilter;
 use App\Helpers\Role;
 
 class SpeakerAuthFilter extends RoleAuthFilter
