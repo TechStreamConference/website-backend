@@ -4,7 +4,7 @@ namespace App\Validation;
 
 class PasswordRules
 {
-    const PASSWORD_MIN_LENGTH = 8;
+    private const PASSWORD_MIN_LENGTH = 8;
 
     public function valid_password(string $password, ?string &$error = null): bool
     {

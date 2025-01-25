@@ -10,7 +10,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminDashboard extends BaseController
 {
-    const CREATE_SOCIAL_MEDIA_LINK_RULES = [
+    private const CREATE_SOCIAL_MEDIA_LINK_RULES = [
         'name' => 'required|string|max_length[100]',
     ];
 

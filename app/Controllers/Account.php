@@ -15,47 +15,47 @@ use Random\RandomException;
 
 class Account extends BaseController
 {
-    const USERNAME_RULE = 'required|trim|alpha_dash|min_length[3]|max_length[30]';
-    const PASSWORD_RULE = 'required|valid_password';
-    const EMAIL_RULE = 'required|trim|valid_email|max_length[320]';
+    private const USERNAME_RULE = 'required|trim|alpha_dash|min_length[3]|max_length[30]';
+    private const PASSWORD_RULE = 'required|valid_password';
+    private const EMAIL_RULE = 'required|trim|valid_email|max_length[320]';
 
-    const LOGIN_RULES = [
+    private const LOGIN_RULES = [
         'username_or_email' => 'required|trim|max_length[320]',
         'password' => 'required|string',
     ];
 
-    const REGISTER_RULES = [
+    private const REGISTER_RULES = [
         'username' => self::USERNAME_RULE,
         'password' => self::PASSWORD_RULE,
         'email' => self::EMAIL_RULE,
         'token' => 'permit_empty|trim|alpha_numeric|max_length[128]',
     ];
 
-    const VERIFICATION_RULES = [
+    private const VERIFICATION_RULES = [
         'token' => 'required|trim|alpha_numeric|max_length[128]',
         'new_email' => 'permit_empty|trim|valid_email|max_length[320]',
     ];
 
-    const FORGOT_PASSWORD_RULES = [
+    private const FORGOT_PASSWORD_RULES = [
         'username_or_email' => 'required|max_length[320]',
     ];
 
-    const RESET_PASSWORD_RULES = [
+    private const RESET_PASSWORD_RULES = [
         'token' => 'required|trim',
         'new_password' => self::PASSWORD_RULE,
     ];
 
-    const CHANGE_USERNAME_RULES = [
+    private const CHANGE_USERNAME_RULES = [
         'username' => self::USERNAME_RULE,
         'password' => self::PASSWORD_RULE,
     ];
 
-    const CHANGE_PASSWORD_RULES = [
+    private const CHANGE_PASSWORD_RULES = [
         'old_password' => self::PASSWORD_RULE,
         'new_password' => self::PASSWORD_RULE,
     ];
 
-    const CHANGE_EMAIL_RULES = [
+    private const CHANGE_EMAIL_RULES = [
         'email' => self::EMAIL_RULE,
         'password' => self::PASSWORD_RULE,
     ];
