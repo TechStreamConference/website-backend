@@ -15,7 +15,7 @@ class GlobalsModel extends Model
         "footer_text",
     ];
 
-    public function read()
+    public function read(): ?array
     {
         $data = $this->findAll();
         $result = [];
@@ -42,7 +42,7 @@ class GlobalsModel extends Model
         return $result;
     }
 
-    public function write(string $footer_text)
+    public function write(string $footer_text): void
     {
         $this->where('key', 'footer_text')->set(['value' => $footer_text])->update();
     }

@@ -96,7 +96,7 @@ class Approval extends BaseController
         return $this->response->setJSON($latestPendingEntries);
     }
 
-    private function approveRoleEntry(Role $role, int $id)
+    private function approveRoleEntry(Role $role, int $id): ResponseInterface
     {
         $roleModel = match ($role) {
             Role::SPEAKER => model(SpeakerModel::class),
@@ -128,7 +128,7 @@ class Approval extends BaseController
         return $this->response->setStatusCode(204);
     }
 
-    private function requestChangesForRoleEntry(Role $role, int $id)
+    private function requestChangesForRoleEntry(Role $role, int $id): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], ['message' => 'required|string'])) {
@@ -164,37 +164,37 @@ class Approval extends BaseController
         return $this->response->setStatusCode(204);
     }
 
-    public function getPendingSpeakers()
+    public function getPendingSpeakers(): ResponseInterface
     {
         return $this->getPendingRoleEntries(Role::SPEAKER);
     }
 
-    public function getPendingTeamMembers()
+    public function getPendingTeamMembers(): ResponseInterface
     {
         return $this->getPendingRoleEntries(Role::TEAM_MEMBER);
     }
 
-    public function approveSpeaker(int $id)
+    public function approveSpeaker(int $id): ResponseInterface
     {
         return $this->approveRoleEntry(Role::SPEAKER, $id);
     }
 
-    public function approveTeamMember(int $id)
+    public function approveTeamMember(int $id): ResponseInterface
     {
         return $this->approveRoleEntry(Role::TEAM_MEMBER, $id);
     }
 
-    public function requestChangesForSpeaker(int $id)
+    public function requestChangesForSpeaker(int $id): ResponseInterface
     {
         return $this->requestChangesForRoleEntry(Role::SPEAKER, $id);
     }
 
-    public function requestChangesForTeamMember(int $id)
+    public function requestChangesForTeamMember(int $id): ResponseInterface
     {
         return $this->requestChangesForRoleEntry(Role::TEAM_MEMBER, $id);
     }
 
-    public function getPendingSocialMediaLinks()
+    public function getPendingSocialMediaLinks(): ResponseInterface
     {
         $socialMediaLinkModel = model(SocialMediaLinkModel::class);
         $pendingLinks = $socialMediaLinkModel->getPending();
@@ -209,7 +209,7 @@ class Approval extends BaseController
         return $this->response->setJSON($pendingLinks);
     }
 
-    public function approveSocialMediaLink(int $id)
+    public function approveSocialMediaLink(int $id): ResponseInterface
     {
         $socialMediaLinkModel = model(SocialMediaLinkModel::class);
         $result = $socialMediaLinkModel->approve($id);
@@ -233,7 +233,7 @@ class Approval extends BaseController
         return $this->response->setStatusCode(204);
     }
 
-    public function requestChangesForSocialMediaLink(int $id)
+    public function requestChangesForSocialMediaLink(int $id): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], ['message' => 'required|string'])) {

@@ -66,7 +66,7 @@ class Event extends BaseController
         ]);
     }
 
-    public function getICalendarFile(int $year)
+    public function getICalendarFile(int $year): ResponseInterface
     {
         $eventModel = new EventModel();
         $event = $eventModel->getPublishedByYear($year);
