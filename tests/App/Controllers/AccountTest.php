@@ -5,7 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
 use CodeIgniter\Test\FeatureTestTrait;
- use App\Database\Seeds\MainSeeder;
+use App\Database\Seeds\MainSeeder;
 
 class AccountTest extends CIUnitTestCase
 {
