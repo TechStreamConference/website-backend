@@ -36,7 +36,7 @@ class TimeSlot extends BaseController
         $timeSlotModel = model(TimeSlotModel::class);
 
         $timeSlots = array_map(
-            function (array $slot) use ($eventId) {
+            static function (array $slot) use ($eventId) {
                 return TimeSlotData::make(
                     $eventId,
                     $slot['start_time'],
