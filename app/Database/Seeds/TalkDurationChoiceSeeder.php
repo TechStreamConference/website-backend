@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class TalkDurationChoiceSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->db->table('TalkDurationChoice')->insert([
             'duration' => 5,

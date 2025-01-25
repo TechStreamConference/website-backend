@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class TagSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->db->table('Tag')->insert([
             'text' => 'Maker',

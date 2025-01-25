@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class TalkSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         // Day 1.
         $this->db->table('Talk')->insert([

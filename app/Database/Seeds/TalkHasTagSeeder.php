@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class TalkHasTagSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         // Katzen würden VISCA senden
         $this->db->table('TalkHasTag')->insert([

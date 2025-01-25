@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class SponsorSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->db->table('Sponsor')->insert([
             'event_id' => 1,

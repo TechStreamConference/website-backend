@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class MainSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->call('GlobalsSeeder');
         $this->call('TalkDurationChoiceSeeder');
