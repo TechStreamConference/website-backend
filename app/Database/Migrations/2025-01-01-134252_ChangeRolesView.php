@@ -24,7 +24,7 @@ class ChangeRolesView extends Migration
                 ) AS is_speaker,
                 EXISTS (
                     SELECT 1
-                    FROM TeamMember t
+                    FROM TeamMember
                     WHERE TeamMember.user_id = Account.user_id AND (
                         TeamMember.is_approved = TRUE
                         OR TeamMember.requested_changes IS NOT NULL
