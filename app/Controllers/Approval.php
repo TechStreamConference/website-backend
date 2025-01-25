@@ -104,7 +104,9 @@ class Approval extends BaseController
             default => null,
         };
         if ($roleModel === null) {
-            return $this->response->setStatusCode(500);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $result = $roleModel->approve($id);
@@ -113,7 +115,7 @@ class Approval extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $entry = $roleModel->get($id);
@@ -125,14 +127,19 @@ class Approval extends BaseController
             'contributor_entry_approved'
         );
 
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     private function requestChangesForRoleEntry(Role $role, int $id): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], ['message' => 'required|string'])) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
         $message = $validData['message'];
@@ -148,7 +155,7 @@ class Approval extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $entry = $roleModel->get($id);
@@ -161,7 +168,9 @@ class Approval extends BaseController
             $message
         );
 
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     public function getPendingSpeakers(): ResponseInterface
@@ -218,7 +227,7 @@ class Approval extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $entry = $socialMediaLinkModel->get($id);
@@ -230,14 +239,19 @@ class Approval extends BaseController
             'social_media_link_approved'
         );
 
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     public function requestChangesForSocialMediaLink(int $id): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], ['message' => 'required|string'])) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
         $message = $validData['message'];
@@ -250,7 +264,7 @@ class Approval extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'ID_NOT_FOUND_OR_ALREADY_APPROVED'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $entry = $socialMediaLinkModel->get($id);
@@ -263,7 +277,9 @@ class Approval extends BaseController
             $message
         );
 
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     private function sendMailsToUserAndAdmins(

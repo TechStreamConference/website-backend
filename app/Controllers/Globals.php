@@ -33,7 +33,9 @@ class Globals extends BaseController
         $globals = $globalsModel->read();
         if ($globals === null) {
             // the global settings are faulty
-            return $this->response->setStatusCode(500);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         // get all years with events
@@ -65,7 +67,10 @@ class Globals extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::UPDATE_TAGS_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -74,7 +79,10 @@ class Globals extends BaseController
 
         foreach ($validData['tags'] as $tag) {
             if (!in_array($tag['id'], array_column($existingTags, 'id'))) {
-                return $this->response->setJSON(['error' => 'TAG_DOES_NOT_EXIST'])->setStatusCode(400);
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'TAG_DOES_NOT_EXIST'])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
         }
 
@@ -89,7 +97,10 @@ class Globals extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::CREATE_TAGS_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -98,7 +109,10 @@ class Globals extends BaseController
 
         foreach ($validData['tags'] as $tag) {
             if (in_array($tag['text'], array_column($existingTags, 'text'))) {
-                return $this->response->setJSON(['error' => 'TAG_ALREADY_EXISTS'])->setStatusCode(400);
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'TAG_ALREADY_EXISTS'])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
         }
 
@@ -106,7 +120,10 @@ class Globals extends BaseController
             $model->createTag(text: $tag['text'], colorIndex: $tag['color_index']);
         }
 
-        return $this->response->setJSON(['message' => 'TAGS_CREATED'])->setStatusCode(201);
+        return $this
+            ->response
+            ->setJSON(['message' => 'TAGS_CREATED'])
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     public function getTalkDurationChoices(): ResponseInterface
@@ -119,7 +136,10 @@ class Globals extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::TALK_DURATION_CHOICES_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -133,6 +153,9 @@ class Globals extends BaseController
             }
         }
 
-        return $this->response->setJSON(['message' => "ADDED_{$numAdded}_CHOICES"])->setStatusCode(201);
+        return $this
+            ->response
+            ->setJSON(['message' => "ADDED_{$numAdded}_CHOICES"])
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 }

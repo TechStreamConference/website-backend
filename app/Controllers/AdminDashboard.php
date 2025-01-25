@@ -23,7 +23,10 @@ class AdminDashboard extends BaseController
         ];
 
         if (!$this->validateData($data ?? [], $rules)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -32,7 +35,9 @@ class AdminDashboard extends BaseController
         $globalsModel->write(
             $validData['footer_text'],
         );
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     private const EVENT_RULES = [
@@ -57,7 +62,10 @@ class AdminDashboard extends BaseController
         $data = $this->request->getJSON(assoc: true);
 
         if (!$this->validateData($data ?? [], self::EVENT_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -80,7 +88,9 @@ class AdminDashboard extends BaseController
             $validData['call_for_papers_end'] ?? null,
         );
 
-        return $this->response->setStatusCode(201);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     public function updateEvent(int $eventId): ResponseInterface
@@ -88,7 +98,9 @@ class AdminDashboard extends BaseController
         $eventModel = model(EventModel::class);
         $event = $eventModel->get($eventId);
         if ($event === null) {
-            return $this->response->setStatusCode(404);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         /* It's a bit dangerous to assume that the event will still be present a few
            lines below, because in theory another request could have deleted it in the meantime.
@@ -97,7 +109,10 @@ class AdminDashboard extends BaseController
         $data = $this->request->getJSON(assoc: true);
 
         if (!$this->validateData($data ?? [], self::EVENT_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -120,7 +135,9 @@ class AdminDashboard extends BaseController
             $validData['call_for_papers_end'] ?? null,
         );
 
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     public function getAllEvents(): ResponseInterface
@@ -135,7 +152,9 @@ class AdminDashboard extends BaseController
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
         if (!in_array($eventId, array_column($events, 'id'), true)) {
-            return $this->response->setStatusCode(404);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $speakerModel = model(SpeakerModel::class);
@@ -149,7 +168,10 @@ class AdminDashboard extends BaseController
         $events = $eventModel->getAll();
         if (!in_array($eventId, array_column($events, 'id'))) {
             // Event with given id not found.
-            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $speakerModel = model(SpeakerModel::class);
@@ -162,14 +184,17 @@ class AdminDashboard extends BaseController
         ];
         foreach ($data as $speaker) {
             if (!$this->validateData($speaker, $rules)) {
-                return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+                return $this
+                    ->response
+                    ->setJSON($this->validator->getErrors())
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
             if (!in_array($speaker['id'], array_column($speakers, 'id'))) {
                 // Speaker with given id not found in the list of approved speakers for the event.
                 return $this
                     ->response
                     ->setJSON(['error' => 'SPEAKER_NOT_AMONG_APPROVED_SPEAKERS_OF_EVENT'])
-                    ->setStatusCode(404);
+                    ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
             }
         }
 
@@ -178,15 +203,19 @@ class AdminDashboard extends BaseController
             $row['visible_from'] = $speaker['visible_from'];
             $speakerModel->update($speaker['id'], $row);
         }
-
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     public function createSocialMediaType(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::CREATE_SOCIAL_MEDIA_LINK_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -199,7 +228,7 @@ class AdminDashboard extends BaseController
                 return $this
                     ->response
                     ->setJSON(['error' => 'SOCIAL_MEDIA_LINK_TYPE_ALREADY_EXISTS'])
-                    ->setStatusCode(400);
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
         }
 
@@ -207,6 +236,6 @@ class AdminDashboard extends BaseController
         return $this
             ->response
             ->setJSON(['message' => 'New social media link type created.'])
-            ->setStatusCode(201);
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 }

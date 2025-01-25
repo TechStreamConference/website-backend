@@ -12,13 +12,19 @@ class Image extends BaseController
         // prevent path traversal (even though CodeIgniter should already prevent this)
         $path = realpath(WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . $filename);
         if ($path === false) {
-            return $this->response->setStatusCode(400);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         if (!str_starts_with($path, realpath(WRITEPATH . 'uploads'))) {
-            return $this->response->setStatusCode(400);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         if (!file_exists($path)) {
-            return $this->response->setStatusCode(404);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         $file = new File($path);
         $mimeType = $file->getMimeType();

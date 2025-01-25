@@ -69,7 +69,10 @@ class Account extends BaseController
         $data = $this->request->getJSON(assoc: true);
 
         if (!$this->validateData($data ?? [], self::REGISTER_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -89,7 +92,10 @@ class Account extends BaseController
             $connectedRegistrationTokenModel = model(ConnectedRegistrationTokenModel::class);
             $entry = $connectedRegistrationTokenModel->get($token);
             if ($entry === null) {
-                return $this->response->setJSON(['error' => 'TOKEN_NOT_FOUND'])->setStatusCode(404);
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'TOKEN_NOT_FOUND'])
+                    ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
             }
             $userId = $entry['user_id'];
             // We will delete the token further down, after everything else was successful.
@@ -100,7 +106,10 @@ class Account extends BaseController
             if (!$isConnectedRegistration) {
                 $userModel->deleteUser($userId);
             }
-            return $this->response->setJSON(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $verificationToken = $this->storeVerificationToken($userId);
@@ -111,7 +120,9 @@ class Account extends BaseController
             if (!$isConnectedRegistration) {
                 $userModel->deleteUser($userId);
             }
-            return $this->response->setStatusCode(500);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $this->sendVerificationEmail(
@@ -124,7 +135,10 @@ class Account extends BaseController
             $connectedRegistrationTokenModel->deleteToken($token);
         }
 
-        return $this->response->setJSON(['message' => 'success'])->setStatusCode(201);
+        return $this
+            ->response
+            ->setJSON(['message' => 'success'])
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     /**
@@ -136,7 +150,10 @@ class Account extends BaseController
         $data = $this->request->getJSON(assoc: true);
 
         if (!$this->validateData($data ?? [], self::FORGOT_PASSWORD_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -148,7 +165,10 @@ class Account extends BaseController
             // We could "pretend" that the email was sent successfully, but it wouldn't be reasonable,
             // because it's possible to find out if an email address is registered or not, anyway. So
             // this wouldn't give us any security advantage, but it would make the user experience worse.
-            return $this->response->setJSON(['error' => 'UNKNOWN_USERNAME_OR_EMAIL'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'UNKNOWN_USERNAME_OR_EMAIL'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         // Create a password reset token. It is possible that there are multiple reset tokens for the
@@ -158,7 +178,9 @@ class Account extends BaseController
         try {
             $token = bin2hex(random_bytes(64));
         } catch (RandomException) {
-            return $this->response->setStatusCode(500);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
         $expiresAt = date('Y-m-d H:i:s', strtotime('+1 day'));
         $passwordResetTokenModel->store($token, $account['user_id'], $expiresAt);
@@ -199,7 +221,10 @@ class Account extends BaseController
         $data = $this->request->getJSON(assoc: true);
 
         if (!$this->validateData($data ?? [], self::RESET_PASSWORD_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -212,14 +237,19 @@ class Account extends BaseController
 
         $entry = $passwordResetTokenModel->get($token);
         if ($entry === null) {
-            return $this->response->setJSON(['error' => 'TOKEN_EXPIRED_OR_DOES_NOT_EXIST'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TOKEN_EXPIRED_OR_DOES_NOT_EXIST'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $accountModel = model(AccountModel::class);
         $account = $accountModel->get($entry['user_id']);
         if ($account === null) {
             // This should never happen, because the token is only created when the account exists.
-            return $this->response->setStatusCode(500);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $accountModel->changePassword($entry['user_id'], $newPassword);
@@ -246,7 +276,9 @@ class Account extends BaseController
         $model = model(AccountModel::class);
         $username = trim($this->request->getGet('username'));
         if (empty($username)) {
-            return $this->response->setStatusCode(400);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         return $this->response->setJSON(['exists' => $model->isUsernameTaken($username)]);
     }
@@ -256,7 +288,9 @@ class Account extends BaseController
         $model = model(AccountModel::class);
         $email = trim($this->request->getGet('email'));
         if (empty($email)) {
-            return $this->response->setStatusCode(400);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         return $this->response->setJSON(['exists' => $model->isEmailTaken($email)]);
     }
@@ -271,7 +305,9 @@ class Account extends BaseController
             // There cannot be an account without the possibility to query the roles.
             // This would only be possible for a user that has no account, but then
             // this user wouldn't be able to log in.
-            return $this->response->setStatusCode(500);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->response->setJSON($roles);
     }
@@ -285,7 +321,10 @@ class Account extends BaseController
 
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::LOGIN_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -296,12 +335,18 @@ class Account extends BaseController
         $account = $accountModel->getAccountByUsernameOrEmail($usernameOrEmail);
         if ($account === null || $account['is_verified'] === false) {
             // Unknown username or email.
-            return $this->response->setJSON(['error' => 'UNKNOWN_USERNAME_OR_EMAIL'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'UNKNOWN_USERNAME_OR_EMAIL'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $userId = $account['user_id'];
         if (!$accountModel->checkPassword($userId, $password)) {
-            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
+            return $this
+                ->response
+                ->setJSON(['error' => 'WRONG_PASSWORD'])
+                ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
         $session = session();
@@ -310,7 +355,10 @@ class Account extends BaseController
         ];
         $session->set($sessionData);
 
-        return $this->response->setJSON(['login' => 'success'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['login' => 'success'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function verify(): ResponseInterface
@@ -318,7 +366,10 @@ class Account extends BaseController
         $data = $this->request->getJSON(assoc: true);
 
         if (!$this->validateData($data ?? [], self::VERIFICATION_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -328,13 +379,19 @@ class Account extends BaseController
         $entry = $verificationTokenModel->get($token);
         $notFoundJsonData = ['error' => 'TOKEN_NOT_FOUND'];
         if ($entry === null) {
-            return $this->response->setJSON($notFoundJsonData)->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON($notFoundJsonData)
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $verificationTokenModel->deleteToken($token);
 
         if ($entry['expires_at'] < date('Y-m-d H:i:s')) {
-            return $this->response->setJSON($notFoundJsonData)->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON($notFoundJsonData)
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $accountModel = model(AccountModel::class);
@@ -369,7 +426,10 @@ class Account extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::CHANGE_USERNAME_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -380,11 +440,17 @@ class Account extends BaseController
         $userId = $session->get('user_id');
         $accountModel = model(AccountModel::class);
         if (!$accountModel->checkPassword($userId, $password)) {
-            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
+            return $this
+                ->response
+                ->setJSON(['error' => 'WRONG_PASSWORD'])
+                ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
         if ($accountModel->isUsernameTaken($username)) {
-            return $this->response->setJSON(['error' => 'USERNAME_ALREADY_TAKEN'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'USERNAME_ALREADY_TAKEN'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $account = $accountModel->get($userId);
@@ -410,7 +476,10 @@ class Account extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::CHANGE_PASSWORD_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -418,14 +487,20 @@ class Account extends BaseController
         $newPassword = $validData['new_password'];
 
         if ($oldPassword == $newPassword) {
-            return $this->response->setJSON(['error' => 'PASSWORDS_EQUAL'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'PASSWORDS_EQUAL'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $session = session();
         $userId = $session->get('user_id');
         $accountModel = model(AccountModel::class);
         if (!$accountModel->checkPassword($userId, $oldPassword)) {
-            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
+            return $this
+                ->response
+                ->setJSON(['error' => 'WRONG_PASSWORD'])
+                ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
         $accountModel->changePassword($userId, $newPassword);
@@ -436,7 +511,10 @@ class Account extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::CHANGE_EMAIL_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -447,23 +525,35 @@ class Account extends BaseController
         $userId = $session->get('user_id');
         $accountModel = model(AccountModel::class);
         if (!$accountModel->checkPassword($userId, $password)) {
-            return $this->response->setJSON(['error' => 'WRONG_PASSWORD'])->setStatusCode(401);
+            return $this
+                ->response
+                ->setJSON(['error' => 'WRONG_PASSWORD'])
+                ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
 
         $account = $accountModel->get($userId);
         if ($account['email'] === $newEmail) {
-            return $this->response->setJSON(['error' => 'EMAILS_EQUAL'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EMAILS_EQUAL'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         if ($accountModel->isEmailTaken($newEmail)) {
-            return $this->response->setJSON(['error' => 'EMAIL_ALREADY_TAKEN'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EMAIL_ALREADY_TAKEN'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $verificationToken = $this->storeVerificationToken($userId, $newEmail);
         if ($verificationToken === null) {
             // This could only happen if the token is already in use, or if the random generator
             // fails. So, this should never happen. But if it does, we need to clean up the database.
-            return $this->response->setJSON(['error' => 'FAILED_TO_STORE_VERIFICATION_TOKEN'])->setStatusCode(500);
+            return $this
+                ->response
+                ->setJSON(['error' => 'FAILED_TO_STORE_VERIFICATION_TOKEN'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $this->sendVerificationEmail(
@@ -508,7 +598,11 @@ class Account extends BaseController
         }
     }
 
-    private function sendVerificationEmail(mixed $email, mixed $username, string $verificationToken): void
+    private function sendVerificationEmail(
+        mixed  $email,
+        mixed  $username,
+        string $verificationToken
+    ): void
     {
         // Base URL is something that ends with /api/, so we need to remove api/ from the base URL.
         $baseUrl = base_url();
