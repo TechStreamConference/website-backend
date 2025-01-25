@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
 use CodeIgniter\Test\FeatureTestTrait;
+use App\Database\Seeds\MainSeeder;
 
 class ApprovalTest extends CIUnitTestCase
 {
@@ -16,14 +17,14 @@ class ApprovalTest extends CIUnitTestCase
     protected $refresh = true;
     protected $namespace = null; // run all migrations from all available namespaces (like php spark migrate --all)
 
-    protected $seed = 'App\Database\Seeds\MainSeeder';
+    protected $seed = MainSeeder::class;
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
     // *******************************
     // getPendingRoleEntries()
     // *******************************
-    public function testGetPendingRoleEntries_returnsPendingRoleEntries()
+    public function testGetPendingRoleEntries_returnsPendingRoleEntries(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -111,7 +112,7 @@ class ApprovalTest extends CIUnitTestCase
     // *******************************
     // approveRoleEntry()
     // *******************************
-    public function testApproveRoleEntry_approvesRoleEntry()
+    public function testApproveRoleEntry_approvesRoleEntry(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -169,7 +170,7 @@ Also sei gespannt!",
         ]);
     }
 
-    public function testApproveRoleEntry_doesNotApproveApprovedRoleEntry()
+    public function testApproveRoleEntry_doesNotApproveApprovedRoleEntry(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -180,7 +181,7 @@ Also sei gespannt!",
         $response->assertStatus(400);
     }
 
-    public function testApproveRoleEntry_doesNotApproveNonExistingRoleEntry()
+    public function testApproveRoleEntry_doesNotApproveNonExistingRoleEntry(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -194,7 +195,7 @@ Also sei gespannt!",
     // *******************************
     // getPendingSpeakers()
     // *******************************
-    public function testGetPendingSpeakers_returnsPendingSpeakers()
+    public function testGetPendingSpeakers_returnsPendingSpeakers(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -285,7 +286,7 @@ Also sei gespannt!",
     // *******************************
     // approveSpeaker()
     // *******************************
-    public function testApproveSpeaker_approvesSpeaker()
+    public function testApproveSpeaker_approvesSpeaker(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -343,7 +344,7 @@ Also sei gespannt!",
         ]);
     }
 
-    public function testApproveSpeaker_doesNotApproveApprovedSpeaker()
+    public function testApproveSpeaker_doesNotApproveApprovedSpeaker(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -354,7 +355,7 @@ Also sei gespannt!",
         $response->assertStatus(400);
     }
 
-    public function testApproveSpeaker_doesNotApproveNonExistingSpeaker()
+    public function testApproveSpeaker_doesNotApproveNonExistingSpeaker(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -368,7 +369,7 @@ Also sei gespannt!",
     // *******************************
     // getPendingTeamMembers()
     // *******************************
-    public function testGetPendingTeamMembers_returnsPendingTeamMembers()
+    public function testGetPendingTeamMembers_returnsPendingTeamMembers(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -383,7 +384,7 @@ Also sei gespannt!",
     // *******************************
     // getPendingSocialMediaLinks()
     // *******************************
-    public function testGetPendingSocialMediaLinks_returnsPendingSocialMediaLinks()
+    public function testGetPendingSocialMediaLinks_returnsPendingSocialMediaLinks(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -410,7 +411,7 @@ Also sei gespannt!",
     // *******************************
     // approveSocialMediaLink()
     // *******************************
-    public function testApproveSocialMediaLink_approvesSocialMediaLink()
+    public function testApproveSocialMediaLink_approvesSocialMediaLink(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -428,7 +429,7 @@ Also sei gespannt!",
         $response->assertJSONExact([]);
     }
 
-    public function testApproveSocialMediaLink_doesNotApproveApprovedSocialMediaLink()
+    public function testApproveSocialMediaLink_doesNotApproveApprovedSocialMediaLink(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -439,7 +440,7 @@ Also sei gespannt!",
         $response->assertStatus(400);
     }
 
-    public function testApproveSocialMediaLink_doesNotApproveNonExistingSocialMediaLink()
+    public function testApproveSocialMediaLink_doesNotApproveNonExistingSocialMediaLink(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -453,7 +454,7 @@ Also sei gespannt!",
     // *******************************
     // requestChangesForSpeaker()
     // *******************************
-    public function testRequestChangesForSpeaker_requestsChangesForSpeaker()
+    public function testRequestChangesForSpeaker_requestsChangesForSpeaker(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -553,7 +554,7 @@ Also sei gespannt!",
         ]);
     }
 
-    public function testRequestChangesForSpeaker_doesNotRequestChangesForApprovedSpeaker()
+    public function testRequestChangesForSpeaker_doesNotRequestChangesForApprovedSpeaker(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -570,7 +571,7 @@ Also sei gespannt!",
         $response->assertStatus(400);
     }
 
-    public function testRequestChangesForSpeaker_doesNotRequestChangesForNonExistingSpeaker()
+    public function testRequestChangesForSpeaker_doesNotRequestChangesForNonExistingSpeaker(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -590,7 +591,7 @@ Also sei gespannt!",
     // *******************************
     // requestChangesForSocialMediaLink()
     // *******************************
-    public function testRequestChangesForSocialMediaLink_requestsChangesForSocialMediaLink()
+    public function testRequestChangesForSocialMediaLink_requestsChangesForSocialMediaLink(): void
     {
         $sessionValues = [
             "user_id" => 1,

@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
 use CodeIgniter\Test\FeatureTestTrait;
+ use App\Database\Seeds\MainSeeder;
 
 class AccountTest extends CIUnitTestCase
 {
@@ -16,14 +17,14 @@ class AccountTest extends CIUnitTestCase
     protected $refresh = true;
     protected $namespace = null; // run all migrations from all available namespaces (like php spark migrate --all)
 
-    protected $seed = 'App\Database\Seeds\MainSeeder';
+    protected $seed = MainSeeder::class;
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
     // *************************************
     // * register()
     // *************************************
-    function testRegister_ValidCredentials_Returns201()
+    public function testRegister_ValidCredentials_Returns201(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -33,7 +34,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertStatus(201);
     }
 
-    function testRegister_InvalidEmail_Returns400()
+    public function testRegister_InvalidEmail_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'StrahlMarschall',
@@ -44,7 +45,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertJSONExact(['email' => 'The email field must contain a valid email address.']);
     }
 
-    function testRegister_EmptyUsername_Returns400()
+    public function testRegister_EmptyUsername_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => '', // empty username
@@ -57,7 +58,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_UsernameTooShort_Returns400()
+    public function testRegister_UsernameTooShort_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'a', // username too short
@@ -70,7 +71,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_TrimmedUsernameTooShort_Returns400()
+    public function testRegister_TrimmedUsernameTooShort_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => '                                    a                       ', // username too short
@@ -83,7 +84,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_UsernameTooLong_Returns400()
+    public function testRegister_UsernameTooLong_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'thisusernameiswaytoolongandshouldnotbeaccepted', // username too long
@@ -96,7 +97,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_UsernameWithSpecialCharacter_Returns400()
+    public function testRegister_UsernameWithSpecialCharacter_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => '*Das/Cleverle*', // username with special character
@@ -109,7 +110,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_EmptyPassword_Returns400()
+    public function testRegister_EmptyPassword_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -122,7 +123,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_MissingSpecialCharacters_Returns400()
+    public function testRegister_MissingSpecialCharacters_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -135,7 +136,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_MissingUppercaseLetter_Returns400()
+    public function testRegister_MissingUppercaseLetter_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -148,7 +149,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_MissingLowercaseLetter_Returns400()
+    public function testRegister_MissingLowercaseLetter_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -161,7 +162,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_MissingNumber_Returns400()
+    public function testRegister_MissingNumber_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -174,7 +175,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_PasswordTooShort_Returns400()
+    public function testRegister_PasswordTooShort_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -187,7 +188,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_MissingUsername_Returns400()
+    public function testRegister_MissingUsername_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'password' => 'l!g4Tures',
@@ -199,7 +200,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_MissingPassword_Returns400()
+    public function testRegister_MissingPassword_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -211,7 +212,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_MissingEmail_Returns400()
+    public function testRegister_MissingEmail_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -223,7 +224,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_UsernameIsNull_Returns400()
+    public function testRegister_UsernameIsNull_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => null,
@@ -236,7 +237,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_PasswordIsNull_Returns400()
+    public function testRegister_PasswordIsNull_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -249,7 +250,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_EmailIsNull_Returns400()
+    public function testRegister_EmailIsNull_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'DasCleverle',
@@ -262,7 +263,7 @@ class AccountTest extends CIUnitTestCase
         ]);
     }
 
-    function testRegister_UsernameAlreadyTaken_Returns400()
+    public function testRegister_UsernameAlreadyTaken_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'coder2k',
@@ -273,7 +274,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
-    function testRegister_UsernameAlreadyTaken_CaseInsensitive_Returns400()
+    public function testRegister_UsernameAlreadyTaken_CaseInsensitive_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'cOdEr2K',
@@ -284,7 +285,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
-    function testRegister_EmailAlreadyTaken_Returns400()
+    public function testRegister_EmailAlreadyTaken_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'random',
@@ -295,7 +296,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
-    function testRegister_EmailAlreadyTaken_CaseInsensitive_Returns400()
+    public function testRegister_EmailAlreadyTaken_CaseInsensitive_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'random',
@@ -306,7 +307,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertJSONExact(['error' => 'USERNAME_OR_EMAIL_ALREADY_TAKEN']);
     }
 
-    function testRegister_ExistingUser_ValidToken_Returns201()
+    public function testRegister_ExistingUser_ValidToken_Returns201(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'codingPurpurTentakel',
@@ -317,7 +318,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertStatus(201);
     }
 
-    function testRegister_ExistingUser_InvalidToken_Returns404()
+    public function testRegister_ExistingUser_InvalidToken_Returns404(): void
     {
         $result = $this->withBodyFormat('json')->post('account/register', [
             'username' => 'codingPurpurTentakel',
@@ -331,14 +332,14 @@ class AccountTest extends CIUnitTestCase
     // *************************************
     // * usernameExists()
     // *************************************
-    function testUsernameExists_ExactMatch_ReturnsTrue()
+    public function testUsernameExists_ExactMatch_ReturnsTrue(): void
     {
         $result = $this->get('account/username/exists?username=coder2k');
         $result->assertOK();
         $result->assertJSONExact(['exists' => true]);
     }
 
-    static function providerCaseInsensitiveUsername(): array
+    public static function providerCaseInsensitiveUsername(): array
     {
         return [
             ['Coder2k'],
@@ -349,21 +350,21 @@ class AccountTest extends CIUnitTestCase
     /**
      * @dataProvider providerCaseInsensitiveUsername
      */
-    function testUsernameExists_CaseInsensitiveMatch_ReturnsTrue($username)
+    public function testUsernameExists_CaseInsensitiveMatch_ReturnsTrue($username): void
     {
         $result = $this->get("account/username/exists?username=$username");
         $result->assertOK();
         $result->assertJSONExact(['exists' => true]);
     }
 
-    function testUsernameExists_NoMatch_ReturnsFalse()
+    public function testUsernameExists_NoMatch_ReturnsFalse(): void
     {
         $result = $this->get('account/username/exists?username=user');
         $result->assertOK();
         $result->assertJSONExact(['exists' => false]);
     }
 
-    static function providerUsernameWithSpace(): array
+    public static function providerUsernameWithSpace(): array
     {
         return [
             ['Gyros%20Geier'],
@@ -375,14 +376,14 @@ class AccountTest extends CIUnitTestCase
     /**
      * @dataProvider providerUsernameWithSpace
      */
-    function testUsernameExists_UsernameWithSpace_ReturnsTrue($username)
+    public function testUsernameExists_UsernameWithSpace_ReturnsTrue($username): void
     {
         $result = $this->get("account/username/exists?username=$username");
         $result->assertOK();
         $result->assertJSONExact(['exists' => true]);
     }
 
-    static function providerUsernameWithLeadingOrTrailingSpace(): array
+    public static function providerUsernameWithLeadingOrTrailingSpace(): array
     {
         return [
             ['coder2k '],
@@ -394,27 +395,27 @@ class AccountTest extends CIUnitTestCase
     /**
      * @dataProvider providerUsernameWithLeadingOrTrailingSpace
      */
-    function testUsernameExists_UsernameWithLeadingOrTrailingSpace_ReturnsTrue($username)
+    public function testUsernameExists_UsernameWithLeadingOrTrailingSpace_ReturnsTrue($username): void
     {
         $result = $this->get("account/username/exists?username=$username");
         $result->assertOK();
         $result->assertJSONExact(['exists' => true]);
     }
 
-    function testUsernameExists_emptyUsername_Returns400()
+    public function testUsernameExists_emptyUsername_Returns400(): void
     {
         $result = $this->get('account/username/exists?username=');
         $result->assertStatus(400);
     }
 
-    function testUsernameExists_additionalGetParameter_ReturnsTrue()
+    public function testUsernameExists_additionalGetParameter_ReturnsTrue(): void
     {
         $result = $this->get('account/username/exists?username=coder2k&hacker=1');
         $result->assertOK();
         $result->assertJSONExact(['exists' => true]);
     }
 
-    function testUsernameExists_noGetParameters_Returns400()
+    public function testUsernameExists_noGetParameters_Returns400(): void
     {
         $result = $this->get('account/username/exists');
         $result->assertStatus(400);
@@ -423,40 +424,40 @@ class AccountTest extends CIUnitTestCase
     // *************************************
     // * emailExists()
     // *************************************
-    function testEmailExists_ExactMatch_ReturnsTrue()
+    public function testEmailExists_ExactMatch_ReturnsTrue(): void
     {
         $result = $this->get('account/email/exists?email=coder2k@test-conf.de');
         $result->assertOK();
         $result->assertJSONExact(['exists' => true]);
     }
 
-    function testEmailExists_CaseInsensitiveMatch_ReturnsTrue()
+    public function testEmailExists_CaseInsensitiveMatch_ReturnsTrue(): void
     {
         $result = $this->get('account/email/exists?email=Coder2k@test-conf.de');
         $result->assertOK();
         $result->assertJSONExact(['exists' => true]);
     }
 
-    function testEmailExists_NoMatch_ReturnsFalse()
+    public function testEmailExists_NoMatch_ReturnsFalse(): void
     {
         $result = $this->get('account/email/exists?email=pedder@__.de');
         $result->assertOK();
         $result->assertJSONExact(['exists' => false]);
     }
 
-    function testEmailExists_EmptyEmail_Returns400()
+    public function testEmailExists_EmptyEmail_Returns400(): void
     {
         $result = $this->get('account/email/exists?email=');
         $result->assertStatus(400);
     }
 
-    function testEmailExists_WrongGetParameter_Returns400()
+    public function testEmailExists_WrongGetParameter_Returns400(): void
     {
         $result = $this->get('account/email/exists?hacker=pedder@__.de');
         $result->assertStatus(400);
     }
 
-    function testEmailExists_AdditionalGetParameter_ReturnsTrue()
+    public function testEmailExists_AdditionalGetParameter_ReturnsTrue(): void
     {
         $result = $this->get('account/email/exists?email=pedder@__.de&hacker=true');
         $result->assertOK();
@@ -466,7 +467,7 @@ class AccountTest extends CIUnitTestCase
     // *************************************
     // * login()
     // *************************************
-    function testLogin_ValidCredentials_Returns200()
+    public function testLogin_ValidCredentials_Returns200(): void
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'username_or_email' => 'coder2k',
@@ -476,7 +477,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertSessionHas('user_id');
     }
 
-    function testLogin_UnknownUsernameOrEmail_Returns404()
+    public function testLogin_UnknownUsernameOrEmail_Returns404(): void
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'username_or_email' => 'unknown',
@@ -486,7 +487,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertSessionMissing('user_id');
     }
 
-    function testLogin_InvalidPassword_Returns401()
+    public function testLogin_InvalidPassword_Returns401(): void
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'username_or_email' => 'coder2k',
@@ -496,7 +497,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertSessionMissing('user_id');
     }
 
-    function testLogin_MissingUsernameOrEmail_Returns400()
+    public function testLogin_MissingUsernameOrEmail_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'password' => 'password',
@@ -505,7 +506,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertSessionMissing('user_id');
     }
 
-    function testLogin_MissingPassword_Returns400()
+    public function testLogin_MissingPassword_Returns400(): void
     {
         $result = $this->withBodyFormat('json')->post('account/login', [
             'username_or_email' => 'coder2k',
@@ -517,7 +518,7 @@ class AccountTest extends CIUnitTestCase
     // *************************************
     // * logout()
     // *************************************
-    function testLogout_LoggedIn_Returns200()
+    public function testLogout_LoggedIn_Returns200(): void
     {
         $this->withSession(['user_id' => 1]);
         $result = $this->post('account/logout');
@@ -525,7 +526,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertSessionMissing('user_id');
     }
 
-    function testLogout_NotLoggedIn_Returns200()
+    public function testLogout_NotLoggedIn_Returns200(): void
     {
         $result = $this->post('account/logout');
         $result->assertStatus(200);

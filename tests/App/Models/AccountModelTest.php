@@ -4,6 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
+use App\Database\Seeds\MainSeeder;
 
 class AccountModelTest extends CIUnitTestCase
 {
@@ -14,26 +15,26 @@ class AccountModelTest extends CIUnitTestCase
     protected $refresh = true;
     protected $namespace = null; // run all migrations from all available namespaces (like php spark migrate --all)
 
-    protected $seed = 'App\Database\Seeds\MainSeeder';
+    protected $seed = MainSeeder::class;
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
     // *************************************
     // * isUsernameTaken()
     // *************************************
-    public function testIsUsernameTaken_UsernameExists_ReturnsTrue()
+    public function testIsUsernameTaken_UsernameExists_ReturnsTrue(): void
     {
         $model = new AccountModel();
         $this->assertTrue($model->isUsernameTaken('coder2k'));
     }
 
-    public function testIsUsernameTaken_UsernameExists_CaseInsensitive_ReturnsTrue()
+    public function testIsUsernameTaken_UsernameExists_CaseInsensitive_ReturnsTrue(): void
     {
         $model = new AccountModel();
         $this->assertTrue($model->isUsernameTaken('CoDeR2k'));
     }
 
-    public function testIsUsernameTaken_UsernameDoesNotExist_ReturnsFalse()
+    public function testIsUsernameTaken_UsernameDoesNotExist_ReturnsFalse(): void
     {
         $model = new AccountModel();
         $this->assertFalse($model->isUsernameTaken('user'));
@@ -42,19 +43,19 @@ class AccountModelTest extends CIUnitTestCase
     // *************************************
     // * isEmailTaken()
     // *************************************
-    public function testIsEmailTaken_EmailExists_ReturnsTrue()
+    public function testIsEmailTaken_EmailExists_ReturnsTrue(): void
     {
         $model = new AccountModel();
         $this->assertTrue($model->isEmailTaken('coder2k@test-conf.de'));
     }
 
-    public function testIsEmailTaken_EmailExists_CaseInsensitive_ReturnsTrue()
+    public function testIsEmailTaken_EmailExists_CaseInsensitive_ReturnsTrue(): void
     {
         $model = new AccountModel();
         $this->assertTrue($model->isEmailTaken('CoDeR2K@TeSt-CoNf.De'));
     }
 
-    public function testIsEmailTaken_EmailDoesNotExist_ReturnsFalse()
+    public function testIsEmailTaken_EmailDoesNotExist_ReturnsFalse(): void
     {
         $model = new AccountModel();
         $this->assertFalse($model->isEmailTaken('if@then.else'));
@@ -63,7 +64,7 @@ class AccountModelTest extends CIUnitTestCase
     // *************************************
     // * createAccount()
     // *************************************
-    public function testCreateAccount_ReturnsUserId()
+    public function testCreateAccount_ReturnsUserId(): void
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
@@ -71,49 +72,49 @@ class AccountModelTest extends CIUnitTestCase
         $this->assertEquals(4, $userId);
     }
 
-    public function testCreateAccount_DuplicateUsernameAndEmail_ReturnsFalse()
+    public function testCreateAccount_DuplicateUsernameAndEmail_ReturnsFalse(): void
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
         $this->assertFalse($model->createAccount($userId, 'coder2k', password_hash('stan', PASSWORD_DEFAULT), 'coder2k@test-conf.de'));
     }
 
-    public function testCreateAccount_DuplicateUsernameAndEmail_CaseInsensitive_ReturnsFalse()
+    public function testCreateAccount_DuplicateUsernameAndEmail_CaseInsensitive_ReturnsFalse(): void
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
         $this->assertFalse($model->createAccount($userId, 'CoDer2k', password_hash('stan', PASSWORD_DEFAULT), 'CoDER2K@test-conf.de'));
     }
 
-    public function testCreateAccount_DuplicateUsername_ReturnsFalse()
+    public function testCreateAccount_DuplicateUsername_ReturnsFalse(): void
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
         $this->assertFalse($model->createAccount($userId, 'coder2k', password_hash('stan', PASSWORD_DEFAULT), 'somebody@test-conf.de'));
     }
 
-    public function testCreateAccount_DuplicateUsername_CaseInsensitive_ReturnsFalse()
+    public function testCreateAccount_DuplicateUsername_CaseInsensitive_ReturnsFalse(): void
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
         $this->assertFalse($model->createAccount($userId, 'CoDeR2k', password_hash('stan', PASSWORD_DEFAULT), 'somebody@test-conf.de'));
     }
 
-    public function testCreateAccount_DuplicateEmail_ReturnsFalse()
+    public function testCreateAccount_DuplicateEmail_ReturnsFalse(): void
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
         $this->assertFalse($model->createAccount($userId, 'Somebody', password_hash('stan', PASSWORD_DEFAULT), 'coder2k@test-conf.de'));
     }
 
-    public function testCreateAccount_DuplicateEmail_CaseInsensitive_ReturnsFalse()
+    public function testCreateAccount_DuplicateEmail_CaseInsensitive_ReturnsFalse(): void
     {
         $userId = (new UserModel())->createUser();
         $model = new AccountModel();
         $this->assertFalse($model->createAccount($userId, 'Somebody', password_hash('stan', PASSWORD_DEFAULT), 'CoDeR2k@test-conf.de'));
     }
 
-    public function testCreateAccount_TakenUserId_ReturnsFalse()
+    public function testCreateAccount_TakenUserId_ReturnsFalse(): void
     {
         $model = new AccountModel();
         $this->assertFalse($model->createAccount(1, 'Me', password_hash('stan', PASSWORD_DEFAULT), 'me@test-conf.de'));
@@ -122,7 +123,7 @@ class AccountModelTest extends CIUnitTestCase
     // *************************************
     // * getAccountByUsernameOrEmail()
     // *************************************
-    public function testGetAccountByUsernameOrEmail_UsernameExists_ReturnsArray()
+    public function testGetAccountByUsernameOrEmail_UsernameExists_ReturnsArray(): void
     {
         $model = new AccountModel();
         $result = $model->getAccountByUsernameOrEmail('coder2k');
@@ -132,7 +133,7 @@ class AccountModelTest extends CIUnitTestCase
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 
-    public function testGetAccountByUsernameOrEmail_UsernameExists_CaseInsensitive_ReturnsArray()
+    public function testGetAccountByUsernameOrEmail_UsernameExists_CaseInsensitive_ReturnsArray(): void
     {
         $model = new AccountModel();
         $result = $model->getAccountByUsernameOrEmail('CoDeR2k');
@@ -142,7 +143,7 @@ class AccountModelTest extends CIUnitTestCase
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 
-    public function testGetAccountByUsernameOrEmail_EmailExists_ReturnsArray()
+    public function testGetAccountByUsernameOrEmail_EmailExists_ReturnsArray(): void
     {
         $model = new AccountModel();
         $result = $model->getAccountByUsernameOrEmail('coder2k@test-conf.de');
@@ -152,7 +153,7 @@ class AccountModelTest extends CIUnitTestCase
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 
-    public function testGetAccountByUsernameOrEmail_EmailExists_CaseInsensitive_ReturnsArray()
+    public function testGetAccountByUsernameOrEmail_EmailExists_CaseInsensitive_ReturnsArray(): void
     {
         $model = new AccountModel();
         $result = $model->getAccountByUsernameOrEmail('CoDeR2k@TEST-conf.de');
@@ -162,13 +163,13 @@ class AccountModelTest extends CIUnitTestCase
         $this->assertEquals('coder2k@test-conf.de', $result['email']);
     }
 
-    public function testGetAccountByUsernameOrEmail_UsernameDoesNotExist_ReturnsNull()
+    public function testGetAccountByUsernameOrEmail_UsernameDoesNotExist_ReturnsNull(): void
     {
         $model = new AccountModel();
         $this->assertNull($model->getAccountByUsernameOrEmail('user'));
     }
 
-    public function testGetAccountByUsernameOrEmail_EmailDoesNotExist_ReturnsNull()
+    public function testGetAccountByUsernameOrEmail_EmailDoesNotExist_ReturnsNull(): void
     {
         $model = new AccountModel();
         $this->assertNull($model->getAccountByUsernameOrEmail('does@not.exist'));
