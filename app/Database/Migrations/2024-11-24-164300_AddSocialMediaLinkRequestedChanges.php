@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddSocialMediaLinkRequestedChanges extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn('SocialMediaLink', [
             'requested_changes' => [
@@ -17,7 +17,7 @@ class AddSocialMediaLinkRequestedChanges extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('SocialMediaLink', 'requested_changes');
     }

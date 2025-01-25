@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddPasswordResetToken extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'token' => [
@@ -38,7 +38,7 @@ class AddPasswordResetToken extends Migration
         $this->forge->createTable('PasswordResetToken');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('PasswordResetToken');
     }

@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddEventCallForPapersDates extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn('Event', [
             'call_for_papers_start' => [
@@ -22,7 +22,7 @@ class AddEventCallForPapersDates extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('event', 'call_for_papers_start');
         $this->forge->dropColumn('event', 'call_for_papers_end');

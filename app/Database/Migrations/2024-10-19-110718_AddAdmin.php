@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddAdmin extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'user_id' => [
@@ -33,7 +33,7 @@ class AddAdmin extends Migration
         $this->forge->createTable('Admin');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('Admin');
     }

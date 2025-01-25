@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddVerificationToken extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'token' => [
@@ -43,7 +43,7 @@ class AddVerificationToken extends Migration
         $this->forge->createTable('VerificationToken');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('VerificationToken');
     }

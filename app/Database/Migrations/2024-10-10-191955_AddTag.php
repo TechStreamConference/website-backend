@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddTag extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -41,7 +41,7 @@ class AddTag extends Migration
         $this->forge->createTable('Tag');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('Tag');
     }

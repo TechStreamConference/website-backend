@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddAccountIsVerified extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn('Account', [
             'is_verified' => [
@@ -17,7 +17,7 @@ class AddAccountIsVerified extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('Account', 'is_verified');
     }

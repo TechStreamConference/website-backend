@@ -11,7 +11,7 @@ class AddUser extends Migration
     /**
      * @inheritDoc
      */
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -39,7 +39,7 @@ class AddUser extends Migration
     /**
      * @inheritDoc
      */
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('User');
     }

@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddEventPublishDate extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn('Event', [
             'publish_date' => [
@@ -17,7 +17,7 @@ class AddEventPublishDate extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('event', 'publish_date');
     }

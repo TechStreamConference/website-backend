@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddSponsor extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -69,7 +69,7 @@ class AddSponsor extends Migration
         $this->forge->createTable('Sponsor');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('Sponsor');
     }

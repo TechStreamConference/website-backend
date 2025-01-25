@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddSpeakerRequestedChanges extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn('Speaker', [
             'requested_changes' => [
@@ -16,7 +16,7 @@ class AddSpeakerRequestedChanges extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('Speaker', 'requested_changes');
     }
