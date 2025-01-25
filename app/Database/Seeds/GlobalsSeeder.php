@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class GlobalsSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->db->table('Globals')->insert([
             'key' => 'footer_text',

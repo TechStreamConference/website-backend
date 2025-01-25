@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddTalkDurationChoice extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'duration' => [
@@ -28,7 +28,7 @@ class AddTalkDurationChoice extends Migration
         $this->forge->createTable('TalkDurationChoice');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('TalkDurationChoice');
     }

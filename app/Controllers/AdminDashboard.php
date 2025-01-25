@@ -10,11 +10,11 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class AdminDashboard extends BaseController
 {
-    const CREATE_SOCIAL_MEDIA_LINK_RULES = [
+    private const CREATE_SOCIAL_MEDIA_LINK_RULES = [
         'name' => 'required|string|max_length[100]',
     ];
 
-    public function setGlobals()
+    public function setGlobals(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
 
@@ -52,7 +52,7 @@ class AdminDashboard extends BaseController
         'call_for_papers_end' => 'permit_empty|valid_date[Y-m-d H:i:s]',
     ];
 
-    public function createEvent()
+    public function createEvent(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
 
@@ -83,7 +83,7 @@ class AdminDashboard extends BaseController
         return $this->response->setStatusCode(201);
     }
 
-    public function updateEvent(int $eventId)
+    public function updateEvent(int $eventId): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         $event = $eventModel->get($eventId);
@@ -123,18 +123,18 @@ class AdminDashboard extends BaseController
         return $this->response->setStatusCode(204);
     }
 
-    public function getAllEvents()
+    public function getAllEvents(): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
         return $this->response->setJSON($events);
     }
 
-    public function getEventSpeakers(int $eventId)
+    public function getEventSpeakers(int $eventId): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
-        if (!in_array($eventId, array_column($events, 'id'))) {
+        if (!in_array($eventId, array_column($events, 'id'), true)) {
             return $this->response->setStatusCode(404);
         }
 
@@ -143,7 +143,7 @@ class AdminDashboard extends BaseController
         return $this->response->setJSON($speakers);
     }
 
-    public function updateSpeakerDates(int $eventId)
+    public function updateSpeakerDates(int $eventId): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         $events = $eventModel->getAll();
@@ -178,7 +178,8 @@ class AdminDashboard extends BaseController
             $row['visible_from'] = $speaker['visible_from'];
             $speakerModel->update($speaker['id'], $row);
         }
-        $this->response->setStatusCode(204);
+
+        return $this->response->setStatusCode(204);
     }
 
     public function createSocialMediaType(): ResponseInterface

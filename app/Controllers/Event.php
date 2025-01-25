@@ -2,11 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Helpers\Role;
 use App\Helpers\TimeSlotData;
 use App\Models\EventModel;
-use App\Models\GlobalsModel;
 use App\Models\MediaPartnerModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
@@ -25,7 +23,7 @@ class Event extends BaseController
         $eventModel = model(EventModel::class);
         if ($year === null) {
             $event = $eventModel->getLatestPublished();
-            $year = intval(date('Y', strtotime($event['start_date'])));
+            $year = (int)date('Y', strtotime($event['start_date']));
         } else {
             $event = $eventModel->getPublishedByYear($year);
         }
@@ -66,7 +64,7 @@ class Event extends BaseController
         ]);
     }
 
-    public function getICalendarFile(int $year)
+    public function getICalendarFile(int $year): ResponseInterface
     {
         $eventModel = new EventModel();
         $event = $eventModel->getPublishedByYear($year);

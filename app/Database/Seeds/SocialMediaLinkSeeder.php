@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class SocialMediaLinkSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $date_format_string = 'Y-m-d H:i:s';
 

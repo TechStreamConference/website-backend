@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class AccountSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->db->table('Account')->insert(
             [

@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddConnectedRegistrationToken extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'token' => [
@@ -35,7 +35,7 @@ class AddConnectedRegistrationToken extends Migration
         $this->forge->createTable('ConnectedRegistrationToken');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('ConnectedRegistrationToken');
     }

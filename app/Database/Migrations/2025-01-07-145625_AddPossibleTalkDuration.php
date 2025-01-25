@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddPossibleTalkDuration extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -39,7 +39,7 @@ class AddPossibleTalkDuration extends Migration
         $this->forge->createTable('PossibleTalkDuration');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('PossibleTalkDuration');
     }

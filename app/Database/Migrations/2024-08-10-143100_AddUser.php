@@ -3,7 +3,6 @@
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
-use CodeIgniter\Database\RawSql;
 
 class AddUser extends Migration
 {
@@ -11,7 +10,7 @@ class AddUser extends Migration
     /**
      * @inheritDoc
      */
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -39,7 +38,7 @@ class AddUser extends Migration
     /**
      * @inheritDoc
      */
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('User');
     }

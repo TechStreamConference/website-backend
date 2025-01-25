@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class SocialMediaTypeSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $names = [
             'Web',

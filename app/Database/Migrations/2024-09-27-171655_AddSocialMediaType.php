@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddSocialMediaType extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -37,7 +37,7 @@ class AddSocialMediaType extends Migration
         $this->forge->createTable('SocialMediaType');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('SocialMediaType');
     }

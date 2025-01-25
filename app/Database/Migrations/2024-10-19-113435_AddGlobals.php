@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddGlobals extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'key' => [
@@ -35,7 +35,7 @@ class AddGlobals extends Migration
         $this->forge->createTable('Globals');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('Globals');
     }

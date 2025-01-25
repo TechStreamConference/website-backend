@@ -102,8 +102,7 @@ class EventModel extends Model
         ?string $publishDate,
         ?string $callForPapersStart,
         ?string $callForPapersEnd
-    )
-    {
+    ): void {
         $this
             ->where('id', $eventId)
             ->set([

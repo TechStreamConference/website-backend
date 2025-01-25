@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddTimeSlot extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -44,7 +44,7 @@ class AddTimeSlot extends Migration
         $this->forge->createTable('TimeSlot');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('TimeSlot');
     }

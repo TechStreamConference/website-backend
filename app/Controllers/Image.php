@@ -2,12 +2,12 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use CodeIgniter\Files\File;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class Image extends BaseController
 {
-    public function get(string $filename)
+    public function get(string $filename): ResponseInterface
     {
         // prevent path traversal (even though CodeIgniter should already prevent this)
         $path = realpath(WRITEPATH . 'uploads' . DIRECTORY_SEPARATOR . $filename);

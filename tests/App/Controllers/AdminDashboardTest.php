@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
 use CodeIgniter\Test\FeatureTestTrait;
+use App\Database\Seeds\MainSeeder;
 
 class AdminDashboardTest extends CIUnitTestCase
 {
@@ -16,14 +17,14 @@ class AdminDashboardTest extends CIUnitTestCase
     protected $refresh = true;
     protected $namespace = null; // run all migrations from all available namespaces (like php spark migrate --all)
 
-    protected $seed = 'App\Database\Seeds\MainSeeder';
+    protected $seed = MainSeeder::class;
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
     // *************************************
     // * setGlobals()
     // *************************************
-    public function testSetGlobals_Returns204()
+    public function testSetGlobals_Returns204(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -51,7 +52,7 @@ class AdminDashboardTest extends CIUnitTestCase
     // *************************************
     // * getAllEvents()
     // *************************************
-    public function testGetAllEvents_Returns200()
+    public function testGetAllEvents_Returns200(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -101,7 +102,7 @@ class AdminDashboardTest extends CIUnitTestCase
     // *************************************
     // * updateEvent()
     // *************************************
-    public function testUpdateEvent_ValidData_Returns204()
+    public function testUpdateEvent_ValidData_Returns204(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -170,7 +171,7 @@ class AdminDashboardTest extends CIUnitTestCase
         ]);
     }
 
-    public function testUpdateEvent_ValidNullValues_Returns204()
+    public function testUpdateEvent_ValidNullValues_Returns204(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -239,7 +240,7 @@ class AdminDashboardTest extends CIUnitTestCase
         ]);
     }
 
-    public function testUpdateEvent_RequiredValueIsNull_Returns400()
+    public function testUpdateEvent_RequiredValueIsNull_Returns400(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -267,7 +268,7 @@ class AdminDashboardTest extends CIUnitTestCase
     // *************************************
     // * createEvent()
     // *************************************
-    public function testCreateEvent_ValidData_Returns201()
+    public function testCreateEvent_ValidData_Returns201(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -353,7 +354,7 @@ class AdminDashboardTest extends CIUnitTestCase
         ]);
     }
 
-    public function testCreateEvent_ValidNullValues_Returns201()
+    public function testCreateEvent_ValidNullValues_Returns201(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -439,7 +440,7 @@ class AdminDashboardTest extends CIUnitTestCase
         ]);
     }
 
-    public function testCreateEvent_RequiredValueIsNull_Returns400()
+    public function testCreateEvent_RequiredValueIsNull_Returns400(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -467,7 +468,7 @@ class AdminDashboardTest extends CIUnitTestCase
     // *************************************
     // * updateSpeakerDates()
     // *************************************
-    public function testUpdateSpeakerDates_ValidData_Returns204()
+    public function testUpdateSpeakerDates_ValidData_Returns204(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -527,7 +528,7 @@ class AdminDashboardTest extends CIUnitTestCase
         ]);
     }
 
-    public function testUpdateSpeakerDates_invalidEventId_Returns404()
+    public function testUpdateSpeakerDates_invalidEventId_Returns404(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -552,7 +553,7 @@ class AdminDashboardTest extends CIUnitTestCase
         $response->assertStatus(404);
     }
 
-    public function testUpdateSpeakerDates_invalidSpeakerId_Returns404()
+    public function testUpdateSpeakerDates_invalidSpeakerId_Returns404(): void
     {
         $sessionValues = [
             "user_id" => 1,
@@ -577,7 +578,7 @@ class AdminDashboardTest extends CIUnitTestCase
         $response->assertStatus(404);
     }
 
-    public function testUpdateSpeakerDates_invalidDate_Returns400()
+    public function testUpdateSpeakerDates_invalidDate_Returns400(): void
     {
         $sessionValues = [
             "user_id" => 1,

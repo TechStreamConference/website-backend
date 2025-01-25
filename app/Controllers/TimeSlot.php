@@ -9,7 +9,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class TimeSlot extends BaseController
 {
-    const TIME_SLOT_RULES = [
+    private const TIME_SLOT_RULES = [
         'time_slots.*.start_time' => 'required|valid_date[Y-m-d H:i:s]',
         'time_slots.*.duration' => 'required|is_natural_no_zero',
         // We cannot use `required` for `is_special` because the `required`
@@ -36,7 +36,7 @@ class TimeSlot extends BaseController
         $timeSlotModel = model(TimeSlotModel::class);
 
         $timeSlots = array_map(
-            function (array $slot) use ($eventId) {
+            static function (array $slot) use ($eventId) {
                 return TimeSlotData::make(
                     $eventId,
                     $slot['start_time'],

@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddEvent extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -82,7 +82,7 @@ class AddEvent extends Migration
         $this->forge->createTable('Event');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('Event');
     }

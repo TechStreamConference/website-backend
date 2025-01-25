@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddSocialMediaLinkApproved extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn('SocialMediaLink', [
             'approved' => [
@@ -18,7 +18,7 @@ class AddSocialMediaLinkApproved extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('SocialMediaLink', 'approved');
     }

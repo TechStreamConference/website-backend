@@ -81,10 +81,10 @@ class GenericRoleModel extends Model
             ->getResultArray();
 
         foreach ($query as &$row) {
-            $row['id'] = intval($row['id']);
-            $row['user_id'] = intval($row['user_id']);
-            $row['event_id'] = intval($row['event_id']);
-            $row['is_approved'] = boolval($row['is_approved']);
+            $row['id'] = (int)$row['id'];
+            $row['user_id'] = (int)$row['user_id'];
+            $row['event_id'] = (int)$row['event_id'];
+            $row['is_approved'] = (bool)$row['is_approved'];
         }
 
         return $query;
@@ -128,8 +128,8 @@ class GenericRoleModel extends Model
             ->getResultArray();
 
         foreach ($query as &$row) {
-            $row['id'] = intval($row['id']);
-            $row['user_id'] = intval($row['user_id']);
+            $row['id'] = (int)$row['id'];
+            $row['user_id'] = (int)$row['user_id'];
         }
 
         return $query;
@@ -154,8 +154,8 @@ class GenericRoleModel extends Model
             ->getResultArray();
 
         foreach ($query as &$row) {
-            $row['id'] = intval($row['id']);
-            $row['user_id'] = intval($row['user_id']);
+            $row['id'] = (int)$row['id'];
+            $row['user_id'] = (int)$row['user_id'];
         }
 
         return $query;

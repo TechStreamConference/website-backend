@@ -15,7 +15,7 @@ class GlobalsModel extends Model
         "footer_text",
     ];
 
-    public function read()
+    public function read(): ?array
     {
         $data = $this->findAll();
         $result = [];
@@ -23,7 +23,7 @@ class GlobalsModel extends Model
             $key = $row['key'];
             $value = $row['value'];
             if (in_array($key, self::REQUIRED_INT_KEYS, true)) {
-                $result[$key] = intval($value);
+                $result[$key] = (int)$value;
             } elseif (in_array($key, self::REQUIRED_STRING_KEYS, true)) {
                 $result[$key] = $value;
             } else {
@@ -42,7 +42,7 @@ class GlobalsModel extends Model
         return $result;
     }
 
-    public function write(string $footer_text)
+    public function write(string $footer_text): void
     {
         $this->where('key', 'footer_text')->set(['value' => $footer_text])->update();
     }

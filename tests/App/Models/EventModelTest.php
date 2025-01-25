@@ -4,6 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
+use App\Database\Seeds\MainSeeder;
 
 class EventModelTest extends CIUnitTestCase
 {
@@ -14,14 +15,14 @@ class EventModelTest extends CIUnitTestCase
     protected $refresh = true;
     protected $namespace = null; // run all migrations from all available namespaces (like php spark migrate --all)
 
-    protected $seed = 'App\Database\Seeds\MainSeeder';
+    protected $seed = MainSeeder::class;
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
     // *************************************
     // * getPublished()
     // *************************************
-    public function testGetPublished_ValidId_ReturnsArray()
+    public function testGetPublished_ValidId_ReturnsArray(): void
     {
         $model = new EventModel();
         $event = $model->getPublished(1);
@@ -43,7 +44,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         );
     }
 
-    public function testGetPublished_InvalidId_ReturnsNull()
+    public function testGetPublished_InvalidId_ReturnsNull(): void
     {
         $model = new EventModel();
         $event = $model->getPublished(4);
@@ -53,7 +54,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
     // *************************************
     // * getPublishedByYear()
     // *************************************
-    public function testGetPublishedByYear_ValidYear_ReturnsArray()
+    public function testGetPublishedByYear_ValidYear_ReturnsArray(): void
     {
         $model = new EventModel();
         $event = $model->getPublishedByYear(2024);
@@ -75,7 +76,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         );
     }
 
-    public function testGetPublishedByYear_InvalidYear_ReturnsNull()
+    public function testGetPublishedByYear_InvalidYear_ReturnsNull(): void
     {
         $model = new EventModel();
         $event = $model->getPublishedByYear(2028);
@@ -85,7 +86,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
     // *************************************
     // * create()
     // *************************************
-    public function testCreate_ReturnsId()
+    public function testCreate_ReturnsId(): void
     {
         $model = new EventModel();
         $eventId = $model->createEvent(
@@ -110,7 +111,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
     // *************************************
     // * getAll()
     // *************************************
-    public function testGetAll_ReturnsArray()
+    public function testGetAll_ReturnsArray(): void
     {
         $model = new EventModel();
         $events = $model->getAll();
@@ -152,7 +153,7 @@ Also sei gespannt!',
     // *************************************
     // * updateEvent()
     // *************************************
-    public function testUpdateEvent()
+    public function testUpdateEvent(): void
     {
         $model = new EventModel();
         $model->updateEvent(
@@ -192,7 +193,7 @@ Also sei gespannt!',
     // *************************************
     // * createEvent()
     // *************************************
-    public function testCreateEvent()
+    public function testCreateEvent(): void
     {
         $model = new EventModel();
         $eventId = $model->createEvent(

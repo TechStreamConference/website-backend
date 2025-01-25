@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddTalk extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addField([
             'id' => [
@@ -79,7 +79,7 @@ class AddTalk extends Migration
         $this->forge->createTable('Talk');
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropTable('Talk');
     }

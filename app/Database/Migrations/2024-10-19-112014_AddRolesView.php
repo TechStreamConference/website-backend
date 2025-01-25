@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddRolesView extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->db->query("
             CREATE VIEW Roles AS
@@ -37,7 +37,7 @@ class AddRolesView extends Migration
         ");
     }
 
-    public function down()
+    public function down(): void
     {
         $this->db->query('DROP VIEW Roles');
     }

@@ -6,7 +6,7 @@ use CodeIgniter\Database\Migration;
 
 class AddTeamMemberRequestedChanges extends Migration
 {
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn('TeamMember', [
             'requested_changes' => [
@@ -16,7 +16,7 @@ class AddTeamMemberRequestedChanges extends Migration
         ]);
     }
 
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('TeamMember', 'requested_changes');
     }

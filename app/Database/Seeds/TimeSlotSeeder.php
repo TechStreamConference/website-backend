@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class TimeSlotSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         // id: 1
         $this->db->table('TimeSlot')->insert([

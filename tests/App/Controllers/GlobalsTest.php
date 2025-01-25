@@ -5,6 +5,7 @@ namespace App\Controllers;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
 use CodeIgniter\Test\FeatureTestTrait;
+use App\Database\Seeds\MainSeeder;
 
 class GlobalsTest extends CIUnitTestCase
 {
@@ -16,11 +17,11 @@ class GlobalsTest extends CIUnitTestCase
     protected $refresh = true;
     protected $namespace = null; // run all migrations from all available namespaces (like php spark migrate --all)
 
-    protected $seed = 'App\Database\Seeds\MainSeeder';
+    protected $seed = MainSeeder::class;
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
-    function testGet_returnsGlobals()
+    public function testGet_returnsGlobals(): void
     {
         $response = $this->get('/globals');
         $response->assertStatus(200);

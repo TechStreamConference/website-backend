@@ -4,6 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\DatabaseTestTrait;
+use App\Database\Seeds\MainSeeder;
 
 class UserModelTest extends CIUnitTestCase
 {
@@ -14,14 +15,14 @@ class UserModelTest extends CIUnitTestCase
     protected $refresh = true;
     protected $namespace = null; // run all migrations from all available namespaces (like php spark migrate --all)
 
-    protected $seed = 'App\Database\Seeds\MainSeeder';
+    protected $seed = MainSeeder::class;
     protected $seedOnce = false;
     protected $basePath = 'app/Database';
 
     // *************************************
     // * getUser()
     // *************************************
-    public function testGetUser_ValidId_ReturnsArray()
+    public function testGetUser_ValidId_ReturnsArray(): void
     {
         $model = new UserModel();
         $user = $model->getUser(1);
@@ -33,7 +34,7 @@ class UserModelTest extends CIUnitTestCase
     }
 
 
-    public function testGetUser_InvalidId_ReturnsNull()
+    public function testGetUser_InvalidId_ReturnsNull(): void
     {
         $model = new UserModel();
         $this->assertIsArray($model->getUser());
@@ -44,7 +45,7 @@ class UserModelTest extends CIUnitTestCase
     // *************************************
     // * createUser()
     // *************************************
-    public function testCreateUser_ReturnsId()
+    public function testCreateUser_ReturnsId(): void
     {
         $model = new UserModel();
         $userId = $model->createUser();
@@ -54,13 +55,13 @@ class UserModelTest extends CIUnitTestCase
     // *************************************
     // * deleteUser()
     // *************************************
-    public function testDeleteUser_UserExists_ReturnsTrue()
+    public function testDeleteUser_UserExists_ReturnsTrue(): void
     {
         $model = new UserModel();
         $this->assertTrue($model->deleteUser(3)); // can only delete a user not referenced in other tables
     }
 
-    public function testDeleteUser_UserDoesNotExist_ReturnsTrue()
+    public function testDeleteUser_UserDoesNotExist_ReturnsTrue(): void
     {
         $model = new UserModel();
         $this->assertTrue($model->deleteUser(40)); // deleting a non-existing user is not an error
@@ -69,7 +70,7 @@ class UserModelTest extends CIUnitTestCase
     // *************************************
     // * getRoles()
     // *************************************
-    public function testGetRoles_UserHasAccount_ReturnsArray()
+    public function testGetRoles_UserHasAccount_ReturnsArray(): void
     {
         $model = new UserModel();
         $roles = $model->getRoles(1);
@@ -77,7 +78,7 @@ class UserModelTest extends CIUnitTestCase
         $this->assertTrue($roles['has_account']);
     }
 
-    public function testGetRoles_UserDoesNotHaveAccount_ReturnsArray()
+    public function testGetRoles_UserDoesNotHaveAccount_ReturnsArray(): void
     {
         $model = new UserModel();
         $roles = $model->getRoles(3);
@@ -85,7 +86,7 @@ class UserModelTest extends CIUnitTestCase
         $this->assertFalse($roles['has_account']);
     }
 
-    public function testGetRoles_UserDoesNotExist_ReturnsNull()
+    public function testGetRoles_UserDoesNotExist_ReturnsNull(): void
     {
         $model = new UserModel();
         $roles = $model->getRoles(6);

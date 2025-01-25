@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class MediaPartnerSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $this->db->table('MediaPartner')->insert([
             'event_id' => 1,

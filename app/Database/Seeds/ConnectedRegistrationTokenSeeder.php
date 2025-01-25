@@ -6,7 +6,7 @@ use CodeIgniter\Database\Seeder;
 
 class ConnectedRegistrationTokenSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         // Token for a connected registration for the user that corresponds
         // to speaker "codingPurpurTentakel".

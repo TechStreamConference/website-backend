@@ -508,11 +508,11 @@ class Mimes
      *
      * @return string|null The extension determined, or null if unable to match.
      */
-    public static function guessExtensionFromType(string $type, ?string $proposedExtension = null)
+    public static function guessExtensionFromType(string $type, ?string $proposedExtension = null): ?string
     {
-        $type = trim(strtolower($type), '. ');
+        $type = strtolower(trim($type, '. '));
 
-        $proposedExtension = trim(strtolower($proposedExtension ?? ''));
+        $proposedExtension = strtolower(trim($proposedExtension ?? ''));
 
         if (
             $proposedExtension !== ''

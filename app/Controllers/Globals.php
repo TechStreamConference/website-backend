@@ -11,17 +11,17 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Globals extends BaseController
 {
-    const TALK_DURATION_CHOICES_RULES = [
+    private const TALK_DURATION_CHOICES_RULES = [
         'choices.*' => 'required|is_natural_no_zero',
     ];
 
-    const UPDATE_TAGS_RULES = [
+    private const UPDATE_TAGS_RULES = [
         'tags.*.id' => 'required|is_natural_no_zero',
         'tags.*.text' => 'required|string|max_length[255]',
         'tags.*.color_index' => 'required|is_natural_no_zero',
     ];
 
-    const CREATE_TAGS_RULES = [
+    private const CREATE_TAGS_RULES = [
         'tags.*.text' => 'required|string|max_length[255]',
         'tags.*.color_index' => 'required|is_natural_no_zero',
     ];
@@ -41,7 +41,7 @@ class Globals extends BaseController
         $events = $eventModel->getAllPublished();
         $yearsWithEvents = [];
         foreach ($events as $event) {
-            $year = intval(date('Y', strtotime($event['start_date'])));
+            $year = (int)date('Y', strtotime($event['start_date']));
             $yearsWithEvents[] = $year;
         }
         $globals['years_with_events'] = $yearsWithEvents;
@@ -127,7 +127,7 @@ class Globals extends BaseController
         $existingChoices = $model->getAll();
         $numAdded = 0;
         foreach ($validData['choices'] as $choice) {
-            if (!in_array($choice, $existingChoices)) {
+            if (!in_array($choice, $existingChoices, true)) {
                 $model->add($choice);
                 ++$numAdded;
             }
