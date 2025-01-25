@@ -34,7 +34,7 @@ class SpeakerModelTest extends CIUnitTestCase
         );
         $this->assertEquals('images/coder2k.jpg', $speaker['photo']);
         $this->assertEquals('image/jpeg', $speaker['photo_mime_type']);
-        $this->assertTrue(boolval($speaker['is_approved']));
+        $this->assertTrue((bool)$speaker['is_approved']);
         $this->assertEquals(date('2024-06-01 15:00:00'), $speaker['visible_from']);
     }
 

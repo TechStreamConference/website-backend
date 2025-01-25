@@ -541,14 +541,14 @@ class Talk extends BaseController
                 implode(
                     ', ',
                     array_map(
-                        fn($duration) => strval($duration),
+                        static fn($duration) => (string)$duration,
                         $oldPossibleDurations
                     ),
                 ),
                 implode(
                     ', ',
                     array_map(
-                        fn($duration) => strval($duration),
+                        static fn($duration) => (string)$duration,
                         $newPossibleDurations,
                     )
                 ),

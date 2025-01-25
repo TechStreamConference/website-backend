@@ -45,7 +45,7 @@ class UserModel extends Model
             return null;
         }
         return [
-            'has_account' => boolval($result['has_account']),
+            'has_account' => (bool)$result['has_account'],
         ];
     }
 }

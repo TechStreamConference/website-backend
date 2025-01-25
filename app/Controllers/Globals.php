@@ -41,7 +41,7 @@ class Globals extends BaseController
         $events = $eventModel->getAllPublished();
         $yearsWithEvents = [];
         foreach ($events as $event) {
-            $year = intval(date('Y', strtotime($event['start_date'])));
+            $year = (int)date('Y', strtotime($event['start_date']));
             $yearsWithEvents[] = $year;
         }
         $globals['years_with_events'] = $yearsWithEvents;

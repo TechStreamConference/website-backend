@@ -23,7 +23,7 @@ class GlobalsModel extends Model
             $key = $row['key'];
             $value = $row['value'];
             if (in_array($key, self::REQUIRED_INT_KEYS, true)) {
-                $result[$key] = intval($value);
+                $result[$key] = (int)$value;
             } elseif (in_array($key, self::REQUIRED_STRING_KEYS, true)) {
                 $result[$key] = $value;
             } else {
