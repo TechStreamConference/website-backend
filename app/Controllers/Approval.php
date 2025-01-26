@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Helpers\EmailHelper;
+use App\Helpers\PathHelper;
 use App\Helpers\Role;
 use App\Models\AccountModel;
 use App\Models\EventModel;
