@@ -12,7 +12,7 @@ class Image extends BaseController
     {
         $path = PathHelper::getImagePath($filename);
         if ($path == null) {
-            return $this->response->setStatusCode(404);
+            return $this->response->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         $file = new File($path);
         $mimeType = $file->getMimeType();

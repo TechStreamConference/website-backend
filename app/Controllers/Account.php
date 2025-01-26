@@ -428,7 +428,9 @@ class Account extends BaseController
         $accountModel = model(AccountModel::class);
         $account = $accountModel->get($userId);
         if ($account === null) {
-            return $this->response->setStatusCode(500);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $this->response->setJSON($account);
     }

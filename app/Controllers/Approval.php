@@ -196,7 +196,10 @@ class Approval extends BaseController
             return $canBeRejected;
         }
         if (!$canBeRejected) {
-            return $this->response->setJSON(['error' => 'SPEAKER_CANNOT_BE_REJECTED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'SPEAKER_CANNOT_BE_REJECTED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $speakerModel = model(SpeakerModel::class);
@@ -212,9 +215,12 @@ class Approval extends BaseController
 
         $speakerModel->deleteAllForEvent($userId, $eventId);
         if ($error) {
-            return $this->response->setJSON(['error' => 'IMAGE_DELETION_FAILED'])->setStatusCode(500);
+            return $this
+                ->response
+                ->setJSON(['error' => 'IMAGE_DELETION_FAILED'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return $this->response->setStatusCode(204);
+        return $this->response->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     public function getPendingTeamMembers(): ResponseInterface
@@ -326,13 +332,19 @@ class Approval extends BaseController
         $userModel = model(UserModel::class);
         $user = $userModel->getUser($userId);
         if ($user === null) {
-            return $this->response->setJSON(['error' => 'USER_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'USER_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $eventModel = model(EventModel::class);
         $event = $eventModel->getPublished($eventId);
         if ($event === null) {
-            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $speakerModel = model(SpeakerModel::class);
@@ -344,7 +356,10 @@ class Approval extends BaseController
 
         $talkModel = model(TalkModel::class);
         if ($talkModel->speakerHasTalks($userId, $eventId)) {
-            return $this->response->setJSON(['error' => 'SPEAKER_HAS_TALKS'])->setStatusCode(500);
+            return $this
+                ->response
+                ->setJSON(['error' => 'SPEAKER_HAS_TALKS'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
         return true;
     }

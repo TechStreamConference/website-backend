@@ -19,13 +19,14 @@ class AuthFilter implements FilterInterface
         }
     }
 
-    protected function tryGetUserId(): Response|int {
+    protected function tryGetUserId(): Response|int
+    {
         $session = session();
         $userId = $session->get('user_id');
         if ($userId === null) {
             $response = Services::response();
             $response->setJSON(['error' => 'NOT_LOGGED_IN']);
-            $response->setStatusCode(401);
+            $response->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
             return $response;
         }
         return $userId;
