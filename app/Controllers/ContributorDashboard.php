@@ -98,7 +98,10 @@ abstract class ContributorDashboard extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::SOCIAL_MEDIA_LINK_CREATION_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -112,7 +115,7 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'DUPLICATE_SOCIAL_MEDIA_LINK_CONTENTS'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $model->create(
@@ -122,7 +125,9 @@ abstract class ContributorDashboard extends BaseController
             false,
         );
 
-        return $this->response->setStatusCode(201);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     /** This function creates new social media links for the currently logged in user.
@@ -136,7 +141,10 @@ abstract class ContributorDashboard extends BaseController
             return $data;
         }
         if (!$this->validateData($data ?? [], self::APPLICATION_SOCIAL_MEDIA_LINK_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
         $links = $validData['social_media_links'];
@@ -153,7 +161,9 @@ abstract class ContributorDashboard extends BaseController
             );
         }
 
-        return $this->response->setStatusCode(201);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     /** This function updates existing social media links for the currently logged in user.
@@ -163,7 +173,10 @@ abstract class ContributorDashboard extends BaseController
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::SOCIAL_MEDIA_LINK_UPDATE_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
         $links = $validData['social_media_links'];
@@ -175,7 +188,7 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'DUPLICATE_SOCIAL_MEDIA_LINK_IDS'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $model = model(SocialMediaLinkModel::class);
@@ -196,7 +209,7 @@ abstract class ContributorDashboard extends BaseController
                 return $this
                     ->response
                     ->setJSON(['error' => 'SOCIAL_MEDIA_LINK_NOT_FOUND'])
-                    ->setStatusCode(404);
+                    ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
             }
 
             $link['has_changed'] = $existingLink['url'] !== $link['url']
@@ -236,7 +249,7 @@ abstract class ContributorDashboard extends BaseController
 
         return $this
             ->response
-            ->setStatusCode(204);
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     public function deleteSocialMediaLink(int $id): ResponseInterface
@@ -245,11 +258,15 @@ abstract class ContributorDashboard extends BaseController
         $userId = $this->getLoggedInUserId();
         $link = $model->get($id);
         if ($link === null || $link['user_id'] !== $userId) {
-            return $this->response->setStatusCode(404);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $model->delete($id);
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     /** Returns the latest entry for the current contributor type for the given event.
@@ -265,7 +282,7 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => "{$this->getRoleNameScreamingSnakeCase()}_NOT_FOUND_FOR_EVENT"])
-                ->setStatusCode(404);
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         return $this
@@ -286,7 +303,7 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'EVENT_NOT_FOUND'])
-                ->setStatusCode(404);
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         return $this->get($eventId);
@@ -331,14 +348,14 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'INVALID_JSON'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $data = json_decode($data, true);
         if (json_last_error() != JSON_ERROR_NONE) {
             return $this
                 ->response
                 ->setJSON(['error' => 'INVALID_JSON'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         return $data;
     }
@@ -371,7 +388,10 @@ abstract class ContributorDashboard extends BaseController
             return $data;
         }
         if (!$this->validateData($data ?? [], self::RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -386,7 +406,7 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'NO_CHANGES_DETECTED'])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         EmailHelper::sendToAdmins(
@@ -418,7 +438,7 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => 'EVENT_NOT_FOUND'])
-                ->setStatusCode(404);
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         return $this->createOrUpdate($eventId);
@@ -461,12 +481,15 @@ abstract class ContributorDashboard extends BaseController
                         'error' => "{$this->getRoleNameScreamingSnakeCase()}_CREATION_REQUIRES_ALL_FIELDS",
                         'missing_field' => $field,
                     ])
-                    ->setStatusCode(400);
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
         }
         $image = $this->request->getFile('photo');
         if ($image === null) {
-            return $this->response->setJSON(['error' => 'IMAGE_MISSING'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'IMAGE_MISSING'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $uploadResult = $this->uploadPhoto(
             $image,
@@ -478,7 +501,7 @@ abstract class ContributorDashboard extends BaseController
             return $this
                 ->response
                 ->setJSON(['error' => $uploadResult])
-                ->setStatusCode(400);
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         [$path, $mimeType] = $uploadResult;
         $this->getModel()->create(
@@ -495,7 +518,7 @@ abstract class ContributorDashboard extends BaseController
         return $this
             ->response
             ->setJSON(['message' => "Created new {$this->getRoleName()} entry."])
-            ->setStatusCode(201);
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     /** Updates an existing entry for the current contributor type. This function is called when an entry
@@ -521,7 +544,7 @@ abstract class ContributorDashboard extends BaseController
                 return $this
                     ->response
                     ->setJSON(['error' => 'MISSING_PHOTO_DIMENSIONS'])
-                    ->setStatusCode(400);
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
             $uploadResult = $this->uploadPhoto(
                 $image,
@@ -551,7 +574,7 @@ abstract class ContributorDashboard extends BaseController
         return $this
             ->response
             ->setJSON(['message' => "Based new {$this->getRoleName()} entry on existing entry."])
-            ->setStatusCode(201);
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     /** Extracts the allowed MIME types from the validation rules.
@@ -582,21 +605,33 @@ abstract class ContributorDashboard extends BaseController
     private function uploadPhoto(UploadedFile $fileId, int $x, int $y, int $size): array|ResponseInterface
     {
         if (!$this->validateData([], self::PHOTO_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         if ($fileId->hasMoved()) {
-            return $this->response->setJSON(['error' => 'IMAGE_HAS_MOVED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'IMAGE_HAS_MOVED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $mimeType = $fileId->getMimeType();
         if (!in_array($mimeType, $this->getAllowedMimeTypes())) {
-            return $this->response->setJSON(['error' => 'INVALID_MIME_TYPE'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'INVALID_MIME_TYPE'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $filename = $fileId->getRandomName();
         $targetPath = WRITEPATH . 'uploads';
 
         if (!$fileId->move(targetPath: $targetPath, name: $filename)) {
-            return $this->response->setJSON(['error' => 'FAILED_TO_MOVE_IMAGE'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'FAILED_TO_MOVE_IMAGE'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $filePath = $targetPath . DIRECTORY_SEPARATOR . $filename;
@@ -613,12 +648,18 @@ abstract class ContributorDashboard extends BaseController
         // Get the resolution.
         $imageInfo = getimagesize($filePath);
         if ($imageInfo === false) {
-            return $this->response->setJSON(['error' => 'FAILED_TO_GET_IMAGE_RESOLUTION'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'FAILED_TO_GET_IMAGE_RESOLUTION'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         [$width, $height] = $imageInfo;
         if ($width != $height) {
             unlink($filePath);
-            return $this->response->setJSON(['error' => 'IMAGE_MUST_BE_SQUARE'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'IMAGE_MUST_BE_SQUARE'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $pathForDatabase = 'images' . DIRECTORY_SEPARATOR . $filename;

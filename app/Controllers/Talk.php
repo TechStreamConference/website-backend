@@ -59,14 +59,20 @@ class Talk extends BaseController
             'can_submit_talk' => true,
             'event' => $event,
         ];
-        return $this->response->setJSON($responseData)->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON($responseData)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function submit(): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::TALK_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -79,17 +85,26 @@ class Talk extends BaseController
         // The speaker has to provide at least one possible duration for the talk (e.g. 30 minutes).
         // The possible durations have to be valid (i.e. they have to be available choices).
         if (!$this->areDurationsValid($validData['possible_durations'])) {
-            return $this->response->setJSON(['error' => 'INVALID_DURATION'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'INVALID_DURATION'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         if (count($validData['tag_ids']) < 1) {
-            return $this->response->setJSON(['error' => 'NO_TAGS'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_TAGS'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $tagModel = model(TagModel::class);
         $allTags = $tagModel->getAll();
         foreach ($validData['tag_ids'] as $tagId) {
             if (!in_array($tagId, array_column($allTags, 'id'))) {
-                return $this->response->setJSON(['error' => 'INVALID_TAG'])->setStatusCode(400);
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'INVALID_TAG'])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
         }
 
@@ -98,7 +113,10 @@ class Talk extends BaseController
         // Let's do a quick check to see if there's already a talk with the same title for the same event.
         // This is just to avoid problems due to people re-sending the data (e.g. by refreshing the page).
         if ($talkModel->doesTitleExist($validData['title'], $openEventId)) {
-            return $this->response->setJSON(['error' => 'DUPLICATE_TALK'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'DUPLICATE_TALK'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $talkId = $talkModel->create(
@@ -114,7 +132,10 @@ class Talk extends BaseController
         );
 
         if ($talkId === false) {
-            return $this->response->setJSON(['error' => 'TALK_CREATION_FAILED'])->setStatusCode(500);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_CREATION_FAILED'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $possibleTalkDurationModel = model(PossibleTalkDurationModel::class);
@@ -151,7 +172,10 @@ class Talk extends BaseController
             )
         );
 
-        return $this->response->setJSON(['success' => 'TALK_SUBMITTED'])->setStatusCode(201);
+        return $this
+            ->response
+            ->setJSON(['success' => 'TALK_SUBMITTED'])
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
     public function getPendingTalksForSpeaker(): ResponseInterface
@@ -160,21 +184,30 @@ class Talk extends BaseController
         $pendingTalks = $talkModel->getPendingForSpeaker($this->getLoggedInUserId());
 
         $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
-        return $this->response->setJSON($pendingTalks)->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON($pendingTalks)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function getTentativeOrAcceptedTalksForSpeaker(int $eventId): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         if ($eventModel->getPublished($eventId) === null) {
-            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $talkModel = model(TalkModel::class);
         $tentativeTalks = $talkModel->getTentativeOrAcceptedForSpeaker($this->getLoggedInUserId(), $eventId);
 
         $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
-        return $this->response->setJSON($tentativeTalks)->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON($tentativeTalks)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     /** Gets all pending talks of all users. A pending talk is a talk that has been submitted
@@ -187,38 +220,56 @@ class Talk extends BaseController
         $pendingTalks = $talkModel->getAllPending();
 
         $pendingTalks = $this->addAdditionalDataToTalks($pendingTalks);
-        return $this->response->setJSON($pendingTalks)->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON($pendingTalks)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function getAllTentativeOrAcceptedTalks(int $eventId): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         if ($eventModel->getPublished($eventId) === null) {
-            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $talkModel = model(TalkModel::class);
         $tentativeTalks = $talkModel->getAllTentativeOrAccepted($eventId);
 
         $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
-        return $this->response->setJSON($tentativeTalks)->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON($tentativeTalks)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function requestChanges(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::REQUEST_CHANGES_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
         $talkModel = model(TalkModel::class);
         $talk = $talkModel->get($talkId);
         if ($talk === null) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         if ($talk['is_approved']) {
-            return $this->response->setJSON(['error' => 'TALK_ALREADY_APPROVED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_ALREADY_APPROVED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $talkModel->requestChanges($talkId, $validData['requested_changes']);
 
@@ -256,7 +307,10 @@ class Talk extends BaseController
             )
         );
 
-        return $this->response->setJSON(['success' => 'CHANGES_REQUESTED'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['success' => 'CHANGES_REQUESTED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function approve(int $talkId): ResponseInterface
@@ -264,10 +318,16 @@ class Talk extends BaseController
         $talkModel = model(TalkModel::class);
         $talk = $talkModel->get($talkId);
         if ($talk === null) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         if ($talk['is_approved']) {
-            return $this->response->setJSON(['error' => 'TALK_ALREADY_APPROVED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_ALREADY_APPROVED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $talkModel->deleteRequestedChanges($talkId);
         $talkModel->approve($talkId);
@@ -304,21 +364,30 @@ class Talk extends BaseController
             )
         );
 
-        return $this->response->setJSON(['success' => 'TALK_APPROVED'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['success' => 'TALK_APPROVED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function reject(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::REJECT_TALK_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
         $talkModel = model(TalkModel::class);
         $talk = $talkModel->get($talkId);
         if ($talk === null) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         // We don't check whether or not the talk is already approved here, because we want to allow
@@ -331,7 +400,10 @@ class Talk extends BaseController
         $possibleDurationModel->deleteAllForTalk($talkId);
 
         if (!$talkModel->delete($talkId)) {
-            return $this->response->setJSON(['error' => 'TALK_DELETION_FAILED'])->setStatusCode(500);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_DELETION_FAILED'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $accountModel = model(AccountModel::class);
@@ -401,24 +473,36 @@ class Talk extends BaseController
             );
         }
 
-        return $this->response->setJSON(['success' => 'TALK_REJECTED'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['success' => 'TALK_REJECTED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function suggestTimeSlot(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::TIME_SLOT_SUGGESTION_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
         $talkModel = model(TalkModel::class);
         $talk = $talkModel->get($talkId);
         if ($talk === null) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         if (!$talk['is_approved']) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_APPROVED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_APPROVED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         // We neither check whether there already is an assigned time slot for this talk, nor whether
@@ -428,20 +512,32 @@ class Talk extends BaseController
         $timeSlotModel = model(TimeSlotModel::class);
         $timeSlot = $timeSlotModel->get($validData['time_slot_id']);
         if ($timeSlot === null) {
-            return $this->response->setJSON(['error' => 'TIME_SLOT_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TIME_SLOT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         if ($timeSlot->eventId !== $talk['event_id']) {
-            return $this->response->setJSON(['error' => 'TIME_SLOT_WRONG_EVENT'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TIME_SLOT_WRONG_EVENT'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         if ($this->isTimeSlotOccupied($validData['time_slot_id'])) {
-            return $this->response->setJSON(['error' => 'TIME_SLOT_ALREADY_OCCUPIED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TIME_SLOT_ALREADY_OCCUPIED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $possibleDurations = array_column(model(PossibleTalkDurationModel::class)->get($talkId), 'duration');
         if (!in_array($timeSlot->duration, $possibleDurations)) {
-            return $this->response->setJSON(['error' => 'TIME_SLOT_INVALID_DURATION'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TIME_SLOT_INVALID_DURATION'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $talkModel->setTimeSlot($talkId, $validData['time_slot_id']);
@@ -479,40 +575,61 @@ class Talk extends BaseController
             )
         );
 
-        return $this->response->setJSON(['success' => 'TIME_SLOT_SUGGESTED'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['success' => 'TIME_SLOT_SUGGESTED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function change(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::TALK_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
         $talkModel = model(TalkModel::class);
         $talk = $talkModel->get($talkId);
         if ($talk === null || $talk['user_id'] !== $this->getLoggedInUserId()) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         if ($talk['is_approved']) {
-            return $this->response->setJSON(['error' => 'TALK_ALREADY_APPROVED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_ALREADY_APPROVED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         if (count($validData['tag_ids']) < 1) {
-            return $this->response->setJSON(['error' => 'NO_TAGS'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_TAGS'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         if (count($validData['possible_durations']) < 1) {
-            return $this->response->setJSON(['error' => 'NO_DURATIONS'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_DURATIONS'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $tagModel = model(TagModel::class);
         $allTags = $tagModel->getAll();
         foreach ($validData['tag_ids'] as $tagId) {
             if (!in_array($tagId, array_column($allTags, 'id'))) {
-                return $this->response->setJSON(['error' => 'INVALID_TAG'])->setStatusCode(400);
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'INVALID_TAG'])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
         }
 
@@ -571,7 +688,10 @@ class Talk extends BaseController
         }
 
         if (count($differences) === 0) {
-            return $this->response->setJSON(['error' => 'NO_CHANGES'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_CHANGES'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $requestedChanges = $talk['requested_changes'];
@@ -622,13 +742,19 @@ class Talk extends BaseController
             timeSlotId: null,
             timeSlotAccepted: false,
         )) {
-            return $this->response->setJSON(['error' => 'TALK_CHANGE_FAILED'])->setStatusCode(500);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_CHANGE_FAILED'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $possibleDurationModel->store($talkId, $validData['possible_durations']);
         $tagModel->storeTagsForTalk($talkId, $validData['tag_ids']);
 
-        return $this->response->setJSON(['success' => 'TALK_CHANGED'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['success' => 'TALK_CHANGED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function acceptTimeSlot(int $talkId): ResponseInterface
@@ -658,14 +784,20 @@ class Talk extends BaseController
             data: ['timeSlot' => $timeSlot]
         );
 
-        return $this->response->setJSON(['success' => 'TIME_SLOT_ACCEPTED'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['success' => 'TIME_SLOT_ACCEPTED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     public function rejectTimeSlot(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
         if (!$this->validateData($data ?? [], self::REJECT_TIME_SLOT_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
 
@@ -701,7 +833,10 @@ class Talk extends BaseController
             ]
         );
 
-        return $this->response->setJSON(['success' => 'TIME_SLOT_REJECTED'])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['success' => 'TIME_SLOT_REJECTED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     private function sendEmailToSpeaker(
@@ -756,16 +891,28 @@ class Talk extends BaseController
         $talkModel = model(TalkModel::class);
         $talk = $talkModel->get($talkId);
         if ($talk === null || $talk['user_id'] !== $this->getLoggedInUserId()) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         if (!$talk['is_approved']) {
-            return $this->response->setJSON(['error' => 'TALK_NOT_APPROVED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_APPROVED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         if ($talk['time_slot_id'] === null) {
-            return $this->response->setJSON(['error' => 'NO_TIME_SLOT'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_TIME_SLOT'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         if ($talk['time_slot_accepted']) {
-            return $this->response->setJSON(['error' => 'TIME_SLOT_ALREADY_ACCEPTED'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TIME_SLOT_ALREADY_ACCEPTED'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         return $talk;
     }
@@ -778,10 +925,16 @@ class Talk extends BaseController
     {
         $openEventId = $this->getOpenEventId();
         if ($openEventId === null) {
-            return $this->response->setJSON(['error' => 'NO_OPEN_EVENT'])->setStatusCode(403);
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_OPEN_EVENT'])
+                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
         }
         if (!$this->loggedInUserHasApprovedSpeakerEntry($openEventId)) {
-            return $this->response->setJSON(['error' => 'NO_APPROVED_SPEAKER_ENTRY'])->setStatusCode(403);
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_APPROVED_SPEAKER_ENTRY'])
+                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
         }
         return $openEventId;
     }

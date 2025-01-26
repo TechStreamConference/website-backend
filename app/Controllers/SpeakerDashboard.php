@@ -62,7 +62,9 @@ class SpeakerDashboard extends ContributorDashboard
             }
             // Reset current response to avoid returning the result of the createSocialMediaLinksForCurrentUser method.
             $this->response->setJSON([]);
-            $this->response->setStatusCode(200);
+            $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_OK);
         }
 
         $result = $this->createFromApplication($event['id'], $data);
@@ -91,7 +93,10 @@ class SpeakerDashboard extends ContributorDashboard
     private function createFromApplication(int $eventId, array $data): ResponseInterface
     {
         if (!$this->validateData($data ?? [], self::APPLICATION_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
         return $this->createNewEntry($validData['application'], $eventId);
@@ -104,7 +109,10 @@ class SpeakerDashboard extends ContributorDashboard
             return $event;
         }
 
-        return $this->response->setJSON(['event' => $event,])->setStatusCode(200);
+        return $this
+            ->response
+            ->setJSON(['event' => $event,])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     private function getEventForNewSpeakerApplication(): array|ResponseInterface
@@ -119,7 +127,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $this
                 ->response
                 ->setJSON(['error' => 'USER_ALREADY_IS_SPEAKER'])
-                ->setStatusCode(403);
+                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
         }
 
         $speakerModel = model(SpeakerModel::class);
@@ -129,7 +137,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $this
                 ->response
                 ->setJSON(['error' => 'USER_ALREADY_HAS_PENDING_APPLICATION'])
-                ->setStatusCode(403);
+                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
         }
 
         $eventModel = model(EventModel::class);
@@ -139,7 +147,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $this
                 ->response
                 ->setJSON(['error' => 'NO_EVENT_TO_APPLY_FOR'])
-                ->setStatusCode(404);
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         // Check if the current date is within the time period when speaker applications are accepted.
@@ -150,7 +158,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $this
                 ->response
                 ->setJSON(['error' => 'CURRENTLY_NOT_ACCEPTING_SPEAKER_APPLICATIONS'])
-                ->setStatusCode(403);
+                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
         }
 
         return $latestPublishedEvent;

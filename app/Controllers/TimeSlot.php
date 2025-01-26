@@ -22,7 +22,10 @@ class TimeSlot extends BaseController
         $data = $this->request->getJSON(true);
 
         if (!$this->validateData($data ?? [], self::TIME_SLOT_RULES)) {
-            return $this->response->setJSON($this->validator->getErrors())->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         $validData = $this->validator->getValidated();
@@ -30,7 +33,10 @@ class TimeSlot extends BaseController
         $eventModel = model(EventModel::class);
         $event = $eventModel->get($eventId);
         if ($event === null) {
-            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $timeSlotModel = model(TimeSlotModel::class);
@@ -56,16 +62,24 @@ class TimeSlot extends BaseController
         if (!$timeSlotModel->store($timeSlots)) {
             // This happens when trying to store new time slots, even though there already are talks
             // that have been assigned to time slots (violation of foreign key constraint).
-            return $this->response->setJSON(['error' => 'FAILED_TO_STORE_TIME_SLOTS'])->setStatusCode(500);
+            return $this
+                ->response
+                ->setJSON(['error' => 'FAILED_TO_STORE_TIME_SLOTS'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return $this->response->setStatusCode(204);
+        return $this
+            ->response
+            ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
     }
 
     public function get(int $eventId): ResponseInterface
     {
         $eventModel = model(EventModel::class);
         if (!$eventModel->doesExist($eventId)) {
-            return $this->response->setJSON(['error' => 'EVENT_NOT_FOUND'])->setStatusCode(404);
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $timeSlotModel = model(TimeSlotModel::class);
@@ -88,7 +102,10 @@ class TimeSlot extends BaseController
     {
         // Do they overlap?
         if ($this->doOverlap($timeSlots)) {
-            return $this->response->setJSON(['error' => 'TIME_SLOTS_OVERLAP'])->setStatusCode(400);
+            return $this
+                ->response
+                ->setJSON(['error' => 'TIME_SLOTS_OVERLAP'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
         // Do they exceed the event's duration?
@@ -96,7 +113,10 @@ class TimeSlot extends BaseController
         $eventEnd = strtotime($event['end_date'] . " + 1 day - 1 second");
         foreach ($timeSlots as $timeSlot) {
             if (!$this->isWithinTimeFrame($timeSlot, $eventStart, $eventEnd)) {
-                return $this->response->setJSON(['error' => 'TIME_SLOT_OUTSIDE_EVENT_DURATION'])->setStatusCode(400);
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'TIME_SLOT_OUTSIDE_EVENT_DURATION'])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
             }
         }
 

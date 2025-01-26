@@ -28,7 +28,9 @@ class Event extends BaseController
             $event = $eventModel->getPublishedByYear($year);
         }
         if ($event === null) {
-            return $this->response->setStatusCode(404);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
         $eventId = $event['id'];
 
@@ -70,7 +72,9 @@ class Event extends BaseController
         $event = $eventModel->getPublishedByYear($year);
         if ($event === null) {
             // the requested year doesn't have an event
-            return $this->response->setStatusCode(404);
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
         $talks = $this->getVisibleApprovedTalks($event['id'], $this->getPublishedContributors($event['id'], Role::SPEAKER));
@@ -109,9 +113,6 @@ class Event extends BaseController
 
         $timeSlotById = $this->getTimeSlotMapping(array_column($talks, 'time_slot_id'));
 
-        /* @var array<int, array> $speakerById */
-        $speakerById = [];
-
         foreach ($talks as &$talk) {
             // Find the speaker for this talk based on their user_id.
             $talk['speaker_id'] = null;
@@ -119,7 +120,6 @@ class Event extends BaseController
             foreach ($speakers as $speaker) {
                 if ($speaker['user_id'] === $talk['user_id']) {
                     $talk['speaker_id'] = $speaker['id'];
-                    $speakerById[$speaker['id']] = $speaker;
                     break;
                 }
             }
