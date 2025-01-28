@@ -37,6 +37,11 @@ class AddAccount extends Migration
                 'default' => false,
                 'null' => false,
             ],
+            'is_verified' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
+                'after' => 'email',
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
