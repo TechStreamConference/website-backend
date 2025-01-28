@@ -29,6 +29,17 @@ class AddSocialMediaLink extends Migration
                 'constraint' => 255,
                 'null' => false,
             ],
+            'approved' => [
+                'type' => 'BOOLEAN',
+                'null' => false,
+                'default' => false,
+                'after' => 'url',
+            ],
+            'requested_changes' => [
+                'type' => 'TEXT',
+                'null' => true,
+                'after' => 'approved',
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,

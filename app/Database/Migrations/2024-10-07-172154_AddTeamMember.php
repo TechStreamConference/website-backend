@@ -14,7 +14,16 @@ class AddTeamMember extends Migration
         $speakerTableFields = $this->db->getFieldData('Speaker');
 
         $fields = [];
+        $fields['id'] = [
+            'type' => 'INT',
+            'unsigned' => true,
+            'auto_increment' => true,
+        ];
+
         foreach ($speakerTableFields as $field) {
+            if ($field->name === 'id') {
+                continue;
+            }
             $fields[$field->name] = [
                 'type' => $field->type,
                 'constraint' => $field->max_length ?? null,
@@ -24,15 +33,6 @@ class AddTeamMember extends Migration
                 'auto_increment' => $field->name === 'id',
             ];
         }
-
-        // fixed strange behavior of copying the id field
-        unset($fields['id']);
-
-        $fields['id'] = [
-            'type' => 'INT',
-            'unsigned' => true,
-            'auto_increment' => true,
-        ];
 
         $this->forge->addField($fields);
         $this->forge->addPrimaryKey('id');
