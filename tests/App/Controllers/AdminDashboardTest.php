@@ -502,7 +502,7 @@ class AdminDashboardTest extends CIUnitTestCase
                 "bio" => "Michael (coder2k) hat vor über 20 Jahren 'Turbo Pascal und Delphi für Kids' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.",
                 "id" => 2,
                 "name" => "coder2k",
-                "photo" => "images/coder2k.jpg",
+                "photo" => "coder2k.jpg",
                 "short_bio" => "Test-Conf Host, Software-Entwickler, freier Dozent, Twitch-Partner",
                 "user_id" => 1,
                 "visible_from" => "2025-11-05 15:00:00"

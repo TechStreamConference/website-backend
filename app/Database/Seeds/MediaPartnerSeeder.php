@@ -11,7 +11,7 @@ class MediaPartnerSeeder extends Seeder
         $this->db->table('MediaPartner')->insert([
             'event_id' => 1,
             'url' => 'https://manasoup.com/',
-            'logo' => 'images/coder2k.jpg',
+            'logo' => 'coder2k.jpg',
             'logo_mime_type' => 'image/jpeg',
             'name' => 'ManaSoup',
             'alt_text' => 'Das Logo von ManaSoup',
@@ -21,7 +21,7 @@ class MediaPartnerSeeder extends Seeder
         $this->db->table('MediaPartner')->insert([
             'event_id' => 1,
             'url' => 'https://indiehub.de/',
-            'logo' => 'images/coder2k.jpg',
+            'logo' => 'coder2k.jpg',
             'logo_mime_type' => 'image/jpeg',
             'name' => 'IndieHub',
             'alt_text' => 'Das Logo von IndieHub',
