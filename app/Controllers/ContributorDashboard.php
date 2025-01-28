@@ -517,7 +517,7 @@ abstract class ContributorDashboard extends BaseController
         );
         return $this
             ->response
-            ->setJSON(['message' => "Created new {$this->getRoleName()} entry."])
+            ->setJSON(['message' => "CREATED_NEW_{$this->getRoleNameScreamingSnakeCase()}_ENTRY"])
             ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
@@ -662,7 +662,7 @@ abstract class ContributorDashboard extends BaseController
                 ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
 
-        $pathForDatabase = 'images' . DIRECTORY_SEPARATOR . $filename;
+        $pathForDatabase = $filename;
         return [$pathForDatabase, $mimeType];
     }
 }

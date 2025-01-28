@@ -7,6 +7,7 @@ use App\Models\RolesModel;
 use CodeIgniter\Config\Services;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\Response;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class RoleAuthFilter extends AuthFilter
 {
@@ -31,7 +32,7 @@ class RoleAuthFilter extends AuthFilter
         if ($actualRoles === null || !$this->hasExpectedRole($actualRoles)) {
             $response = Services::response();
             $response->setJSON(['error' => 'FORBIDDEN']);
-            $response->setStatusCode(403);
+            $response->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
             return $response;
         }
     }

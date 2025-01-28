@@ -56,6 +56,8 @@ $routes->put('dashboard/admin/event/(:num)/speaker', [AdminDashboard::class, 'up
 $routes->post('dashboard/admin/event/new', [AdminDashboard::class, 'createEvent'], ['filter' => AdminAuthFilter::class]);
 
 $routes->get('dashboard/admin/approval/speaker', [Approval::class, 'getPendingSpeakers'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/admin/approval/user/(:num)/event/(:num)/can-reject', [Approval::class, 'canReject'], ['filter' => AdminAuthFilter::class]);
+$routes->delete('dashboard/admin/approval/user/(:num)/event/(:num)/reject', [Approval::class, 'reject'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/approval/team-member', [Approval::class, 'getPendingTeamMembers'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/speaker/(:num)', [Approval::class, 'approveSpeaker'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/approval/team-member/(:num)', [Approval::class, 'approveTeamMember'], ['filter' => AdminAuthFilter::class]);
