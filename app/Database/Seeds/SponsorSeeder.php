@@ -11,7 +11,7 @@ class SponsorSeeder extends Seeder
         $this->db->table('Sponsor')->insert([
             'event_id' => 1,
             'url' => 'https://www.jetbrains.com/',
-            'logo' => 'images/coder2k.jpg',
+            'logo' => 'coder2k.jpg',
             'logo_mime_type' => 'image/jpeg',
             'name' => 'JetBrains',
             'alt_text' => 'Das Logo von JetBrains',
@@ -22,7 +22,7 @@ class SponsorSeeder extends Seeder
         $this->db->table('Sponsor')->insert([
             'event_id' => 1,
             'url' => 'https://de.weareholy.com/',
-            'logo' => 'images/coder2k.jpg',
+            'logo' => 'coder2k.jpg',
             'logo_mime_type' => 'image/jpeg',
             'name' => 'HOLY',
             'alt_text' => 'Das Logo von HOLY',

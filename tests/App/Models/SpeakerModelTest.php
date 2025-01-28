@@ -33,7 +33,7 @@ class SpeakerModelTest extends CIUnitTestCase
             'Michael (coder2k) hat vor über 20 Jahren \'Turbo Pascal und Delphi für Kids\' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.',
             $speaker['bio'],
         );
-        $this->assertEquals('images/coder2k.jpg', $speaker['photo']);
+        $this->assertEquals('coder2k.jpg', $speaker['photo']);
         $this->assertEquals('image/jpeg', $speaker['photo_mime_type']);
         $this->assertTrue((bool)$speaker['is_approved']);
         $this->assertEquals(date('2024-06-01 15:00:00'), $speaker['visible_from']);
@@ -61,7 +61,7 @@ class SpeakerModelTest extends CIUnitTestCase
             'Michael (coder2k) hat vor über 20 Jahren \'Turbo Pascal und Delphi für Kids\' gelesen und sich seitdem mit dem Programmieren in verschiedenen Programmiersprachen beschäftigt. Er ist tätig als Software-Entwickler im Embedded-Umfeld und freier Dozent. Seit drei Jahren programmiert er auch auf Twitch und ist seit Anfang 2024 Twitch-Partner. Michael ist es wichtig, Wissen mit anderen auszutauschen und sich dadurch gemeinsam weiterzuentwickeln und neue Dinge zu lernen – und daraus ist auch die Idee zur Test-Conf entstanden.',
             $speakers[0]['bio'],
         );
-        $this->assertEquals('images/coder2k.jpg', $speakers[0]['photo']);
+        $this->assertEquals('coder2k.jpg', $speakers[0]['photo']);
         $this->assertEquals('codingPurpurTentakel', $speakers[1]['name']);
     }
 

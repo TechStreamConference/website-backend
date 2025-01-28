@@ -14,7 +14,7 @@ class TeamMemberSeeder extends Seeder
             'event_id' => 1,
             'short_bio' => 'Test-Conf Host',
             'bio' => 'Das ist die Beschreibung von coder2k, wenn er als Team-Member angezeigt wird. Die ist anders als die Beschreibung, die angezeigt wird, wenn er als Speaker angezeigt wird.',
-            'photo' => 'images/coder2k.jpg',
+            'photo' => 'coder2k.jpg',
             'photo_mime_type' => 'image/jpeg',
             'is_approved' => true,
             'visible_from' => date('2024-06-01 15:00:00'),
