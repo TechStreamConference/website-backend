@@ -54,6 +54,11 @@ class SocialMediaLinkModel extends Model
         return $result;
     }
 
+    public function deleteAllOfUser(int $userId): void
+    {
+        $this->where('user_id', $userId)->delete();
+    }
+
     public function get(int $id): array|null
     {
         return $this

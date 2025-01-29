@@ -215,6 +215,13 @@ class Approval extends BaseController
         }
 
         $speakerModel->deleteAllForEvent($userId, $eventId);
+
+        // We will also delete all social media links of this speaker. This could lead to
+        // data loss if the speaker is also a team member, but that's an edge case that
+        // should never happen (why should we reject that person in the first place?)
+        $socialMediaLinkModel = model(SocialMediaLinkModel::class);
+        $socialMediaLinkModel->deleteAllOfUser($userId);
+
         if ($error) {
             return $this
                 ->response
