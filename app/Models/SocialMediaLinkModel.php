@@ -150,11 +150,11 @@ class SocialMediaLinkModel extends Model
     }
 
     public function updateLink(
-        int    $id,
-        int    $social_media_type_id,
-        int    $user_id,
-        string $url,
-        bool   $approved,
+        int     $id,
+        int     $social_media_type_id,
+        int     $user_id,
+        string  $url,
+        bool    $approved,
         ?string $requested_changes
     ): int
     {
