@@ -196,7 +196,7 @@ class Approval extends BaseController
         if ($canBeRejected instanceof ResponseInterface) {
             return $canBeRejected;
         }
-        if (!$canBeRejected) {
+        if ($canBeRejected === false) {
             return $this
                 ->response
                 ->setJSON(['error' => 'SPEAKER_CANNOT_BE_REJECTED'])
