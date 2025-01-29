@@ -17,12 +17,18 @@ class AddRolesView extends Migration
                 EXISTS (
                     SELECT 1
                     FROM Speaker
-                    WHERE Speaker.user_id = Account.user_id AND Speaker.is_approved = TRUE
+                    WHERE Speaker.user_id = Account.user_id AND (
+                        Speaker.is_approved = TRUE
+                        OR Speaker.requested_changes IS NOT NULL
+                    )
                 ) AS is_speaker,
                 EXISTS (
                     SELECT 1
-                    FROM TeamMember t
-                    WHERE TeamMember.user_id = Account.user_id AND TeamMember.is_approved = TRUE
+                    FROM TeamMember
+                    WHERE TeamMember.user_id = Account.user_id AND (
+                        TeamMember.is_approved = TRUE
+                        OR TeamMember.requested_changes IS NOT NULL
+                    )
                 ) AS is_team_member,
                 IF(Admin.user_id IS NOT NULL, TRUE, FALSE) AS is_admin
             FROM

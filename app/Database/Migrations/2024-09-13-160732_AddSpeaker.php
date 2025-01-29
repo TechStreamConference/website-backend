@@ -57,6 +57,10 @@ class AddSpeaker extends Migration
                 'type' => 'DATETIME',
                 'null' => true,
             ],
+            'requested_changes' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
