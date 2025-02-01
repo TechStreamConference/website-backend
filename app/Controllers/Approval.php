@@ -278,11 +278,13 @@ class Approval extends BaseController
 
         $entry = $socialMediaLinkModel->get($id);
         $userId = $entry['user_id'];
+        $url = $entry['url'];
 
         $this->sendConfirmationEmails(
             $userId,
             'Social-Media-Link freigeschaltet',
-            'social_media_link_approved'
+            'social_media_link_approved',
+            ["url" => $url],
         );
 
         return $this
@@ -315,12 +317,14 @@ class Approval extends BaseController
 
         $entry = $socialMediaLinkModel->get($id);
         $userId = $entry['user_id'];
+        $url = $entry['url'];
 
         $this->sendRequestedChangesEmails(
             $userId,
             'Änderungswünsche für Social-Media-Link',
             'social_media_link_requested_changes',
-            $message
+            $message,
+            ["url" => $url],
         );
 
         return $this
@@ -419,12 +423,14 @@ class Approval extends BaseController
         int    $userId,
         string $subject,
         string $viewName,
+        array  $additionalData = [],
     ): void
     {
         $this->sendMailsToUserAndAdmins(
             $userId,
             $subject,
             $viewName,
+            $additionalData,
         );
     }
 
@@ -433,13 +439,17 @@ class Approval extends BaseController
         string $subject,
         string $viewName,
         string $requestedChanges,
+        array  $additionalData = [],
     ): void
     {
         $this->sendMailsToUserAndAdmins(
             $userId,
             $subject,
             $viewName,
-            ['requestedChanges' => $requestedChanges],
+            array_merge(
+                ['requestedChanges' => $requestedChanges],
+                $additionalData
+            ),
         );
     }
 }
