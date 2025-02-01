@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Helpers\Role;
 use App\Helpers\TimeSlotData;
 use App\Models\EventModel;
+use App\Models\GuestModel;
 use App\Models\MediaPartnerModel;
 use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
@@ -111,6 +112,13 @@ class Event extends BaseController
         $talks = $talkModel->getApprovedByEventId($eventId);
         $talkIds = array_column($talks, 'id');
 
+        $guestModel = model(GuestModel::class);
+        $guests = $guestModel->getGuestsOfTalks($talkIds);
+        $guestIdsByTalkId = [];
+        foreach ($guests as $guest) {
+            $guestIdsByTalkId[$guest['talk_id']][] = $guest['user_id'];
+        }
+
         $timeSlotById = $this->getTimeSlotMapping(array_column($talks, 'time_slot_id'));
 
         foreach ($talks as &$talk) {
@@ -123,6 +131,20 @@ class Event extends BaseController
                     break;
                 }
             }
+
+            $guestsForThisTalk = array_map(
+                function ($guestId) use ($speakers) {
+                    foreach ($speakers as $speaker) {
+                        if ($speaker['user_id'] === $guestId) {
+                            return $speaker;
+                        }
+                    }
+                    return null;
+                },
+                $guestIdsByTalkId[$talk['id']] ?? []
+            );
+            usort($guestsForThisTalk, fn($a, $b) => $a['name'] <=> $b['name']);
+            $talk['guests'] = $guestsForThisTalk;
         }
         unset($talk);
 
