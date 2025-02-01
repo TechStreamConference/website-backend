@@ -150,7 +150,7 @@ class Event extends BaseController
 
         $talks = array_filter(
             $talks,
-            fn ($talk) => $talk['speaker_id'] !== null
+            fn($talk) => $talk['speaker_id'] !== null
         );
 
         $tagModel = model(TagModel::class);
