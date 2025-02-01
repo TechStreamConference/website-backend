@@ -71,6 +71,13 @@ class Talk extends BaseController
         $validData = $this->validator->getValidated();
 
         $talkModel = model(TalkModel::class);
+        if ($talkModel->findByTitle($validData['title'], $validData['event_id']) !== null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'DUPLICATE_TALK'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
         $talkId = $talkModel->create(
             eventId: $validData['event_id'],
             userId: $validData['user_id'],
