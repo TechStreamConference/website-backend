@@ -7,7 +7,7 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-POST localhost:8080/api/dashboard/admin/talk
+POST localhost:8080/api/dashboard/admin/talk/create
 
 {
   "event_id": 1,

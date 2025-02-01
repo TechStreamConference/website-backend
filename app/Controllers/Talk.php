@@ -6,6 +6,7 @@ use App\Helpers\Difference;
 use App\Helpers\EmailHelper;
 use App\Models\AccountModel;
 use App\Models\EventModel;
+use App\Models\GuestModel;
 use App\Models\PossibleTalkDurationModel;
 use App\Models\SpeakerModel;
 use App\Models\TagModel;
@@ -36,8 +37,8 @@ class Talk extends BaseController
         // Guests have to be added separately.
     ];
 
-    private const ADD_GUESTS_RULES = [
-        '*' => 'required|is_natural_no_zero',
+    private const SET_GUESTS_RULES = [
+        'guest_ids.*' => 'required|is_natural_no_zero',
     ];
 
     private const REQUEST_CHANGES_RULES = [
@@ -121,6 +122,100 @@ class Talk extends BaseController
             ->response
             ->setJSON(['success' => 'TALK_CREATED'])
             ->setStatusCode(ResponseInterface::HTTP_CREATED);
+    }
+
+    /** Gets all speakers that are suitable as guests for a panel discussion.
+     * @param int $talkId The talk ID of the panel discussion.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function getPossibleGuests(int $talkId): ResponseInterface
+    {
+        // Possible guests for a talk are all approved speaker
+        // entries for the same event that are not the host of the talk.
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $possibleSpeakers = $speakerModel->getApproved($talk['event_id']);
+        $hostId = $talk['user_id'];
+        $possibleGuests = array_filter(
+            $possibleSpeakers,
+            fn($speaker) => $speaker['user_id'] !== $hostId
+        );
+
+        usort($possibleGuests, fn($a, $b) => $a['name'] <=> $b['name']);
+
+        return $this
+            ->response
+            ->setJSON($possibleGuests)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    /** Assigns guests to a panel discussion. This is used by admins to add/remove guests to panel discussions.
+     * @param int $talkId The talk ID of the panel discussion.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function setGuests(int $talkId): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data ?? [], self::SET_GUESTS_RULES)) {
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+        $validData = $this->validator->getValidated();
+        $guestIds = $validData['guest_ids'];
+
+        if (count($guestIds) !== count(array_unique($guestIds))) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'DUPLICATE_GUEST'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $hostId = $talk['user_id'];
+        if (in_array($hostId, $validData['guest_ids'])) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'HOST_AS_GUEST'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $approvedSpeakers = $speakerModel->getApproved($talk['event_id']);
+        $userIds = array_column($approvedSpeakers, 'user_id');
+        foreach ($guestIds as $guestId) {
+            if (!in_array($guestId, $userIds)) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'INVALID_GUEST'])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+            }
+        }
+
+        $guestModel = model(GuestModel::class);
+        $guestModel->setGuests($talkId, $guestIds);
+
+        return $this
+            ->response
+            ->setJSON(['success' => 'GUESTS_SET'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
     /** Checks if the current user can submit a talk. It's not enough to have the
