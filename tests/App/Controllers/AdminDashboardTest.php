@@ -511,7 +511,7 @@ class AdminDashboardTest extends CIUnitTestCase
                 "bio" => "GyrosGeier hat nicht nur einen witzigen Namen – nein – er kennt sich auch ziemlich gut im Bereich der Low-Level- bzw. Systemprogrammierung aus. Im vergangenen Jahr ist er nach Tokyo ausgewandert und arbeitet dort für eine Firma, die Mikrosatelliten ins Weltall schießt. In seinen Streams bastelt er an zahlreichen Projekten und vergisst niemals, den Yak-Stapel zu vergrößern.",
                 "id" => 4,
                 "name" => "GyrosGeier",
-                "photo" => "images/GyrosGeier.jpg",
+                "photo" => "GyrosGeier.jpg",
                 "short_bio" => "Embedded- und Lowlevel-Coding",
                 "user_id" => 2,
                 "visible_from" => "2025-11-06 15:00:00"
@@ -520,7 +520,7 @@ class AdminDashboardTest extends CIUnitTestCase
                 "bio" => "Martin (Purpur Tentakel) kommt aus Köln. Nach der Schule macht er eine Ausbildung zur Fachkraft für Veranstaltungstechnik. Durch Corona kann er nach der Ausbildung nicht in der Branche weiter arbeiten und macht eine 2. Ausbildung zum Elektroniker für Betriebstechnik. In der Zeit der 2. Ausblidung trifft er irgendwann mal auf den Kanal von coder2k. Tja nun muss er coden. Von Python über C# kommt er schließlich zu c++. Seither programmiert er an seinem Spiel 'Tentakels Attacking'",
                 "id" => 5,
                 "name" => "codingPurpurTentakel",
-                "photo" => "images/codingPurpurTentakel.jpg",
+                "photo" => "codingPurpurTentakel.jpg",
                 "short_bio" => "Test-Conf Host, Veranstaltungstechniker, Elektroniker, Hobby-Coder",
                 "user_id" => 4,
                 "visible_from" => "2025-11-07 15:00:00"
