@@ -68,6 +68,7 @@ $routes->put('dashboard/admin/approval/social-media-link/(:num)', [Approval::cla
 $routes->put('dashboard/admin/approval/social-media-link/(:num)/request-changes', [Approval::class, 'requestChangesForSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
 
 $routes->post('dashboard/admin/talk', [Talk::class, 'create'], ['filter' => AdminAuthFilter::class]);
+$routes->post('dashboard/admin/talk/create', [Talk::class, 'create'], ['filter' => AdminAuthFilter::class]);
 
 $routes->get('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'get'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'create_or_replace'], ['filter' => AdminAuthFilter::class]);
