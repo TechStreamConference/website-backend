@@ -16,12 +16,28 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class Talk extends BaseController
 {
+    // These rules are used when submitting or changing a talk (this is performed by the speaker).
     private const TALK_RULES = [
         'title' => 'required|string|max_length[255]',
         'description' => 'required|string',
         'tag_ids.*' => 'required|is_natural_no_zero',
         'possible_durations.*' => 'required|is_natural_no_zero',
         'notes' => 'permit_empty|string',
+    ];
+
+    // These rules are used when an admin creates a panel discussions.
+    private const PANEL_DISCUSSION_RULES = [
+        'event_id' => 'required|is_natural_no_zero',
+        'user_id' => 'required|is_natural_no_zero', // The id of the speaker that hosts the panel discussion.
+        'title' => 'required|string|max_length[255]',
+        'description' => 'required|string',
+        'tag_ids.*' => 'required|is_natural_no_zero',
+        'possible_durations.*' => 'required|is_natural_no_zero',
+        // Guests have to be added separately.
+    ];
+
+    private const ADD_GUESTS_RULES = [
+        '*' => 'required|is_natural_no_zero',
     ];
 
     private const REQUEST_CHANGES_RULES = [
@@ -39,6 +55,66 @@ class Talk extends BaseController
     private const REJECT_TIME_SLOT_RULES = [
         'reason' => 'permit_empty|string',
     ];
+
+    /** Creates a new talk. This is used by admins to create panel discussions.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function create(): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data ?? [], self::PANEL_DISCUSSION_RULES)) {
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+        $validData = $this->validator->getValidated();
+
+        $talkModel = model(TalkModel::class);
+        $talkId = $talkModel->create(
+            eventId: $validData['event_id'],
+            userId: $validData['user_id'],
+            title: $validData['title'],
+            description: $validData['description'],
+            notes: null,
+            requestedChanges: null,
+            isApproved: true,
+            timeSlotId: null,
+            timeSlotAccepted: false,
+        );
+
+        if ($talkId === false) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_CREATION_FAILED'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        if (!$this->areDurationsValid($validData['possible_durations'])) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'INVALID_DURATION'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        if (count($validData['tag_ids']) < 1) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_TAGS'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $tagModel = model(TagModel::class);
+        $tagModel->storeTagsForTalk($talkId, $validData['tag_ids']);
+
+        $possibleTalkDurationModel = model(PossibleTalkDurationModel::class);
+        $possibleTalkDurationModel->store($talkId, $validData['possible_durations']);
+
+        return $this
+            ->response
+            ->setJSON(['success' => 'TALK_CREATED'])
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
+    }
 
     /** Checks if the current user can submit a talk. It's not enough to have the
      * speaker role, but the user must also have an approved speaker entry for the

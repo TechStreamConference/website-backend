@@ -1,0 +1,19 @@
+POST http://localhost:8080/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "Coder2k123!"
+}
+
+###
+
+POST localhost:8080/api/dashboard/admin/talk
+
+{
+  "event_id": 1,
+  "user_id": 1,
+  "title": "Talk: Zwischen Code und Karriere: Soziale Dynamiken und der Übergang zum Beruf",
+  "description": "In dieser Diskussionsrunde geht es um die sozialen und didaktischen Aspekte des Programmierens. Wir möchten darüber sprechen, wie man Schülerinnen und Schüler für ein Studium in den MINT-Fächern (Mathematik, Informatik, Naturwissenschaften, Technik) begeistern kann. Die Vermittlung von Inhalten – sei es an Schulen oder Universitäten – stellt oft einen Kompromiss zwischen verschiedenen Vor- und Nachteilen dar. Diesen wollen wir auf den Grund gehen.\n\nWir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Übergang von der Ausbildung in den Beruf mit sich bringen. Dabei geht es z. B. um das Aufbauen eines eigenen Portfolios, die Stellensuche und das Fußfassen in der Branche im Allgemeinen.\n\nDarüber hinaus möchten wir weitere soziale Aspekte dieses sehr technischen Gebiets diskutieren: Wie wichtig ist der zwischenmenschliche Umgang? Stellt der Code, den wir schreiben, eine reine Liste von Kommandos für den Prozessor dar oder steckt darin in Wahrheit ein Kommunikationskanal mit uns selbst und anderen an der Entwicklung beteiligten Menschen?",
+  "tag_ids": [1, 2, 3],
+  "possible_durations": [60]
+}
