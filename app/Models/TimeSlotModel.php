@@ -47,9 +47,14 @@ class TimeSlotModel extends Model
      * Deletes all time slots for an event (if any).
      * @param int $eventId
      */
-    public function deleteAllOfEvent(int $eventId): void
+    public function deleteAllOfEvent(int $eventId): bool
     {
-        $this->where('event_id', $eventId)->delete();
+        try {
+            $this->where('event_id', $eventId)->delete();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -58,7 +58,13 @@ class TimeSlot extends BaseController
             return $validationResult;
         }
 
-        $timeSlotModel->deleteAllOfEvent($eventId);
+        if (!$timeSlotModel->deleteAllOfEvent($eventId)) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'CANNOT_DELETE_ASSIGNED_TIME_SLOTS'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
         if (!$timeSlotModel->store($timeSlots)) {
             // This happens when trying to store new time slots, even though there already are talks
             // that have been assigned to time slots (violation of foreign key constraint).
