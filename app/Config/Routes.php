@@ -83,7 +83,7 @@ $routes->put('dashboard/speaker/talk/(:num)/reject-time-slot', [Talk::class, 're
 $routes->get('dashboard/speaker/pending-talks', [Talk::class, 'getPendingTalksForSpeaker'], ['filter' => SpeakerAuthFilter::class]);
 $routes->get('dashboard/speaker/tentative-or-accepted-talks/(:num)', [Talk::class, 'getTentativeOrAcceptedTalksForSpeaker'], ['filter' => SpeakerAuthFilter::class]);
 $routes->get('dashboard/admin/pending-talks', [Talk::class, 'getAllPendingTalks'], ['filter' => AdminAuthFilter::class]);
-$routes->get('dashboard/admin/tentative-or-accepted-talks/(:num)', [Talk::class, 'getAllTentativeOrAcceptedTalks'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/admin/tentative-talks', [Talk::class, 'getAllTentativeTalks'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/talk/(:num)/request-changes', [Talk::class, 'requestChanges'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/talk/(:num)/approve', [Talk::class, 'approve'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/talk/(:num)/reject', [Talk::class, 'reject'], ['filter' => AdminAuthFilter::class]);

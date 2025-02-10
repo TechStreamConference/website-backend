@@ -226,18 +226,14 @@ class Talk extends BaseController
             ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
-    public function getAllTentativeOrAcceptedTalks(int $eventId): ResponseInterface
+    /** Gets all tentative talks of all users. A tentative talk is a talk that has been approved
+     * but hasn't been assigned a time slot yet, or the suggested time slot hasn't been accepted yet.
+     * @return ResponseInterface The response to return to the client.
+     * */
+    public function getAllTentativeTalks(): ResponseInterface
     {
-        $eventModel = model(EventModel::class);
-        if ($eventModel->getPublished($eventId) === null) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
-                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
-        }
-
         $talkModel = model(TalkModel::class);
-        $tentativeTalks = $talkModel->getAllTentativeOrAccepted($eventId);
+        $tentativeTalks = $talkModel->getAllTentative();
 
         $tentativeTalks = $this->addAdditionalDataToTalks($tentativeTalks);
         return $this
