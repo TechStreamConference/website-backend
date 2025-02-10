@@ -25,5 +25,6 @@ class MainSeeder extends Seeder
         $this->call('TalkHasTagSeeder');
         $this->call('AdminSeeder');
         $this->call('ConnectedRegistrationTokenSeeder');
+        $this->call('GuestSeeder');
     }
 }

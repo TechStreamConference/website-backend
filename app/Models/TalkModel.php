@@ -202,4 +202,13 @@ class TalkModel extends Model
     {
         $this->update($talkId, ['time_slot_accepted' => false]);
     }
+
+    public function findByTitle(string $title, int $eventId): ?array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->where('event_id', $eventId)
+            ->where('title', $title)
+            ->first();
+    }
 }
