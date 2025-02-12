@@ -30,7 +30,6 @@ $routes->post('account/reset-password', [Account::class, 'resetPassword']);
 $routes->post('account/login', [Account::class, 'login']);
 $routes->post('account/logout', [Account::class, 'logout']);
 $routes->post('account/verify', [Account::class, 'verify']);
-$routes->get('account', [Account::class, 'get'], ['filter' => AuthFilter::class]);
 $routes->put('account/change-username', [Account::class, 'changeUsername'], ['filter' => AuthFilter::class]);
 $routes->put('account/change-password', [Account::class, 'changePassword'], ['filter' => AuthFilter::class]);
 $routes->put('account/change-email', [Account::class, 'changeEmail'], ['filter' => AuthFilter::class]);
