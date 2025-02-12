@@ -131,6 +131,15 @@ class Talk extends BaseController
      */
     public function getPossibleHosts(int $eventId): ResponseInterface
     {
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->get($eventId);
+        if ($event === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
         $speakerModel = model(SpeakerModel::class);
         $possibleHosts = $speakerModel->getApproved($eventId);
 
