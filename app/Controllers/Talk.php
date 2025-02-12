@@ -124,6 +124,33 @@ class Talk extends BaseController
             ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
+    /** Gets all speakers that are suitable as host for a new panel discussion to take place
+     *  at the specified event.
+     *  @param int $eventId The event ID.
+     *  @return ResponseInterface The response to return to the client.
+     */
+    public function getPossibleHosts(int $eventId): ResponseInterface
+    {
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->get($eventId);
+        if ($event === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $speakerModel = model(SpeakerModel::class);
+        $possibleHosts = $speakerModel->getApproved($eventId);
+
+        usort($possibleHosts, fn($a, $b) => $a['name'] <=> $b['name']);
+
+        return $this
+            ->response
+            ->setJSON($possibleHosts)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
     /** Gets all speakers that are suitable as guests for a panel discussion.
      * @param int $talkId The talk ID of the panel discussion.
      * @return ResponseInterface The response to return to the client.

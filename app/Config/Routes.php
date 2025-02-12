@@ -68,6 +68,7 @@ $routes->put('dashboard/admin/approval/social-media-link/(:num)', [Approval::cla
 $routes->put('dashboard/admin/approval/social-media-link/(:num)/request-changes', [Approval::class, 'requestChangesForSocialMediaLink'], ['filter' => AdminAuthFilter::class]);
 
 $routes->post('dashboard/admin/talk/create', [Talk::class, 'create'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/admin/talk/possible-hosts/(:num)', [Talk::class, 'getPossibleHosts'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/talk/(:num)/possible-guests', [Talk::class, 'getPossibleGuests'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/talk/(:num)/set-guests', [Talk::class, 'setGuests'], ['filter' => AdminAuthFilter::class]);
 
