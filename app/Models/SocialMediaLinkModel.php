@@ -54,6 +54,11 @@ class SocialMediaLinkModel extends Model
         return $result;
     }
 
+    public function deleteAllOfUser(int $userId): void
+    {
+        $this->where('user_id', $userId)->delete();
+    }
+
     public function get(int $id): array|null
     {
         return $this
@@ -145,11 +150,11 @@ class SocialMediaLinkModel extends Model
     }
 
     public function updateLink(
-        int    $id,
-        int    $social_media_type_id,
-        int    $user_id,
-        string $url,
-        bool   $approved,
+        int     $id,
+        int     $social_media_type_id,
+        int     $user_id,
+        string  $url,
+        bool    $approved,
         ?string $requested_changes
     ): int
     {
