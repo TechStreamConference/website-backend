@@ -447,6 +447,31 @@ class Talk extends BaseController
             ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
+    /** Gets all tentative or accepted talk of the given event.
+     * @param int $eventId The ID of the event.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function getTentativeOrAcceptedTalksForEvent(int $eventId): ResponseInterface
+    {
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->get($eventId);
+        if ($event === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $talkModel = model(TalkModel::class);
+        $talks = $talkModel->getAllTentativeOrAccepted($eventId);
+
+        $talks = $this->addAdditionalDataToTalks($talks);
+        return $this
+            ->response
+            ->setJSON($talks)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
     public function requestChanges(int $talkId): ResponseInterface
     {
         $data = $this->request->getJSON(assoc: true);
