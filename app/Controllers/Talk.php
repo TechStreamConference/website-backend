@@ -1205,8 +1205,8 @@ class Talk extends BaseController
         return true;
     }
 
-    /** Collects additional data for the passed talks (speaker, tags, possible durations,
-     *  suggested time slot).
+    /** Collects additional data for the passed talks (speaker, guests, tags,
+     *  possible durations, suggested time slot).
      * @param array $talks The talks to collect additional data for.
      * @return array The talks with additional data.
      */
@@ -1220,10 +1220,11 @@ class Talk extends BaseController
         $timeSlotModel = model(TimeSlotModel::class);
 
         $speakerModel = model(SpeakerModel::class);
+        $speakers = [];
         foreach ($talks as &$talk) {
             $speaker = $speakerModel->getLatestApprovedForEvent($talk['user_id'], $talk['event_id']);
+            $speakers[] = $speaker;
             $talk['speaker'] = $speaker;
-            unset($talk['user_id']);
             $talk['tags'] = $tagMapping[$talk['id']];
             $talk['possible_durations'] = array_column(
                 $possibleTalkDurationModel->get($talk['id']),
@@ -1234,6 +1235,14 @@ class Talk extends BaseController
                     ? $timeSlotModel->get($talk['time_slot_id'])->toArray()
                     : null;
             unset($talk['time_slot_id']);
+        }
+        unset($talk);
+
+        $this->addGuestsToTalks($talks, $speakers);
+
+        foreach ($talks as &$talk)
+        {
+            unset($talk['user_id']);
         }
 
         return $talks;

@@ -112,46 +112,9 @@ class Event extends BaseController
         $talks = $talkModel->getApprovedByEventId($eventId);
         $talkIds = array_column($talks, 'id');
 
-        $guestModel = model(GuestModel::class);
-        $guests = $guestModel->getGuestsOfTalks($talkIds);
-        $guestIdsByTalkId = [];
-        foreach ($guests as $guest) {
-            $guestIdsByTalkId[$guest['talk_id']][] = $guest['user_id'];
-        }
-
         $timeSlotById = $this->getTimeSlotMapping(array_column($talks, 'time_slot_id'));
 
-        foreach ($talks as &$talk) {
-            // Find the speaker for this talk based on their user_id.
-            $talk['speaker_id'] = null;
-            unset($speaker);
-            foreach ($speakers as $speaker) {
-                if ($speaker['user_id'] === $talk['user_id']) {
-                    $talk['speaker_id'] = $speaker['id'];
-                    break;
-                }
-            }
-
-            $guestsForThisTalk = array_map(
-                function ($guestId) use ($speakers) {
-                    foreach ($speakers as $speaker) {
-                        if ($speaker['user_id'] === $guestId) {
-                            return $speaker;
-                        }
-                    }
-                    return null;
-                },
-                $guestIdsByTalkId[$talk['id']] ?? []
-            );
-            usort($guestsForThisTalk, fn($a, $b) => $a['name'] <=> $b['name']);
-            $talk['guests'] = $guestsForThisTalk;
-        }
-        unset($talk);
-
-        $talks = array_filter(
-            $talks,
-            fn($talk) => $talk['speaker_id'] !== null
-        );
+        $this->addGuestsToTalks($talks, $speakers);
 
         $tagModel = model(TagModel::class);
         $tagMapping = $tagModel->getTagMapping($talkIds);

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\GuestModel;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -67,5 +68,51 @@ abstract class BaseController extends Controller
             throw new RuntimeException("User is not logged in.");
         }
         return $session->get('user_id');
+    }
+
+    protected function addGuestsToTalks(array &$talks, array $speakers): void
+    {
+        $talkIds = array_column($talks, 'id');
+        if (empty($talkIds)) {
+            return;
+        }
+
+        $guestModel = model(GuestModel::class);
+        $guests = $guestModel->getGuestsOfTalks($talkIds);
+        $guestIdsByTalkId = [];
+        foreach ($guests as $guest) {
+            $guestIdsByTalkId[$guest['talk_id']][] = $guest['user_id'];
+        }
+
+        foreach ($talks as &$talk) {
+            // Find the speaker for this talk based on their user_id.
+            $talk['speaker_id'] = null;
+            unset($speaker);
+            foreach ($speakers as $speaker) {
+                if ($speaker['user_id'] === $talk['user_id']) {
+                    $talk['speaker_id'] = $speaker['id'];
+                    break;
+                }
+            }
+
+            $guestsForThisTalk = array_map(
+                function ($guestId) use ($speakers) {
+                    foreach ($speakers as $speaker) {
+                        if ($speaker['user_id'] === $guestId) {
+                            return $speaker;
+                        }
+                    }
+                    return null;
+                },
+                $guestIdsByTalkId[$talk['id']] ?? []
+            );
+            usort($guestsForThisTalk, fn($a, $b) => $a['name'] <=> $b['name']);
+            $talk['guests'] = $guestsForThisTalk;
+        }
+
+        $talks = array_filter(
+            $talks,
+            fn($talk) => $talk['speaker_id'] !== null
+        );
     }
 }
