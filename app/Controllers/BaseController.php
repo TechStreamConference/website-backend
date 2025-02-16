@@ -3,12 +3,12 @@
 namespace App\Controllers;
 
 use App\Models\GuestModel;
+use App\Models\SpeakerModel;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
@@ -77,6 +77,13 @@ abstract class BaseController extends Controller
             return;
         }
 
+        $speakerModel = model(SpeakerModel::class);
+        $eventIds = array_unique(array_column($talks, 'event_id'));
+        $speakersByEvent = [];
+        foreach ($eventIds as $eventId) {
+            $speakersByEvent[$eventId] = $speakerModel->getApproved($eventId);
+        }
+
         $guestModel = model(GuestModel::class);
         $guests = $guestModel->getGuestsOfTalks($talkIds);
         $guestIdsByTalkId = [];
@@ -96,8 +103,8 @@ abstract class BaseController extends Controller
             }
 
             $guestsForThisTalk = array_map(
-                function ($guestId) use ($speakers) {
-                    foreach ($speakers as $speaker) {
+                function ($guestId) use ($speakersByEvent, $talk) {
+                    foreach ($speakersByEvent[$talk['event_id']] as $speaker) {
                         if ($speaker['user_id'] === $guestId) {
                             return $speaker;
                         }
