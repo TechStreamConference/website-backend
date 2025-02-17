@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\GuestModel;
+use App\Models\SocialMediaLinkModel;
 use App\Models\SpeakerModel;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
@@ -92,6 +93,9 @@ abstract class BaseController extends Controller
             $guestIdsByTalkId[$guest['talk_id']][] = $guest['user_id'];
         }
 
+        $socialMediaLinkModel = model(SocialMediaLinkModel::class);
+        $socialMediaLinks = $socialMediaLinkModel->getLatestApprovedByUserIds(array_column($speakers, 'user_id'));
+
         foreach ($talks as &$talk) {
             // Find the speaker for this talk based on their user_id.
             $talk['speaker_id'] = null;
@@ -115,6 +119,12 @@ abstract class BaseController extends Controller
                 $guestIdsByTalkId[$talk['id']] ?? []
             );
             usort($guestsForThisTalk, fn($a, $b) => $a['name'] <=> $b['name']);
+
+            // Add social media links of the guests.
+            foreach ($guestsForThisTalk as &$guest) {
+                $guest['social_media_links'] = $socialMediaLinks[$guest['user_id']] ?? [];
+            }
+
             $talk['guests'] = $guestsForThisTalk;
         }
 
