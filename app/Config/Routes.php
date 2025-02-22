@@ -3,6 +3,7 @@
 use App\Controllers\Account;
 use App\Controllers\AdminDashboard;
 use App\Controllers\Approval;
+use App\Controllers\Contact;
 use App\Controllers\Event;
 use App\Controllers\Globals;
 use App\Controllers\Image;
@@ -21,6 +22,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
+$routes->post('contact', [Contact::class, 'send']);
 $routes->get('account/username/exists', [Account::class, 'usernameExists']);
 $routes->get('account/email/exists', [Account::class, 'emailExists']);
 $routes->get('account/roles', [Account::class, 'roles'], ['filter' => AuthFilter::class]);

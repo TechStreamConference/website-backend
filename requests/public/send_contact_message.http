@@ -1,0 +1,8 @@
+POST localhost:8080/api/contact
+
+{
+    "name": "Claus Kleber",
+    "email": "claus@kleber.de",
+    "subject": "Eine Frechheit!",
+    "message": "Entweder jetzt rede ich oder du! Jetzt reicht es! 👊 Mann!"
+}
