@@ -311,6 +311,7 @@ class AdminDashboard extends BaseController
         $baseUrl = $room['base_url'];
         $roomId = $room['room_id'];
         $password = $room['password'];
+        $isRoomVisible = ($room['visible_from'] !== null && date($room['visible_from']) <= date('Y-m-d H:i:s'));
 
         $userIds = $this->gatherUserIdsForVideoRoom($eventId);
 
@@ -347,6 +348,7 @@ class AdminDashboard extends BaseController
         }
 
         $result = [
+            'is_visible' => $isRoomVisible,
             'director' => $this->createDirectorLink($baseUrl, $roomId, $password),
             'speakers' => $speakerLinks,
         ];
