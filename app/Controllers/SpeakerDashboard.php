@@ -120,12 +120,9 @@ class SpeakerDashboard extends ContributorDashboard
             ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
-    public function videoRoomExists(int $eventId): ResponseInterface
+    public function videoRoomExists(): ResponseInterface
     {
-        $videoRoom = $this->tryGetVideoRoomExistForCurrentUser($eventId);
-        if ($videoRoom instanceof ResponseInterface) {
-            return $videoRoom;
-        }
+        $videoRoom = $this->tryGetVideoRoomForCurrentUser();
 
         return $this
             ->response
@@ -133,12 +130,9 @@ class SpeakerDashboard extends ContributorDashboard
             ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
-    public function getVideoRoom(int $eventId): ResponseInterface
+    public function getVideoRoom(): ResponseInterface
     {
-        $videoRoom = $this->tryGetVideoRoomExistForCurrentUser($eventId);
-        if ($videoRoom instanceof ResponseInterface) {
-            return $videoRoom;
-        }
+        $videoRoom = $this->tryGetVideoRoomForCurrentUser();
 
         if ($videoRoom === null) {
             return $this
@@ -146,6 +140,8 @@ class SpeakerDashboard extends ContributorDashboard
                 ->setJSON(['error' => 'VIDEO_ROOM_DOES_NOT_EXIST'])
                 ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
+
+        $eventId = $videoRoom['event_id'];
 
         $userId = $this->getLoggedInUserId();
         $speakerModel = model(SpeakerModel::class);
@@ -173,45 +169,61 @@ class SpeakerDashboard extends ContributorDashboard
             ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
-    private function tryGetVideoRoomExistForCurrentUser(int $eventId): array|ResponseInterface|null
+    private function tryGetVideoRoomForCurrentUser(): ?array
     {
         $eventModel = model(EventModel::class);
-        $event = $eventModel->get($eventId);
-        if ($event === null) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
-                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        $publishedEvents = $eventModel->getAllPublished();
+
+        // We have to check if there's an event that is not yet over, has a video room, and
+        // the video room is visible. Also, the user must have at least one accepted talk for
+        // that event.
+        $upcomingOrOngoingEvents = array_filter($publishedEvents, function (array $event) {
+            return date($event['end_date']) >= date('Y-m-d');
+        });
+        if (empty($upcomingOrOngoingEvents)) {
+            return null;
         }
 
-        // We have to check whether the current user is a speaker for the event. That means, that
-        // they have a talk with an approved timeslot for that event.
+        // Sort from newest to oldest.
+        usort($upcomingOrOngoingEvents, function (array $a, array $b) {
+            return date($b['start_date']) <=> date($a['start_date']);
+        });
+
         $talkModel = model(TalkModel::class);
-        $allAcceptedTalks = $talkModel->getAllWithAcceptedTimeSlot($eventId);
-        $speakerHasTalks = false;
         $userId = $this->getLoggedInUserId();
-        foreach ($allAcceptedTalks as $talk) {
-            if ($talk['user_id'] === $userId) {
-                $speakerHasTalks = true;
-                break;
-            }
-        }
-
-        if (!$speakerHasTalks) {
-            return null;
-        }
-
         $videoRoomModel = model(VideoRoomModel::class);
-        $videoRoom = $videoRoomModel->get($eventId);
-        if ($videoRoom === null) {
-            return null;
+        $room = null;
+        foreach ($upcomingOrOngoingEvents as $upcomingOrOngoingEvent) {
+            $videoRoom = $videoRoomModel->get($upcomingOrOngoingEvent['id']);
+            if ($videoRoom === null) {
+                // No video room for this event.
+                continue;
+            }
+
+            $isVisible = $videoRoom['visible_from'] !== null && $videoRoom['visible_from'] <= date('Y-m-d H:i:s');
+            if (!$isVisible) {
+                // Video room is not visible yet.
+                continue;
+            }
+
+            $allAcceptedTalks = $talkModel->getAllWithAcceptedTimeSlot($upcomingOrOngoingEvent['id']);
+            $speakerHasTalks = false;
+            foreach ($allAcceptedTalks as $talk) {
+                if ($talk['user_id'] === $userId) {
+                    $speakerHasTalks = true;
+                    break;
+                }
+            }
+            if (!$speakerHasTalks) {
+                // Speaker doesn't have any accepted talks for this event.
+                continue;
+            }
+
+            $room = $videoRoom;
+            break;
         }
 
-        $isVisible = $videoRoom['visible_from'] !== null && $videoRoom['visible_from'] <= date('Y-m-d H:i:s');
-        if (!$isVisible) {
-            return null;
-        }
-        return $videoRoom;
+        return $room; // Maybe null.
     }
 
     private function getEventForNewSpeakerApplication(): array|ResponseInterface
