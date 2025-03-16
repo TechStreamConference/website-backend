@@ -116,7 +116,7 @@ class SpeakerDashboard extends ContributorDashboard
 
         return $this
             ->response
-            ->setJSON(['event' => $event,])
+            ->setJSON(['event' => $event])
             ->setStatusCode(ResponseInterface::HTTP_OK);
     }
 
