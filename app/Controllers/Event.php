@@ -15,6 +15,8 @@ use App\Models\TalkModel;
 use App\Models\TeamMemberModel;
 use App\Models\TimeSlotModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use DateTime;
+use DateTimeZone;
 use InvalidArgumentException;
 
 class Event extends BaseController
@@ -78,24 +80,35 @@ class Event extends BaseController
                 ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
-        $talks = $this->getVisibleApprovedTalks($event['id'], $this->getPublishedContributors($event['id'], Role::SPEAKER));
+        $speakers = $this->getPublishedContributors($event['id'], Role::SPEAKER);
+
+        $talks = $this->getVisibleApprovedTalks($event['id'], $speakers);
 
         // Generate ICS file content
-        $icsContent = "BEGIN:VCALENDAR\n";
-        $icsContent .= "VERSION:2.0\n";
-        $icsContent .= "CALSCALE:GREGORIAN\n";
+        $icsContent = "BEGIN:VCALENDAR\r\n";
+        $icsContent .= "VERSION:2.0\r\n";
+        $icsContent .= "PRODID:-//TECH STREAM CONFERENCE//Test-Conf//DE\r\n";
+        $icsContent .= "CALSCALE:GREGORIAN\r\n";
+
 
         foreach ($talks as $talk) {
-            $icsContent .= "BEGIN:VEVENT\n";
-            $icsContent .= "SUMMARY:" . $talk['title'] . "\n";
-            $icsContent .= "DTSTART:" . date("Ymd\THis\Z", strtotime($talk['starts_at'])) . "\n";
-            $icsContent .= "DTEND:" . date("Ymd\THis\Z", strtotime($talk['starts_at']) + ($talk['duration'] * 60)) . "\n";
-            $icsContent .= "LOCATION:" . $event['twitch_url'] . "\n";
-            $icsContent .= "DESCRIPTION:" . $talk['description'] . "\n";
-            $icsContent .= "END:VEVENT\n";
+            // Find the speaker for this talk based on their user_id.
+            $speaker = current(array_filter($speakers, fn($speaker) => $speaker['id'] === $talk['speaker_id']));
+            $icsContent .= "BEGIN:VEVENT\r\n";
+            $icsContent .= "SUMMARY:{$speaker['name']} | {$talk['title']}\r\n";
+            $icsContent .= "DTSTART:" . $this->germanToUtcTime($talk['starts_at']) . "\r\n";
+            $icsContent .= "DTEND:" . $this->germanToUtcTime(date("Y-m-d H:i:s", strtotime($talk['starts_at']) + ($talk['duration'] * 60))) . "\r\n";
+            $icsContent .= "LOCATION:" . $event['twitch_url'] . "\r\n";
+            $icsContent .= "DESCRIPTION:" . str_replace("\r", '', str_replace("\n", '\n', $talk['description'])) . "\r\n";
+            $icsContent .= "UID:" . md5($talk['id']) . "\r\n";
+            $icsContent .= "DTSTAMP:" . $this->germanToUtcTime(date("Ymd\THis\Z")) . "\r\n";
+            $icsContent .= "STATUS:CONFIRMED\r\n";
+            $icsContent .= "TRANSP:OPAQUE\r\n";
+            $icsContent .= "URL:" . $event['twitch_url'] . "\r\n";
+            $icsContent .= "END:VEVENT\r\n";
         }
 
-        $icsContent .= "END:VCALENDAR\n";
+        $icsContent .= "END:VCALENDAR\r\n";
 
         $filename = 'test-conf-' . $year . '.ics';
 
@@ -104,6 +117,13 @@ class Event extends BaseController
             ->setHeader('Content-Disposition', 'attachment; filename="' . $filename . '"')
             ->setHeader('Content-Length', strlen($icsContent))
             ->setBody($icsContent);
+    }
+
+    private function germanToUtcTime(string $germanTime): string
+    {
+        $dateInGermany = new DateTime($germanTime, new DateTimeZone('Europe/Berlin'));
+        $dateInGermany->setTimezone(new DateTimeZone('UTC'));
+        return $dateInGermany->format('Ymd\THis\Z');
     }
 
     private function getVisibleApprovedTalks(int $eventId, array $speakers): array
