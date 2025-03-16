@@ -217,28 +217,11 @@ class SpeakerDashboard extends ContributorDashboard
     private function getEventForNewSpeakerApplication(): array|ResponseInterface
     {
         // Preconditions to be able to apply as a speaker:
-        // - The user must not already be a speaker (i.e. the user doesn't already have the speaker role).
-        // - The user must not have a pending speaker application.
         // - There must be an event to apply for.
-        $rolesModel = model(RolesModel::class);
-        if ($rolesModel->hasRole($this->getLoggedInUserId(), Role::SPEAKER)) {
-            // User cannot apply as speaker since they already are a speaker.
-            return $this
-                ->response
-                ->setJSON(['error' => 'USER_ALREADY_IS_SPEAKER'])
-                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
-        }
-
-        $speakerModel = model(SpeakerModel::class);
-        $eventsForUser = $speakerModel->getAllForUser($this->getLoggedInUserId());
-        if (!empty($eventsForUser)) {
-            // User cannot apply as speaker since they already have a pending application.
-            return $this
-                ->response
-                ->setJSON(['error' => 'USER_ALREADY_HAS_PENDING_APPLICATION'])
-                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
-        }
-
+        // - The user must not already be a speaker for that event (i.e. the user doesn't already have an approved
+        //   speaker entry for that event).
+        // - The user must not have a pending speaker application for that year (i.e. the user doesn't have a
+        //   speaker entry for that year, that is not approved).
         $eventModel = model(EventModel::class);
         $latestPublishedEvent = $eventModel->getLatestPublished();
         if ($latestPublishedEvent === null) {
@@ -257,6 +240,25 @@ class SpeakerDashboard extends ContributorDashboard
             return $this
                 ->response
                 ->setJSON(['error' => 'CURRENTLY_NOT_ACCEPTING_SPEAKER_APPLICATIONS'])
+                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
+        }
+
+        // Get all speaker entries of the logged in user for that event.
+        $eventId = $latestPublishedEvent['id'];
+        $userId = $this->getLoggedInUserId();
+        $speakerModel = model(SpeakerModel::class);
+        $allSpeakerEntries = $speakerModel->getAllForUserAndEvent($userId, $eventId);
+
+        if (!empty($allSpeakerEntries)) {
+            if ($allSpeakerEntries[0]['is_approved']) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'USER_ALREADY_IS_SPEAKER'])
+                    ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
+            }
+            return $this
+                ->response
+                ->setJSON(['error' => 'USER_ALREADY_HAS_PENDING_APPLICATION'])
                 ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
         }
 
