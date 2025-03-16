@@ -361,6 +361,7 @@ class AdminDashboard extends BaseController
         if ($event === null) {
             return $this
                 ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
                 ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
@@ -368,6 +369,7 @@ class AdminDashboard extends BaseController
         if ($videoRoomModel->get($eventId) === null) {
             return $this
                 ->response
+                ->setJSON(['error' => 'VIDEO_ROOM_DOES_NOT_EXIST'])
                 ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
 
