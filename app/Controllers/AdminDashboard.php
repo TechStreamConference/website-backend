@@ -2,16 +2,37 @@
 
 namespace App\Controllers;
 
+use App\Helpers\EmailHelper;
+use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
+use App\Models\GuestModel;
 use App\Models\SocialMediaTypeModel;
 use App\Models\SpeakerModel;
+use App\Models\TalkModel;
+use App\Models\VideoRoomModel;
 use CodeIgniter\HTTP\ResponseInterface;
+
+enum VideoLinkType: string
+{
+    case PUSH = 'push';
+    case VIEW = 'view';
+}
+
+enum VideoSourceType: string
+{
+    case CAM = 'cam';
+    case SCREEN = 'screen';
+}
 
 class AdminDashboard extends BaseController
 {
     private const CREATE_SOCIAL_MEDIA_LINK_RULES = [
         'name' => 'required|string|max_length[100]',
+    ];
+
+    private const CREATE_VIDEO_ROOM_RULES = [
+        'base_url' => 'required|string|max_length[256]',
     ];
 
     public function setGlobals(): ResponseInterface
@@ -235,7 +256,253 @@ class AdminDashboard extends BaseController
         $model->create($validData['name']);
         return $this
             ->response
-            ->setJSON(['message' => 'New social media link type created.'])
+            ->setJSON(['message' => 'SOCIAL_MEDIA_LINK_TYPE_CREATED'])
             ->setStatusCode(ResponseInterface::HTTP_CREATED);
+    }
+
+    public function createOrUpdateVideoRoom(int $eventId): ResponseInterface
+    {
+        $data = $this->request->getJSON(assoc: true);
+        if (!$this->validateData($data ?? [], self::CREATE_VIDEO_ROOM_RULES)) {
+            return $this
+                ->response
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+        $validData = $this->validator->getValidated();
+
+        $eventModel = model(EventModel::class);
+        $events = $eventModel->get($eventId);
+        if ($events === null) {
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $model = model(VideoRoomModel::class);
+        $baseUrl = $validData['base_url'];
+        if (!str_ends_with($baseUrl, '/')) {
+            $baseUrl .= '/';
+        }
+        $roomId = $this->randomString(30); // Less than 31 characters, otherwise vdo.ninja will trim it.
+        $password = $this->randomString(50);
+        $model->createOrUpdate(
+            eventId: $eventId,
+            baseUrl: $baseUrl,
+            roomId: $roomId,
+            password: $password
+        );
+        return $this
+            ->response
+            ->setJSON(['message' => 'VIDEO_ROOM_CREATED'])
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
+    }
+
+    public function getVideoRoom(int $eventId): ResponseInterface
+    {
+        $model = model(VideoRoomModel::class);
+        $room = $model->get($eventId);
+        if ($room === null) {
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+        $baseUrl = $room['base_url'];
+        $roomId = $room['room_id'];
+        $password = $room['password'];
+
+        $eventModel = model(EventModel::class);
+        $events = $eventModel->get($eventId);
+        if ($events === null) {
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $userIds = $this->gatherUserIdsForVideoRoom($eventId);
+
+        $speakerModel = model(SpeakerModel::class);
+        $speakers = [];
+        foreach ($userIds as $userId) {
+            $speakers[$userId] = $speakerModel->getLatestApprovedForEvent($userId, $eventId);
+        }
+
+        usort($speakers, function ($a, $b) {
+            return $a['name'] <=> $b['name'];
+        });
+
+        $speakerLinks = [];
+        foreach ($speakers as $speaker) {
+            $links = [];
+            foreach (VideoLinkType::cases() as $linkType) {
+                foreach (VideoSourceType::cases() as $sourceType) {
+                    $links["{$linkType->value}_{$sourceType->value}"] =
+                        $this->createVideoLink(
+                            $baseUrl,
+                            $roomId,
+                            $password,
+                            $eventId,
+                            $speaker['user_id'],
+                            $speaker['name'],
+                            $linkType,
+                            $sourceType
+                        );
+
+                }
+            }
+            $speakerLinks[$speaker['name']] = $links;
+        }
+
+        $result = [
+            'director' => $this->createDirectorLink($baseUrl, $roomId, $password),
+            'speakers' => $speakerLinks,
+        ];
+
+        return $this->response->setJSON($result);
+    }
+
+    public function setVideoRoomVisible(int $eventId): ResponseInterface
+    {
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->get($eventId);
+        if ($event === null) {
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $videoRoomModel = model(VideoRoomModel::class);
+        if ($videoRoomModel->get($eventId) === null) {
+            return $this
+                ->response
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $userIds = $this->gatherUserIdsForVideoRoom($eventId);
+
+        $accountModel = model(AccountModel::class);
+        $accounts = $accountModel->getAccounts($userIds);
+
+        // TODO: Decide whether this should be checked or not. If it is checked,
+        //       then the data of 2024 won't work.
+        /*if (count($accounts) != count($userIds)) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'ACCOUNT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+        }*/
+
+        if (!$videoRoomModel->setVisibleFrom($eventId, date('Y-m-d H:i:s'))) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'SETTING_VISIBLE_FROM_FAILED'])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $failed = false;
+        $numMailsSent = 0;
+        foreach ($accounts as $account) {
+            if (!EmailHelper::send(
+                to: $account['email'],
+                subject: "Deine Einwahldaten für die {$event['title']}",
+                message: view(
+                    'email/contributor/video_room',
+                    [
+                        'event_title' => $event['title'],
+                        'username' => $account['username'],
+                    ]
+                )
+            )) {
+                $failed = true;
+            } else {
+                ++$numMailsSent;
+            }
+        }
+
+        if ($failed) {
+            return $this
+                ->response
+                ->setJSON([
+                    'error' => 'EMAIL_SENDING_FAILED',
+                    'num_mails_sent' => $numMailsSent,
+                    'num_accounts' => count($accounts),
+                    'num_users' => count($userIds),
+                ])
+                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this
+            ->response
+            ->setJSON([
+                'num_mails_sent' => $numMailsSent,
+                'num_accounts' => count($accounts),
+                'num_users' => count($userIds),
+            ])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    private function createDirectorLink(string $baseUrl, string $roomId, string $password): string
+    {
+        return "{$baseUrl}?room={$roomId}&password={$password}&director";
+    }
+
+    private function createId(int $eventId, int $userId, string $type): string
+    {
+        return md5("{$eventId}-{$userId}-{$type}");
+    }
+
+    private function createVideoLink(
+        string          $baseUrl,
+        string          $roomId,
+        string          $password,
+        int             $eventId,
+        int             $userId,
+        string          $name,
+        VideoLinkType   $linkType,
+        VideoSourceType $sourceType,
+    ): string
+    {
+        $data = [
+            $linkType->value => $this->createId($eventId, $userId, $sourceType->value),
+            'room' => $roomId,
+            'password' => $password,
+            'label' => "{$name}_{$sourceType->value}",
+        ];
+        $queryString = http_build_query($data);
+        if ($linkType == VideoLinkType::PUSH) {
+            $queryString .= '&maxframerate=30&g=0&ssid';
+        } else if ($linkType == VideoLinkType::VIEW) {
+            $queryString .= '&solo';
+        }
+        return "{$baseUrl}?{$queryString}";
+    }
+
+    private function randomString(int $length)
+    {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $randomString = '';
+
+        for ($i = 0; $i < $length; ++$i) {
+            $randomIndex = random_int(0, strlen($characters) - 1);
+            $randomString .= $characters[$randomIndex];
+        }
+
+        return $randomString;
+    }
+
+    private function gatherUserIdsForVideoRoom(int $eventId): array
+    {
+        $talkModel = model(TalkModel::class);
+        $acceptedTalks = $talkModel->getAllWithAcceptedTimeSlot($eventId);
+
+        $guestModel = model(GuestModel::class);
+        $guests = $guestModel->getGuestsOfTalks(array_column($acceptedTalks, 'id'));
+
+        return array_unique(
+            array_merge(
+                array_column($acceptedTalks, 'user_id'),
+                array_column($guests, 'user_id')
+            )
+        );
     }
 }

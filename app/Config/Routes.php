@@ -110,3 +110,7 @@ $routes->delete('dashboard/user/social-media-link/(:num)', [TeamMemberDashboard:
 // The main reason for this is to be able to reuse the code.
 $routes->post('dashboard/user/apply-as-speaker', [SpeakerDashboard::class, 'applyAsSpeaker'], ['filter' => AuthFilter::class]);
 $routes->get('dashboard/user/get-application-event', [SpeakerDashboard::class, 'getApplicationEvent'], ['filter' => AuthFilter::class]);
+
+$routes->post('dashboard/admin/video-room/event/(:num)', [AdminDashboard::class, 'createOrUpdateVideoRoom'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/admin/video-room/event/(:num)', [AdminDashboard::class, 'getVideoRoom'], ['filter' => AdminAuthFilter::class]);
+$routes->post('dashboard/admin/video-room/event/(:num)/set-visible', [AdminDashboard::class, 'setVideoRoomVisible'], ['filter' => AdminAuthFilter::class]);

@@ -88,6 +88,14 @@ class AccountModel extends Model
             ->first();
     }
 
+    public function getAccounts(array $userIds): array
+    {
+        return $this
+            ->select('user_id, username, email')
+            ->whereIn('user_id', $userIds)
+            ->findAll();
+    }
+
     public function checkPassword(int $userId, string $password): bool
     {
         $account = $this->find($userId);
