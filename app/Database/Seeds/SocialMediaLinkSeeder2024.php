@@ -918,5 +918,104 @@ class SocialMediaLinkSeeder2024 extends Seeder
             'updated_at' => '2024-01-01 00:00:00',
         ]);
 
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 2, // Twitch
+            'user_id' => 23, // CrazyNightowl01
+            'url' => 'https://www.twitch.tv/crazynightowl01',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 5, // YouTube
+            'user_id' => 24, // NoodyDraws
+            'url' => 'https://www.youtube.com/channel/UC54wEBdXybVhrNENGoctPTQ',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 3, // Discord
+            'user_id' => 24, // NoodyDraws
+            'url' => 'https://discord.gg/wxW5sQkHMm',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 2, // Twitch
+            'user_id' => 24, // NoodyDraws
+            'url' => 'https://www.twitch.tv/noodydraws',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 1, // Web
+            'user_id' => 24, // NoodyDraws
+            'url' => 'https://www.noody.de',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 4, // LinkedIn
+            'user_id' => 24, // NoodyDraws
+            'url' => 'https://www.linkedin.com/in/kerstin-buzelan-51421999/',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 7, // X
+            'user_id' => 24, // NoodyDraws
+            'url' => 'https://www.x.com/noodydraws',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 6, // Instagram
+            'user_id' => 24, // NoodyDraws
+            'url' => 'https://www.instagram.com/noodydraws/',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 9, // GitHub
+            'user_id' => 25, // codingPurpurTentakel
+            'url' => 'https://github.com/PurpurTentakel97',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 3, // Discord
+            'user_id' => 25, // codingPurpurTentakel
+            'url' => 'https://discord.gg/JG5fsFZqEE',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 2, // Twitch
+            'user_id' => 25, // codingPurpurTentakel
+            'url' => 'https://www.twitch.tv/codingpurpurtentakel',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
     }
 }
