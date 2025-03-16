@@ -31,7 +31,13 @@ class GuestModel extends Model
      */
     public function getGuestsOfTalks(array $talkIds): array
     {
-        return $this->whereIn('talk_id', $talkIds)->orderBy('talk_id')->findAll();
+        if (empty($talkIds)) {
+            return [];
+        }
+        return $this
+            ->whereIn('talk_id', $talkIds)
+            ->orderBy('talk_id')
+            ->findAll();
     }
 
     public function deleteAllForTalk(int $talkId): void
