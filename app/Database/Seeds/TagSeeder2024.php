@@ -8,7 +8,7 @@ class TagSeeder2024 extends Seeder
 {
     public function run(): void
     {
-        
+
         $this->db->table('Tag')->insert([
             'id' => 87,
             'text' => 'Accessibility (A11y)',
@@ -16,7 +16,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 57,
             'text' => 'Agile Methoden',
@@ -24,7 +24,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 13,
             'text' => 'Augmented Reality',
@@ -32,7 +32,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 2,
             'text' => 'Ausbildung',
@@ -40,7 +40,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 22,
             'text' => 'Big Data',
@@ -48,7 +48,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 72,
             'text' => 'Blockchain',
@@ -56,7 +56,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 31,
             'text' => 'C',
@@ -64,7 +64,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 32,
             'text' => 'C++',
@@ -72,7 +72,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 44,
             'text' => 'Clean Code',
@@ -80,7 +80,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 50,
             'text' => 'Cloud',
@@ -88,7 +88,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 85,
             'text' => 'Cloud',
@@ -96,7 +96,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 18,
             'text' => 'Community-Management',
@@ -104,7 +104,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 30,
             'text' => 'Computergrafik',
@@ -112,7 +112,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 11,
             'text' => 'Construct 3',
@@ -120,7 +120,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 59,
             'text' => 'Continuous Delivery',
@@ -128,7 +128,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 58,
             'text' => 'Continuous Integration',
@@ -136,7 +136,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 23,
             'text' => 'Data Science',
@@ -144,7 +144,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 68,
             'text' => 'Datenschutz',
@@ -152,7 +152,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 21,
             'text' => 'Deep Learning',
@@ -160,7 +160,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 40,
             'text' => 'Design Patterns',
@@ -168,7 +168,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 64,
             'text' => 'DevOps',
@@ -176,7 +176,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 1,
             'text' => 'Didaktik',
@@ -184,7 +184,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 52,
             'text' => 'Docker',
@@ -192,7 +192,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 65,
             'text' => 'Docker',
@@ -200,7 +200,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 41,
             'text' => 'Domain-Driven Design',
@@ -208,7 +208,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 26,
             'text' => 'Edge Computing',
@@ -216,7 +216,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 63,
             'text' => 'Ethik in der IT',
@@ -224,7 +224,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 60,
             'text' => 'Fehlerkultur',
@@ -232,7 +232,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 6,
             'text' => 'Game Design',
@@ -240,7 +240,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 5,
             'text' => 'Games-Branche',
@@ -248,7 +248,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 36,
             'text' => 'Go',
@@ -256,7 +256,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 54,
             'text' => 'GraphQL',
@@ -264,7 +264,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 74,
             'text' => 'GraphQL',
@@ -272,7 +272,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 15,
             'text' => 'Hacking',
@@ -280,7 +280,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 25,
             'text' => 'Internet of Things',
@@ -288,7 +288,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 73,
             'text' => 'JSON',
@@ -296,7 +296,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 3,
             'text' => 'Kindersoftware',
@@ -304,7 +304,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 17,
             'text' => 'Kommunikation',
@@ -312,7 +312,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 33,
             'text' => 'Kotlin',
@@ -320,7 +320,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 51,
             'text' => 'Kubernetes',
@@ -328,7 +328,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 66,
             'text' => 'Kubernetes',
@@ -336,7 +336,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 19,
             'text' => 'Künstliche Intelligenz (KI)',
@@ -344,7 +344,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 20,
             'text' => 'Machine Learning',
@@ -352,7 +352,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 24,
             'text' => 'Maker',
@@ -360,7 +360,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 49,
             'text' => 'Microservices',
@@ -368,7 +368,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 12,
             'text' => 'Mixed Reality',
@@ -376,7 +376,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 10,
             'text' => 'Multiplayer',
@@ -384,7 +384,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 28,
             'text' => 'Musik',
@@ -392,7 +392,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 62,
             'text' => 'Nachhaltigkeit',
@@ -400,7 +400,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 86,
             'text' => 'Netzwerk',
@@ -408,7 +408,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 77,
             'text' => 'Next.js',
@@ -416,7 +416,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 75,
             'text' => 'Node.js',
@@ -424,7 +424,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 78,
             'text' => 'Nuxt',
@@ -432,7 +432,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 39,
             'text' => 'Objektorientierung',
@@ -440,7 +440,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 48,
             'text' => 'Open Source',
@@ -448,7 +448,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 37,
             'text' => 'PHP',
@@ -456,7 +456,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 38,
             'text' => 'Parser',
@@ -464,7 +464,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 27,
             'text' => 'Party',
@@ -472,7 +472,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 42,
             'text' => 'Performance-Optimierung',
@@ -480,7 +480,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 43,
             'text' => 'Profiling',
@@ -488,7 +488,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 29,
             'text' => 'Programmierung',
@@ -496,7 +496,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 56,
             'text' => 'Projektmanagement',
@@ -504,7 +504,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 61,
             'text' => 'Quality Assurance (QA)',
@@ -512,7 +512,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 80,
             'text' => 'Quasar',
@@ -520,7 +520,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 79,
             'text' => 'React',
@@ -528,7 +528,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 45,
             'text' => 'Refactoring',
@@ -536,7 +536,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 16,
             'text' => 'Reverse Engeneering',
@@ -544,7 +544,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 35,
             'text' => 'Rust',
@@ -552,7 +552,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 9,
             'text' => 'Scriptable Objects',
@@ -560,7 +560,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 67,
             'text' => 'Security',
@@ -568,7 +568,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 53,
             'text' => 'Serverless',
@@ -576,7 +576,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 83,
             'text' => 'Serverless',
@@ -584,7 +584,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 4,
             'text' => 'Spieleentwicklung',
@@ -592,7 +592,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 69,
             'text' => 'Streaming',
@@ -600,7 +600,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 76,
             'text' => 'Svelte',
@@ -608,7 +608,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 34,
             'text' => 'Swift',
@@ -616,7 +616,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 82,
             'text' => 'Symfony',
@@ -624,7 +624,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 46,
             'text' => 'Test-Driven Development',
@@ -632,7 +632,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 47,
             'text' => 'Testautomatisierung',
@@ -640,7 +640,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 88,
             'text' => 'UI',
@@ -648,7 +648,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 89,
             'text' => 'UX',
@@ -656,7 +656,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 7,
             'text' => 'Unity',
@@ -664,7 +664,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 8,
             'text' => 'Unreal',
@@ -672,7 +672,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 14,
             'text' => 'Virtual Reality',
@@ -680,7 +680,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 81,
             'text' => 'Vue.js',
@@ -688,7 +688,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 70,
             'text' => 'Web-Entwicklung',
@@ -696,7 +696,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 71,
             'text' => 'Web3',
@@ -704,7 +704,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 55,
             'text' => 'WebSockets',
@@ -712,7 +712,7 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
         $this->db->table('Tag')->insert([
             'id' => 84,
             'text' => 'WebSockets',
@@ -720,6 +720,6 @@ class TagSeeder2024 extends Seeder
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
-        
+
     }
 }
