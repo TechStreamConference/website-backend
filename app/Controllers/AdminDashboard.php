@@ -326,7 +326,7 @@ class AdminDashboard extends BaseController
 
         $speakerLinks = [];
         foreach ($speakers as $speaker) {
-            $links = [];
+            $links = ['name' => $speaker['name']];
             foreach (VideoLinkType::cases() as $linkType) {
                 foreach (VideoSourceType::cases() as $sourceType) {
                     $links["{$linkType->value}_{$sourceType->value}"] =
@@ -343,7 +343,7 @@ class AdminDashboard extends BaseController
 
                 }
             }
-            $speakerLinks[$speaker['name']] = $links;
+            $speakerLinks[] = $links;
         }
 
         $result = [
