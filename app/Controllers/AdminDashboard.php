@@ -291,24 +291,26 @@ class AdminDashboard extends BaseController
 
     public function getVideoRoom(int $eventId): ResponseInterface
     {
-        $model = model(VideoRoomModel::class);
-        $room = $model->get($eventId);
-        if ($room === null) {
-            return $this
-                ->response
-                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
-        }
-        $baseUrl = $room['base_url'];
-        $roomId = $room['room_id'];
-        $password = $room['password'];
-
         $eventModel = model(EventModel::class);
         $events = $eventModel->get($eventId);
         if ($events === null) {
             return $this
                 ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
                 ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
         }
+
+        $model = model(VideoRoomModel::class);
+        $room = $model->get($eventId);
+        if ($room === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'VIDEO_ROOM_DOES_NOT_EXIST'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+        $baseUrl = $room['base_url'];
+        $roomId = $room['room_id'];
+        $password = $room['password'];
 
         $userIds = $this->gatherUserIdsForVideoRoom($eventId);
 
