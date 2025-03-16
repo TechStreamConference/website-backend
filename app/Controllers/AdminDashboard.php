@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use App\Helpers\EmailHelper;
+use App\Helpers\VideoLinkType;
+use App\Helpers\VideoRoomHelper;
+use App\Helpers\VideoSourceType;
 use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\GlobalsModel;
@@ -12,18 +15,6 @@ use App\Models\SpeakerModel;
 use App\Models\TalkModel;
 use App\Models\VideoRoomModel;
 use CodeIgniter\HTTP\ResponseInterface;
-
-enum VideoLinkType: string
-{
-    case PUSH = 'push';
-    case VIEW = 'view';
-}
-
-enum VideoSourceType: string
-{
-    case CAM = 'cam';
-    case SCREEN = 'screen';
-}
 
 class AdminDashboard extends BaseController
 {
@@ -284,8 +275,8 @@ class AdminDashboard extends BaseController
         if (!str_ends_with($baseUrl, '/')) {
             $baseUrl .= '/';
         }
-        $roomId = $this->randomString(30); // Less than 31 characters, otherwise vdo.ninja will trim it.
-        $password = $this->randomString(50);
+        $roomId = VideoRoomHelper::randomString(30); // Less than 31 characters, otherwise vdo.ninja will trim it.
+        $password = VideoRoomHelper::randomString(50);
         $model->createOrUpdate(
             eventId: $eventId,
             baseUrl: $baseUrl,
@@ -337,7 +328,7 @@ class AdminDashboard extends BaseController
             foreach (VideoLinkType::cases() as $linkType) {
                 foreach (VideoSourceType::cases() as $sourceType) {
                     $links["{$linkType->value}_{$sourceType->value}"] =
-                        $this->createVideoLink(
+                        VideoRoomHelper::createVideoLink(
                             $baseUrl,
                             $roomId,
                             $password,
@@ -444,50 +435,6 @@ class AdminDashboard extends BaseController
     private function createDirectorLink(string $baseUrl, string $roomId, string $password): string
     {
         return "{$baseUrl}?room={$roomId}&password={$password}&director";
-    }
-
-    private function createId(int $eventId, int $userId, string $type): string
-    {
-        return md5("{$eventId}-{$userId}-{$type}");
-    }
-
-    private function createVideoLink(
-        string          $baseUrl,
-        string          $roomId,
-        string          $password,
-        int             $eventId,
-        int             $userId,
-        string          $name,
-        VideoLinkType   $linkType,
-        VideoSourceType $sourceType,
-    ): string
-    {
-        $data = [
-            $linkType->value => $this->createId($eventId, $userId, $sourceType->value),
-            'room' => $roomId,
-            'password' => $password,
-            'label' => "{$name}_{$sourceType->value}",
-        ];
-        $queryString = http_build_query($data);
-        if ($linkType == VideoLinkType::PUSH) {
-            $queryString .= '&maxframerate=30&g=0&ssid';
-        } else if ($linkType == VideoLinkType::VIEW) {
-            $queryString .= '&solo';
-        }
-        return "{$baseUrl}?{$queryString}";
-    }
-
-    private function randomString(int $length)
-    {
-        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        $randomString = '';
-
-        for ($i = 0; $i < $length; ++$i) {
-            $randomIndex = random_int(0, strlen($characters) - 1);
-            $randomString .= $characters[$randomIndex];
-        }
-
-        return $randomString;
     }
 
     private function gatherUserIdsForVideoRoom(int $eventId): array
