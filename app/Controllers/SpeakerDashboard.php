@@ -4,10 +4,15 @@ namespace App\Controllers;
 
 use App\Helpers\EmailHelper;
 use App\Helpers\Role;
+use App\Helpers\VideoLinkType;
+use App\Helpers\VideoRoomHelper;
+use App\Helpers\VideoSourceType;
 use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\RolesModel;
 use App\Models\SpeakerModel;
+use App\Models\TalkModel;
+use App\Models\VideoRoomModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class SpeakerDashboard extends ContributorDashboard
@@ -113,6 +118,100 @@ class SpeakerDashboard extends ContributorDashboard
             ->response
             ->setJSON(['event' => $event,])
             ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    public function videoRoomExists(int $eventId): ResponseInterface
+    {
+        $videoRoom = $this->tryGetVideoRoomExistForCurrentUser($eventId);
+        if ($videoRoom instanceof ResponseInterface) {
+            return $videoRoom;
+        }
+
+        return $this
+            ->response
+            ->setJSON(['exists' => $videoRoom !== null])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    public function getVideoRoom(int $eventId): ResponseInterface
+    {
+        $videoRoom = $this->tryGetVideoRoomExistForCurrentUser($eventId);
+        if ($videoRoom instanceof ResponseInterface) {
+            return $videoRoom;
+        }
+
+        if ($videoRoom === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'VIDEO_ROOM_DOES_NOT_EXIST'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $userId = $this->getLoggedInUserId();
+        $speakerModel = model(SpeakerModel::class);
+        $speaker = $speakerModel->getLatestApprovedForEvent($userId, $eventId);
+
+        $links = [];
+        foreach (VideoSourceType::cases() as $sourceType) {
+            $links[VideoLinkType::PUSH->value . "_{$sourceType->value}"] =
+                VideoRoomHelper::createVideoLink(
+                    $videoRoom['base_url'],
+                    $videoRoom['room_id'],
+                    $videoRoom['password'],
+                    $eventId,
+                    $userId,
+                    $speaker['name'],
+                    VideoLinkType::PUSH,
+                    $sourceType
+                );
+
+        }
+
+        return $this
+            ->response
+            ->setJSON($links)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    private function tryGetVideoRoomExistForCurrentUser(int $eventId): array|ResponseInterface|null
+    {
+        $eventModel = model(EventModel::class);
+        $event = $eventModel->get($eventId);
+        if ($event === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'EVENT_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        // We have to check whether the current user is a speaker for the event. That means, that
+        // they have a talk with an approved timeslot for that event.
+        $talkModel = model(TalkModel::class);
+        $allAcceptedTalks = $talkModel->getAllWithAcceptedTimeSlot($eventId);
+        $speakerHasTalks = false;
+        $userId = $this->getLoggedInUserId();
+        foreach ($allAcceptedTalks as $talk) {
+            if ($talk['user_id'] === $userId) {
+                $speakerHasTalks = true;
+                break;
+            }
+        }
+
+        if (!$speakerHasTalks) {
+            return null;
+        }
+
+        $videoRoomModel = model(VideoRoomModel::class);
+        $videoRoom = $videoRoomModel->get($eventId);
+        if ($videoRoom === null) {
+            return null;
+        }
+
+        $isVisible = $videoRoom['visible_from'] !== null && $videoRoom['visible_from'] <= date('Y-m-d H:i:s');
+        if (!$isVisible) {
+            return null;
+        }
+        return $videoRoom;
     }
 
     private function getEventForNewSpeakerApplication(): array|ResponseInterface

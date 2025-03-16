@@ -114,3 +114,5 @@ $routes->get('dashboard/user/get-application-event', [SpeakerDashboard::class, '
 $routes->post('dashboard/admin/video-room/event/(:num)', [AdminDashboard::class, 'createOrUpdateVideoRoom'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/video-room/event/(:num)', [AdminDashboard::class, 'getVideoRoom'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/video-room/event/(:num)/set-visible', [AdminDashboard::class, 'setVideoRoomVisible'], ['filter' => AdminAuthFilter::class]);
+$routes->get('dashboard/speaker/video-room/event/(:num)/exists', [SpeakerDashboard::class, 'videoRoomExists'], ['filter' => SpeakerAuthFilter::class]);
+$routes->get('dashboard/speaker/video-room/event/(:num)', [SpeakerDashboard::class, 'getVideoRoom'], ['filter' => SpeakerAuthFilter::class]);
