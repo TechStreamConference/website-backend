@@ -13,17 +13,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 1,
-            'tag_id' => 40, // Maker
+            'tag_id' => 24, // Maker
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 1,
-            'tag_id' => 63, // Reverse Engeneering
+            'tag_id' => 16, // Reverse Engeneering
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 1,
-            'tag_id' => 31, // Hacking
+            'tag_id' => 15, // Hacking
         ]);
 
 
@@ -31,12 +31,12 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 2,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 2,
-            'tag_id' => 58, // Projektmanagement
+            'tag_id' => 56, // Projektmanagement
         ]);
 
 
@@ -44,12 +44,12 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 3,
-            'tag_id' => 57, // Programmierung
+            'tag_id' => 29, // Programmierung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 3,
-            'tag_id' => 12, // Computergrafik
+            'tag_id' => 30, // Computergrafik
         ]);
 
 
@@ -57,12 +57,12 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 4,
-            'tag_id' => 57, // Programmierung
+            'tag_id' => 29, // Programmierung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 4,
-            'tag_id' => 12, // Computergrafik
+            'tag_id' => 30, // Computergrafik
         ]);
 
 
@@ -70,17 +70,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 5,
-            'tag_id' => 21, // Didaktik
+            'tag_id' => 1, // Didaktik
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 5,
-            'tag_id' => 4, // Ausbildung
+            'tag_id' => 2, // Ausbildung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 5,
-            'tag_id' => 35, // Kommunikation
+            'tag_id' => 17, // Kommunikation
         ]);
 
 
@@ -88,17 +88,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 6,
-            'tag_id' => 57, // Programmierung
+            'tag_id' => 29, // Programmierung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 6,
-            'tag_id' => 8, // C++
+            'tag_id' => 32, // C++
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 6,
-            'tag_id' => 50, // Objektorientierung
+            'tag_id' => 39, // Objektorientierung
         ]);
 
 
@@ -106,17 +106,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 7,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 7,
-            'tag_id' => 27, // Game Design
+            'tag_id' => 6, // Game Design
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 7,
-            'tag_id' => 34, // Kindersoftware
+            'tag_id' => 3, // Kindersoftware
         ]);
 
 
@@ -129,7 +129,7 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 8,
-            'tag_id' => 11, // Community-Management
+            'tag_id' => 18, // Community-Management
         ]);
 
 
@@ -137,12 +137,12 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 9,
-            'tag_id' => 57, // Programmierung
+            'tag_id' => 29, // Programmierung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 9,
-            'tag_id' => 26, // Fehlerkultur
+            'tag_id' => 60, // Fehlerkultur
         ]);
 
 
@@ -150,12 +150,12 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 10,
-            'tag_id' => 44, // Musik
+            'tag_id' => 28, // Musik
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 10,
-            'tag_id' => 54, // Party
+            'tag_id' => 27, // Party
         ]);
 
 
@@ -163,27 +163,27 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 11,
-            'tag_id' => 57, // Programmierung
+            'tag_id' => 29, // Programmierung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 11,
-            'tag_id' => 7, // C
+            'tag_id' => 31, // C
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 11,
-            'tag_id' => 8, // C++
+            'tag_id' => 32, // C++
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 11,
-            'tag_id' => 33, // JSON
+            'tag_id' => 73, // JSON
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 11,
-            'tag_id' => 53, // Parser
+            'tag_id' => 38, // Parser
         ]);
 
 
@@ -191,27 +191,27 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 12,
-            'tag_id' => 81, // Web-Entwicklung
+            'tag_id' => 70, // Web-Entwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 12,
-            'tag_id' => 52, // PHP
+            'tag_id' => 37, // PHP
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 12,
-            'tag_id' => 72, // Symfony
+            'tag_id' => 82, // Symfony
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 12,
-            'tag_id' => 80, // Vue.js
+            'tag_id' => 81, // Vue.js
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 12,
-            'tag_id' => 66, // Security
+            'tag_id' => 67, // Security
         ]);
 
 
@@ -219,12 +219,12 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 13,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 13,
-            'tag_id' => 65, // Scriptable Objects
+            'tag_id' => 9, // Scriptable Objects
         ]);
 
 
@@ -232,17 +232,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 14,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 14,
-            'tag_id' => 77, // Unity
+            'tag_id' => 7, // Unity
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 14,
-            'tag_id' => 27, // Game Design
+            'tag_id' => 6, // Game Design
         ]);
 
 
@@ -250,27 +250,27 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 15,
-            'tag_id' => 40, // Maker
+            'tag_id' => 24, // Maker
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 15,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 15,
-            'tag_id' => 57, // Programmierung
+            'tag_id' => 29, // Programmierung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 15,
-            'tag_id' => 31, // Hacking
+            'tag_id' => 15, // Hacking
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 15,
-            'tag_id' => 28, // Games-Branche
+            'tag_id' => 5, // Games-Branche
         ]);
 
 
@@ -278,17 +278,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 16,
-            'tag_id' => 81, // Web-Entwicklung
+            'tag_id' => 70, // Web-Entwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 16,
-            'tag_id' => 60, // Quasar
+            'tag_id' => 80, // Quasar
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 16,
-            'tag_id' => 80, // Vue.js
+            'tag_id' => 81, // Vue.js
         ]);
 
 
@@ -296,17 +296,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 17,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 17,
-            'tag_id' => 77, // Unity
+            'tag_id' => 7, // Unity
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 17,
-            'tag_id' => 78, // Unreal
+            'tag_id' => 8, // Unreal
         ]);
 
 
@@ -314,17 +314,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 18,
-            'tag_id' => 81, // Web-Entwicklung
+            'tag_id' => 70, // Web-Entwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 18,
-            'tag_id' => 75, // UI
+            'tag_id' => 88, // UI
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 18,
-            'tag_id' => 76, // UX
+            'tag_id' => 89, // UX
         ]);
 
 
@@ -332,22 +332,22 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 19,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 19,
-            'tag_id' => 48, // Node.js
+            'tag_id' => 75, // Node.js
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 19,
-            'tag_id' => 43, // Multiplayer
+            'tag_id' => 10, // Multiplayer
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 19,
-            'tag_id' => 46, // Netzwerk
+            'tag_id' => 86, // Netzwerk
         ]);
 
 
@@ -355,17 +355,17 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 20,
-            'tag_id' => 68, // Spieleentwicklung
+            'tag_id' => 4, // Spieleentwicklung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 20,
-            'tag_id' => 13, // Construct 3
+            'tag_id' => 11, // Construct 3
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 20,
-            'tag_id' => 28, // Games-Branche
+            'tag_id' => 5, // Games-Branche
         ]);
 
 
@@ -373,12 +373,12 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 21,
-            'tag_id' => 57, // Programmierung
+            'tag_id' => 29, // Programmierung
         ]);
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 21,
-            'tag_id' => 8, // C++
+            'tag_id' => 32, // C++
         ]);
 
 
