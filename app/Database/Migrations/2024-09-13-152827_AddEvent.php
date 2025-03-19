@@ -61,6 +61,16 @@ class AddEvent extends Migration
                 'type' => 'TEXT',
                 'null' => false,
             ],
+            'publish_date' => [
+                'type' => 'DATETIME',
+                'null' => true,
+                'after' => 'description',
+            ],
+            'frontpage_date' => [
+                'type' => 'DATETIME',
+                'null' => true,
+                'after' => 'description',
+            ],
             'schedule_visible_from' => [
                 'type' => 'DATETIME',
                 'null' => true,

@@ -26,6 +26,12 @@ class Event extends BaseController
         $eventModel = model(EventModel::class);
         if ($year === null) {
             $event = $eventModel->getLatestPublished();
+            if ($event === null) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'NO_PUBLISHED_EVENT'])
+                    ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+            }
             $year = (int)date('Y', strtotime($event['start_date']));
         } else {
             $event = $eventModel->getPublishedByYear($year);
@@ -58,6 +64,8 @@ class Event extends BaseController
         foreach ($teamMembers as &$teamMember) {
             unset($teamMember['user_id']);
         }
+
+        $this->addFrontpageVisibilityInformation($event);
 
         return $this->response->setJSON([
             'event' => $event,
@@ -150,6 +158,12 @@ class Event extends BaseController
         usort($talks, fn($a, $b) => $a['starts_at'] <=> $b['starts_at']);
 
         return $talks;
+    }
+
+    private function addFrontpageVisibilityInformation(array &$event): void
+    {
+        $now = date('Y-m-d H:i:s');
+        $event['is_visible_on_frontpage'] = $event['frontpage_date'] <= $now;
     }
 
     /**
