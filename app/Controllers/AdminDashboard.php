@@ -380,15 +380,6 @@ class AdminDashboard extends BaseController
         $accountModel = model(AccountModel::class);
         $accounts = $accountModel->getAccounts($userIds);
 
-        // TODO: Decide whether this should be checked or not. If it is checked,
-        //       then the data of 2024 won't work.
-        /*if (count($accounts) != count($userIds)) {
-            return $this
-                ->response
-                ->setJSON(['error' => 'ACCOUNT_NOT_FOUND'])
-                ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
-        }*/
-
         if (!$videoRoomModel->setVisibleFrom($eventId, date('Y-m-d H:i:s'))) {
             return $this
                 ->response
