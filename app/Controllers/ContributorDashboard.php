@@ -336,6 +336,14 @@ abstract class ContributorDashboard extends BaseController
         $results = array_filter($entries, function ($entry) use ($publishedEvents, $publishedEventIds) {
             return in_array($entry['event_id'], $publishedEventIds);
         });
+
+        // Sort events by start date, starting from the most recent event.
+        usort($results, function ($a, $b) use ($publishedEvents) {
+            $aIndex = array_search($a['event_id'], array_column($publishedEvents, 'id'));
+            $bIndex = array_search($b['event_id'], array_column($publishedEvents, 'id'));
+            return $publishedEvents[$bIndex]['start_date'] <=> $publishedEvents[$aIndex]['start_date'];
+        });
+
         return $this
             ->response
             ->setJSON($results);
