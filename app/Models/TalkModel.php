@@ -143,6 +143,17 @@ class TalkModel extends Model
             ->findAll();
     }
 
+    public function getAllWithAcceptedTimeSlot(int $eventId): array
+    {
+        return $this
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at')
+            ->where('event_id', $eventId)
+            ->where('is_approved', true)
+            ->where('time_slot_accepted', true)
+            ->orderBy('created_at')
+            ->findAll();
+    }
+
     public function getAllTentativeOrAccepted(int $eventId): array
     {
         return $this

@@ -4,10 +4,15 @@ namespace App\Controllers;
 
 use App\Helpers\EmailHelper;
 use App\Helpers\Role;
+use App\Helpers\VideoLinkType;
+use App\Helpers\VideoRoomHelper;
+use App\Helpers\VideoSourceType;
 use App\Models\AccountModel;
 use App\Models\EventModel;
 use App\Models\RolesModel;
 use App\Models\SpeakerModel;
+use App\Models\TalkModel;
+use App\Models\VideoRoomModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class SpeakerDashboard extends ContributorDashboard
@@ -111,35 +116,124 @@ class SpeakerDashboard extends ContributorDashboard
 
         return $this
             ->response
-            ->setJSON(['event' => $event,])
+            ->setJSON(['event' => $event])
             ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    public function videoRoomExists(): ResponseInterface
+    {
+        $videoRoom = $this->tryGetVideoRoomForCurrentUser();
+
+        return $this
+            ->response
+            ->setJSON(['exists' => $videoRoom !== null])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    public function getVideoRoom(): ResponseInterface
+    {
+        $videoRoom = $this->tryGetVideoRoomForCurrentUser();
+
+        if ($videoRoom === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'VIDEO_ROOM_DOES_NOT_EXIST'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $eventId = $videoRoom['event_id'];
+
+        $userId = $this->getLoggedInUserId();
+        $speakerModel = model(SpeakerModel::class);
+        $speaker = $speakerModel->getLatestApprovedForEvent($userId, $eventId);
+
+        $links = [];
+        foreach (VideoSourceType::cases() as $sourceType) {
+            $links[VideoLinkType::PUSH->value . "_{$sourceType->value}"] =
+                VideoRoomHelper::createVideoLink(
+                    $videoRoom['base_url'],
+                    $videoRoom['room_id'],
+                    $videoRoom['password'],
+                    $eventId,
+                    $userId,
+                    $speaker['name'],
+                    VideoLinkType::PUSH,
+                    $sourceType
+                );
+
+        }
+
+        return $this
+            ->response
+            ->setJSON($links)
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
+
+    private function tryGetVideoRoomForCurrentUser(): ?array
+    {
+        $eventModel = model(EventModel::class);
+        $publishedEvents = $eventModel->getAllPublished();
+
+        // We have to check if there's an event that is not yet over, has a video room, and
+        // the video room is visible. Also, the user must have at least one accepted talk for
+        // that event.
+        $upcomingOrOngoingEvents = array_filter($publishedEvents, function (array $event) {
+            return date($event['end_date']) >= date('Y-m-d');
+        });
+        if (empty($upcomingOrOngoingEvents)) {
+            return null;
+        }
+
+        // Sort from newest to oldest.
+        usort($upcomingOrOngoingEvents, function (array $a, array $b) {
+            return date($b['start_date']) <=> date($a['start_date']);
+        });
+
+        $talkModel = model(TalkModel::class);
+        $userId = $this->getLoggedInUserId();
+        $videoRoomModel = model(VideoRoomModel::class);
+        $room = null;
+        foreach ($upcomingOrOngoingEvents as $upcomingOrOngoingEvent) {
+            $videoRoom = $videoRoomModel->get($upcomingOrOngoingEvent['id']);
+            if ($videoRoom === null) {
+                // No video room for this event.
+                continue;
+            }
+
+            $isVisible = $videoRoom['visible_from'] !== null && $videoRoom['visible_from'] <= date('Y-m-d H:i:s');
+            if (!$isVisible) {
+                // Video room is not visible yet.
+                continue;
+            }
+
+            $allAcceptedTalks = $talkModel->getAllWithAcceptedTimeSlot($upcomingOrOngoingEvent['id']);
+            $speakerHasTalks = false;
+            foreach ($allAcceptedTalks as $talk) {
+                if ($talk['user_id'] === $userId) {
+                    $speakerHasTalks = true;
+                    break;
+                }
+            }
+            if (!$speakerHasTalks) {
+                // Speaker doesn't have any accepted talks for this event.
+                continue;
+            }
+
+            $room = $videoRoom;
+            break;
+        }
+
+        return $room; // Maybe null.
     }
 
     private function getEventForNewSpeakerApplication(): array|ResponseInterface
     {
         // Preconditions to be able to apply as a speaker:
-        // - The user must not already be a speaker (i.e. the user doesn't already have the speaker role).
-        // - The user must not have a pending speaker application.
         // - There must be an event to apply for.
-        $rolesModel = model(RolesModel::class);
-        if ($rolesModel->hasRole($this->getLoggedInUserId(), Role::SPEAKER)) {
-            // User cannot apply as speaker since they already are a speaker.
-            return $this
-                ->response
-                ->setJSON(['error' => 'USER_ALREADY_IS_SPEAKER'])
-                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
-        }
-
-        $speakerModel = model(SpeakerModel::class);
-        $eventsForUser = $speakerModel->getAllForUser($this->getLoggedInUserId());
-        if (!empty($eventsForUser)) {
-            // User cannot apply as speaker since they already have a pending application.
-            return $this
-                ->response
-                ->setJSON(['error' => 'USER_ALREADY_HAS_PENDING_APPLICATION'])
-                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
-        }
-
+        // - The user must not already be a speaker for that event (i.e. the user doesn't already have an approved
+        //   speaker entry for that event).
+        // - The user must not have a pending speaker application for that year (i.e. the user doesn't have a
+        //   speaker entry for that year, that is not approved).
         $eventModel = model(EventModel::class);
         $latestPublishedEvent = $eventModel->getLatestPublished();
         if ($latestPublishedEvent === null) {
@@ -158,6 +252,25 @@ class SpeakerDashboard extends ContributorDashboard
             return $this
                 ->response
                 ->setJSON(['error' => 'CURRENTLY_NOT_ACCEPTING_SPEAKER_APPLICATIONS'])
+                ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
+        }
+
+        // Get all speaker entries of the logged in user for that event.
+        $eventId = $latestPublishedEvent['id'];
+        $userId = $this->getLoggedInUserId();
+        $speakerModel = model(SpeakerModel::class);
+        $allSpeakerEntries = $speakerModel->getAllForUserAndEvent($userId, $eventId);
+
+        if (!empty($allSpeakerEntries)) {
+            if ($allSpeakerEntries[0]['is_approved']) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'USER_ALREADY_IS_SPEAKER'])
+                    ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
+            }
+            return $this
+                ->response
+                ->setJSON(['error' => 'USER_ALREADY_HAS_PENDING_APPLICATION'])
                 ->setStatusCode(ResponseInterface::HTTP_FORBIDDEN);
         }
 

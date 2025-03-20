@@ -77,6 +77,9 @@ class TimeSlotModel extends Model
      */
     public function getByIds(array $ids): array
     {
+        if (empty($ids)) {
+            return [];
+        }
         return array_map(
             TimeSlotData::fromArray(...),
             $this->whereIn('id', $ids)->orderBy('start_time')->findAll(),
