@@ -21,6 +21,7 @@ class EventModel extends Model
         'description',
         'schedule_visible_from',
         'publish_date',
+        'frontpage_date',
         'call_for_papers_start',
         'call_for_papers_end',
     ];
@@ -41,7 +42,7 @@ class EventModel extends Model
     public function getPublishedByYear(int $year): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('YEAR(start_date)', $year)
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->first();
@@ -50,7 +51,7 @@ class EventModel extends Model
     public function getAll(): array
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->orderBy('start_date', 'DESC')
             ->findAll();
     }
@@ -58,7 +59,7 @@ class EventModel extends Model
     public function getAllPublished(): array
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->orderBy('start_date', 'DESC')
             ->findAll();
@@ -67,7 +68,7 @@ class EventModel extends Model
     public function getLatestPublished(): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->orderBy('start_date', 'DESC')
             ->first();
@@ -76,7 +77,7 @@ class EventModel extends Model
     public function get(int $eventId): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, trailer_youtube_id, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('id', $eventId)
             ->first();
     }
@@ -100,6 +101,7 @@ class EventModel extends Model
         string  $description,
         ?string $scheduleVisibleFrom,
         ?string $publishDate,
+        ?string $frontpageDate,
         ?string $callForPapersStart,
         ?string $callForPapersEnd
     ): void {
@@ -118,6 +120,7 @@ class EventModel extends Model
                 'description' => $description,
                 'schedule_visible_from' => $scheduleVisibleFrom,
                 'publish_date' => $publishDate,
+                'frontpage_date' => $frontpageDate,
                 'call_for_papers_start' => $callForPapersStart,
                 'call_for_papers_end' => $callForPapersEnd,
             ])
@@ -137,6 +140,7 @@ class EventModel extends Model
         string  $description,
         ?string $scheduleVisibleFrom,
         ?string $publishDate,
+        ?string $frontpageDate,
         ?string $callForPapersStart,
         ?string $callForPapersEnd
     ): int
@@ -154,6 +158,7 @@ class EventModel extends Model
             'description' => $description,
             'schedule_visible_from' => $scheduleVisibleFrom,
             'publish_date' => $publishDate,
+            'frontpage_date' => $frontpageDate,
             'call_for_papers_start' => $callForPapersStart,
             'call_for_papers_end' => $callForPapersEnd,
         ]);

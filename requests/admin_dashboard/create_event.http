@@ -7,10 +7,10 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-PUT localhost:8080/api/dashboard/admin/event/1
+POST localhost:8080/api/dashboard/admin/event/new
 
 {
-    "title": "New Event Title",
+    "title": "TECH STREAM CONFERENCE 2025",
     "subtitle": "New Event Subtitle",
     "description": "New Event Description",
     "start_date": "2025-11-05",

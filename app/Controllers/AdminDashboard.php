@@ -65,6 +65,7 @@ class AdminDashboard extends BaseController
         'description' => 'string',
         'schedule_visible_from' => 'permit_empty|valid_date[Y-m-d H:i:s]',
         'publish_date' => 'permit_empty|valid_date[Y-m-d H:i:s]',
+        'frontpage_date' => 'permit_empty|valid_date[Y-m-d H:i:s]',
         'call_for_papers_start' => 'permit_empty|valid_date[Y-m-d H:i:s]',
         'call_for_papers_end' => 'permit_empty|valid_date[Y-m-d H:i:s]',
     ];
@@ -84,24 +85,26 @@ class AdminDashboard extends BaseController
 
         $eventModel = model(EventModel::class);
         $eventModel->createEvent(
-            $validData['title'],
-            $validData['subtitle'],
-            $validData['start_date'],
-            $validData['end_date'],
-            $validData['discord_url'] ?? null,
-            $validData['twitch_url'] ?? null,
-            $validData['presskit_url'] ?? null,
-            $validData['trailer_youtube_id'] ?? null,
-            $validData['description_headline'],
-            $validData['description'],
-            $validData['schedule_visible_from'] ?? null,
-            $validData['publish_date'] ?? null,
-            $validData['call_for_papers_start'] ?? null,
-            $validData['call_for_papers_end'] ?? null,
+            title: $validData['title'],
+            subtitle: $validData['subtitle'],
+            startDate: $validData['start_date'],
+            endDate: $validData['end_date'],
+            discordUrl: $validData['discord_url'] ?? null,
+            twitchUrl: $validData['twitch_url'] ?? null,
+            presskitUrl: $validData['presskit_url'] ?? null,
+            trailerYoutubeId: $validData['trailer_youtube_id'] ?? null,
+            descriptionHeadline: $validData['description_headline'],
+            description: $validData['description'],
+            scheduleVisibleFrom: $validData['schedule_visible_from'] ?? null,
+            publishDate: $validData['publish_date'] ?? null,
+            frontpageDate: $validData['frontpage_date'] ?? null,
+            callForPapersStart: $validData['call_for_papers_start'] ?? null,
+            callForPapersEnd: $validData['call_for_papers_end'] ?? null,
         );
 
         return $this
             ->response
+            ->setJSON(['message' => 'EVENT_CREATED'])
             ->setStatusCode(ResponseInterface::HTTP_CREATED);
     }
 
@@ -130,21 +133,22 @@ class AdminDashboard extends BaseController
         $validData = $this->validator->getValidated();
 
         $eventModel->updateEvent(
-            $eventId,
-            $validData['title'],
-            $validData['subtitle'],
-            $validData['start_date'],
-            $validData['end_date'],
-            $validData['discord_url'] ?? null,
-            $validData['twitch_url'] ?? null,
-            $validData['presskit_url'] ?? null,
-            $validData['trailer_youtube_id'] ?? null,
-            $validData['description_headline'],
-            $validData['description'],
-            $validData['schedule_visible_from'] ?? null,
-            $validData['publish_date'] ?? null,
-            $validData['call_for_papers_start'] ?? null,
-            $validData['call_for_papers_end'] ?? null,
+            eventId: $eventId,
+            title: $validData['title'],
+            subtitle: $validData['subtitle'],
+            startDate: $validData['start_date'],
+            endDate: $validData['end_date'],
+            discordUrl: $validData['discord_url'] ?? null,
+            twitchUrl: $validData['twitch_url'] ?? null,
+            presskitUrl: $validData['presskit_url'] ?? null,
+            trailerYoutubeId: $validData['trailer_youtube_id'] ?? null,
+            descriptionHeadline: $validData['description_headline'],
+            description: $validData['description'],
+            scheduleVisibleFrom: $validData['schedule_visible_from'] ?? null,
+            publishDate: $validData['publish_date'] ?? null,
+            frontpageDate: $validData['frontpage_date'] ?? null,
+            callForPapersStart: $validData['call_for_papers_start'] ?? null,
+            callForPapersEnd: $validData['call_for_papers_end'] ?? null,
         );
 
         return $this
