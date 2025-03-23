@@ -1,6 +1,6 @@
 services:
   test_conf_backend:
-    build: .
+    image: ghcr.io/techstreamconference/website-backend:nightly
     container_name: ci4_backend
     ports:
       - "8080:80" # Port 8080 (host) maps to port 80 (container).
