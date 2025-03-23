@@ -24,10 +24,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set Docker tag
+        id: docker_tag
+        run: |
+          if [ -z "${{ github.event.release.tag_name }}" ]; then
+            echo "tag=nightly" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }} .
+          docker build -t ghcr.io/${{ github.repository }}:${{ steps.docker_tag.outputs.tag }} .
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.repository }}:${{ github.event.release.tag_name }}
+          docker push ghcr.io/${{ github.repository }}:${{ steps.docker_tag.outputs.tag }}
