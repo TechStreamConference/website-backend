@@ -1,0 +1,22 @@
+services:
+  test_conf_backend:
+    build: .
+    container_name: ci4_backend
+    ports:
+      - "8080:80" # Port 8080 (host) maps to port 80 (container).
+    volumes:
+      - ./data/uploads:/var/www/html/writable/uploads # For file uploads.
+      - ./.container/index.html:/var/www/html/writable/uploads/index.html # File that prevents direct directory access.
+      - ./.env:/var/www/html/.env # Environment file for CodeIgniter4 configuration.
+      - ./.container/000-default.conf:/etc/apache2/sites-available/000-default.conf # Apache config to configure CORS.
+    depends_on:
+      - test_conf_db # Ensure 'test_conf_db' service starts before 'test_conf_app'
+
+  test_conf_db:
+    image: mariadb:11.4.5
+    container_name: ci4_db
+    env_file: .compose_env # This file includes the database configuration env variables.
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/database:/var/lib/mysql
