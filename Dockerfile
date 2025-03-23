@@ -29,7 +29,7 @@ RUN chown -R www-data:www-data /var/www/html
 RUN echo 'alias ll="ls -la"' >> ~/.bashrc
 
 # Expose port 80
-EXPOSE 80
+EXPOSE 8080
 
 # Start Apache in the foreground
 CMD ["apache2-foreground"]
