@@ -17,6 +17,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install using Composer
+        run: composer install --no-dev --optimize-autoloader
+
       - name: Set Docker tag
         id: docker_tag
         run: |
