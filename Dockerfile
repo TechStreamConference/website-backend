@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libonig-dev \
     libpng-dev \
+    libjpeg-dev \
     && docker-php-ext-install \
        intl \
        mbstring \
