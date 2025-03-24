@@ -16,13 +16,15 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libicu-dev \
     libonig-dev \
+    libpng-dev \
     && docker-php-ext-install \
        intl \
        mbstring \
        zip \
        pdo \
        pdo_mysql \
-       mysqli
+       mysqli \
+       gd
 
 # Enable Apache mod_rewrite and headers
 RUN a2enmod rewrite \
