@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libpng-dev \
     libjpeg-dev \
+    && docker-php-ext-configure gd --with-jpeg \
     && docker-php-ext-install \
        intl \
        mbstring \
