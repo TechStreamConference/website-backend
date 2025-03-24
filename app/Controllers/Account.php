@@ -591,11 +591,12 @@ class Account extends BaseController
         $userModel = model(UserModel::class);
         $verificationTokenModel = model(VerificationTokenModel::class);
         $expiredTokens = $verificationTokenModel->getExpiredTokens();
-        foreach ($expiredTokens as $expiredToken) {
-            $verificationTokenModel->deleteToken($expiredToken['token']);
-            $accountModel->deleteAccount($expiredToken['user_id']);
-            $userModel->deleteUser($expiredToken['user_id']);
-        }
+        $tokens = array_column($expiredTokens, 'token');
+        $userIds = array_column($expiredTokens, 'user_id');
+
+        $verificationTokenModel->deleteTokens($tokens);
+        $accountModel->deleteAccounts($userIds);
+        $userModel->deleteUsers($userIds);
     }
 
     private function sendVerificationEmail(

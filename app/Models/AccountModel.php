@@ -71,6 +71,14 @@ class AccountModel extends Model
         $this->where('user_id', $userId)->delete();
     }
 
+    public function deleteAccounts(array $userIds): void
+    {
+        if (empty($userIds)) {
+            return;
+        }
+        $this->whereIn('user_id', $userIds)->delete();
+    }
+
     public function getAccountByUsernameOrEmail(string $usernameOrEmail): array|null
     {
         return $this

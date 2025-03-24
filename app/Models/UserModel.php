@@ -33,6 +33,14 @@ class UserModel extends Model
         return $this->delete($id);
     }
 
+    public function deleteUsers(array $ids): bool
+    {
+        if (empty($ids)) {
+            return true;
+        }
+        return $this->whereIn('id', $ids)->delete();
+    }
+
     public function getRoles(int $userId): array|null
     {
         // todo: Should this be part of the user model? Should there be a dedicated role(s) model?

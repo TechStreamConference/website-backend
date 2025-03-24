@@ -53,6 +53,14 @@ class VerificationTokenModel extends Model
         $this->where('token', $token)->delete();
     }
 
+    public function deleteTokens(array $tokens): void
+    {
+        if (empty($tokens)) {
+            return;
+        }
+        $this->whereIn('token', $tokens)->delete();
+    }
+
     public function getExpiredTokens(): array
     {
         return $this
