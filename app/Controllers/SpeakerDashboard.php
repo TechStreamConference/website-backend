@@ -56,6 +56,14 @@ class SpeakerDashboard extends ContributorDashboard
         if ($data instanceof ResponseInterface) {
             return $data;
         }
+
+        $result = $this->createFromApplication($event['id'], $data);
+        $returnCode = $result->getStatusCode();
+
+        if ($returnCode !== 201) {
+            return $result;
+        }
+
         if (
             isset($data['social_media_links'])
             && is_array($data['social_media_links'])
@@ -72,25 +80,20 @@ class SpeakerDashboard extends ContributorDashboard
                 ->setStatusCode(ResponseInterface::HTTP_OK);
         }
 
-        $result = $this->createFromApplication($event['id'], $data);
-        $returnCode = $result->getStatusCode();
+        $accountModel = model(AccountModel::class);
+        $account = $accountModel->get($this->getLoggedInUserId());
+        $username = $account['username'];
 
-        if ($returnCode === 201) {
-            $accountModel = model(AccountModel::class);
-            $account = $accountModel->get($this->getLoggedInUserId());
-            $username = $account['username'];
-
-            EmailHelper::sendToAdmins(
-                subject: "{$this->getRoleName()}-Bewerbung",
-                message: view(
-                    'email/admin/contributor_new_entry',
-                    [
-                        'role' => $this->getRoleName(),
-                        'username' => $username,
-                    ],
-                )
-            );
-        }
+        EmailHelper::sendToAdmins(
+            subject: "{$this->getRoleName()}-Bewerbung",
+            message: view(
+                'email/admin/contributor_new_entry',
+                [
+                    'role' => $this->getRoleName(),
+                    'username' => $username,
+                ],
+            )
+        );
 
         return $result;
     }
