@@ -1,17 +1,18 @@
-# --- Stage 1: Build the application ---
-FROM composer:2.2.25 AS builder
-
+# --- Base stage for installation of dependencies using Composer ---
+FROM composer:2.2.25 AS dependencies_base
 WORKDIR /app
-
-# Copy the composer files
 COPY composer.json composer.lock ./
 
-# Install the dependencies
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs # Creates the vendor directory
+# --- Installation of dependencies for development ---
+FROM dependencies_base AS dev_dependencies
+RUN composer install --ignore-platform-reqs
 
-# --- Stage 2: Create the final image ---
-FROM php:8.2-apache
+# --- Installation of dependencies for production ---
+FROM dependencies_base AS prod_dependencies
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
+# --- Base image for the final stages ---
+FROM php:8.2-apache AS base
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     libicu-dev \
@@ -27,26 +28,32 @@ RUN apt-get update && apt-get install -y \
        pdo_mysql \
        mysqli \
        gd
+RUN a2enmod rewrite && a2enmod headers
 
-# Enable Apache mod_rewrite and headers
-RUN a2enmod rewrite \
-    && a2enmod headers
+RUN echo 'alias ll="ls -la"' >> ~/.bashrc
 
-# Copy the vendor directory from the builder stage
-COPY --from=builder /app/vendor /var/www/html/vendor
+# --- Development stage ---
+FROM base AS dev
+COPY --from=dev_dependencies /app/vendor /var/www/html/vendor
 
-# Copy project files into the container
+# Source code will be a mounted volume, so no need to copy it here.
+
+RUN chown -R www-data:www-data /var/www/html
+
+EXPOSE 80
+CMD ["apache2-foreground"]
+
+### --- Production stage ---
+FROM base AS prod
+
+COPY --from=dev_dependencies /app/vendor /var/www/html/vendor
+
 COPY app /var/www/html/app
 COPY public /var/www/html/public
 COPY writable /var/www/html/writable
 COPY LICENSE spark preload.php builds /var/www/html/
 
-# Adjust ownership so Apache can access everything
 RUN chown -R www-data:www-data /var/www/html
 
-RUN echo 'alias ll="ls -la"' >> ~/.bashrc
-
 EXPOSE 80
-
-# Start Apache in the foreground
 CMD ["apache2-foreground"]
