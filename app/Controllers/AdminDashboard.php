@@ -196,7 +196,7 @@ class AdminDashboard extends BaseController
         $data = $this->request->getJSON(assoc: true);
         $rules = [
             'id' => 'required|integer',
-            'visible_from' => 'valid_date[Y-m-d H:i:s]',
+            'visible_from' => 'permit_empty|valid_date[Y-m-d H:i:s]',
         ];
         foreach ($data as $speaker) {
             if (!$this->validateData($speaker, $rules)) {
