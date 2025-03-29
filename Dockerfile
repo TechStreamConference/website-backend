@@ -1,14 +1,7 @@
-# --- Base stage for installation of dependencies using Composer ---
-FROM composer:2.2.25 AS dependencies_base
+# --- Installation of dependencies for production ---
+FROM composer:2.2.25 AS prod_dependencies
 WORKDIR /app
 COPY composer.json composer.lock ./
-
-# --- Installation of dependencies for development ---
-FROM dependencies_base AS dev_dependencies
-RUN composer install --ignore-platform-reqs
-
-# --- Installation of dependencies for production ---
-FROM dependencies_base AS prod_dependencies
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # --- Base image for the final stages ---
@@ -34,12 +27,12 @@ RUN echo 'alias ll="ls -la"' >> ~/.bashrc
 
 # --- Development stage ---
 FROM base AS dev
-COPY --from=dev_dependencies /app/vendor /var/www/html/vendor
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Source code will be a mounted volume, so no need to copy it here.
-
 RUN chown -R www-data:www-data /var/www/html
-
 EXPOSE 80
 CMD ["apache2-foreground"]
 
