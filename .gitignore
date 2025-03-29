@@ -124,10 +124,3 @@ nb-configuration.xml
 
 /results/
 /phpunit*.xml
-.compose_env
-.container/000-default.conf
-data/**
-!data/database
-!data/database/.gitkeep
-!data/uploads
-!data/uploads/.gitkeep
