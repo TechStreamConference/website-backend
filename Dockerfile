@@ -46,7 +46,7 @@ CMD ["apache2-foreground"]
 ### --- Production stage ---
 FROM base AS prod
 
-COPY --from=dev_dependencies /app/vendor /var/www/html/vendor
+COPY --from=prod_dependencies /app/vendor /var/www/html/vendor
 
 COPY app /var/www/html/app
 COPY public /var/www/html/public

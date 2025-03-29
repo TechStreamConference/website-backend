@@ -41,7 +41,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ steps.image.outputs.name }} .
+          docker build --target prod -t ${{ steps.image.outputs.name }} .
 
       - name: Push Docker image
         run: |
