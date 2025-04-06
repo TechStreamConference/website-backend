@@ -1,15 +1,13 @@
-# --- Base stage for installation of dependencies using Composer ---
-FROM composer:2.2.25 AS dependencies_base
+# --- Installation of dependencies for production ---
+FROM composer:2.2.25 AS prod_dependencies
 WORKDIR /app
 COPY composer.json composer.lock ./
-
-# --- Installation of dependencies for development ---
-FROM dependencies_base AS dev_dependencies
-RUN composer install --ignore-platform-reqs
-
-# --- Installation of dependencies for production ---
-FROM dependencies_base AS prod_dependencies
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+
+FROM composer:2.2.25 AS dev_dependencies
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --ignore-platform-reqs
 
 # --- Base image for the final stages ---
 FROM php:8.2-apache AS base
@@ -34,12 +32,12 @@ RUN echo 'alias ll="ls -la"' >> ~/.bashrc
 
 # --- Development stage ---
 FROM base AS dev
-COPY --from=dev_dependencies /app/vendor /var/www/html/vendor
-
+WORKDIR /var/www/html
+COPY --from=dev_dependencies /app/vendor/ /vendor.bak/
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 # Source code will be a mounted volume, so no need to copy it here.
-
-RUN chown -R www-data:www-data /var/www/html
-
 EXPOSE 80
 CMD ["apache2-foreground"]
 
