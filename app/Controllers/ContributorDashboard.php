@@ -408,7 +408,7 @@ abstract class ContributorDashboard extends BaseController
         $model = $this->getModel();
         $entry = $model->getLatestForEvent(userId: $this->getLoggedInUserId(), eventId: $eventId);
         if ($entry === null) {
-            return $this->createNewEntry($validData, $eventId);
+            return $this->createNewContributorEntry($validData, $eventId);
         }
         if (!$this->hasChanges($validData, $entry)) {
             return $this
@@ -478,7 +478,7 @@ abstract class ContributorDashboard extends BaseController
      * @param int $eventId
      * @return ResponseInterface
      */
-    protected function createNewEntry(array $validData, int $eventId): ResponseInterface
+    protected function createNewContributorEntry(array $validData, int $eventId): ResponseInterface
     {
         // Check if all required fields are present.
         foreach (self::REQUIRED_JSON_FIELDS as $field) {

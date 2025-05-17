@@ -107,7 +107,7 @@ class SpeakerDashboard extends ContributorDashboard
                 ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
-        return $this->createNewEntry($validData['application'], $eventId);
+        return $this->createNewContributorEntry($validData['application'], $eventId);
     }
 
     public function getApplicationEvent(): ResponseInterface
