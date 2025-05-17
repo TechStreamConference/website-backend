@@ -51,7 +51,6 @@ class SpeakerDashboard extends ContributorDashboard
             return $event;
         }
 
-        // Only create social media links if they were provided in the request.
         $data = $this->getJsonFromMultipartRequest();
         if ($data instanceof ResponseInterface) {
             return $data;
@@ -64,6 +63,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $result;
         }
 
+        // Only create social media links if they were provided in the request.
         if (
             isset($data['social_media_links'])
             && is_array($data['social_media_links'])
