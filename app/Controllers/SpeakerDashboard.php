@@ -56,7 +56,7 @@ class SpeakerDashboard extends ContributorDashboard
             return $data;
         }
 
-        $result = $this->createFromApplication($event['id'], $data);
+        $result = $this->createNewSpeakerEntryFromApplication($event['id'], $data);
         $returnCode = $result->getStatusCode();
 
         if ($returnCode !== 201) {
@@ -98,7 +98,7 @@ class SpeakerDashboard extends ContributorDashboard
         return $result;
     }
 
-    private function createFromApplication(int $eventId, array $data): ResponseInterface
+    private function createNewSpeakerEntryFromApplication(int $eventId, array $data): ResponseInterface
     {
         if (!$this->validateData($data ?? [], self::APPLICATION_RULES)) {
             return $this
