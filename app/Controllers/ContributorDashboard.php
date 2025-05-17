@@ -506,11 +506,9 @@ abstract class ContributorDashboard extends BaseController
             $validData['photo_size'],
         );
         if ($uploadResult instanceof ResponseInterface) {
-            return $this
-                ->response
-                ->setJSON(['error' => $uploadResult])
-                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+            return $uploadResult;
         }
+
         [$path, $mimeType] = $uploadResult;
         $this->getModel()->create(
             name: $validData['name'],
