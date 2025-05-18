@@ -51,19 +51,19 @@ class SpeakerDashboard extends ContributorDashboard
             return $event;
         }
 
-        // Only create social media links if they were provided in the request.
         $data = $this->getJsonFromMultipartRequest();
         if ($data instanceof ResponseInterface) {
             return $data;
         }
 
-        $result = $this->createFromApplication($event['id'], $data);
+        $result = $this->createNewSpeakerEntryFromApplication($event['id'], $data);
         $returnCode = $result->getStatusCode();
 
         if ($returnCode !== 201) {
             return $result;
         }
 
+        // Only create social media links if they were provided in the request.
         if (
             isset($data['social_media_links'])
             && is_array($data['social_media_links'])
@@ -98,7 +98,7 @@ class SpeakerDashboard extends ContributorDashboard
         return $result;
     }
 
-    private function createFromApplication(int $eventId, array $data): ResponseInterface
+    private function createNewSpeakerEntryFromApplication(int $eventId, array $data): ResponseInterface
     {
         if (!$this->validateData($data ?? [], self::APPLICATION_RULES)) {
             return $this
@@ -107,7 +107,7 @@ class SpeakerDashboard extends ContributorDashboard
                 ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
         }
         $validData = $this->validator->getValidated();
-        return $this->createNewEntry($validData['application'], $eventId);
+        return $this->createNewContributorEntry($validData['application'], $eventId);
     }
 
     public function getApplicationEvent(): ResponseInterface
