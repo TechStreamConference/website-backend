@@ -73,6 +73,7 @@ $routes->post('dashboard/admin/talk/create', [Talk::class, 'create'], ['filter' 
 $routes->get('dashboard/admin/talk/possible-hosts/(:num)', [Talk::class, 'getPossibleHosts'], ['filter' => AdminAuthFilter::class]);
 $routes->get('dashboard/admin/talk/(:num)/possible-guests', [Talk::class, 'getPossibleGuests'], ['filter' => AdminAuthFilter::class]);
 $routes->put('dashboard/admin/talk/(:num)/set-guests', [Talk::class, 'setGuests'], ['filter' => AdminAuthFilter::class]);
+$routes->delete('dashboard/admin/talk/(:num)/remove-all-guests', [Talk::class, 'removeAllGuests'], ['filter' => AdminAuthFilter::class]);
 
 $routes->get('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'get'], ['filter' => AdminAuthFilter::class]);
 $routes->post('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'create_or_replace'], ['filter' => AdminAuthFilter::class]);

@@ -1,0 +1,10 @@
+POST http://localhost/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "Coder2k123!"
+}
+
+###
+
+DELETE localhost/api/dashboard/admin/talk/5/remove-all-guests
