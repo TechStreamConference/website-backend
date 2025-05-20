@@ -383,7 +383,7 @@ class AccountTest extends CIUnitTestCase
         $result->assertJSONExact(['exists' => true]);
     }
 
-    public static function providerUsernameWithLeadingOrTrailingSpace(): array
+    public static function provideUsernameWithLeadingOrTrailingSpace(): array
     {
         return [
             ['coder2k '],
@@ -393,7 +393,7 @@ class AccountTest extends CIUnitTestCase
     }
 
     /**
-     * @dataProvider providerUsernameWithLeadingOrTrailingSpace
+     * @dataProvider provideUsernameWithLeadingOrTrailingSpace
      */
     public function testUsernameExists_UsernameWithLeadingOrTrailingSpace_ReturnsTrue($username): void
     {
