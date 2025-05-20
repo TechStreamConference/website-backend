@@ -1254,4 +1254,29 @@ class Talk extends BaseController
         $talk = $talkModel->findByTimeSlot($timeSlotId);
         return $talk !== null;
     }
+
+    /**
+     * Removes all guests from a talk. This is used by admins to clear all guests from a panel discussion.
+     * @param int $talkId The talk ID of the panel discussion.
+     * @return ResponseInterface The response to return to the client.
+     */
+    public function removeAllGuests(int $talkId): ResponseInterface
+    {
+        $talkModel = model(TalkModel::class);
+        $talk = $talkModel->get($talkId);
+        if ($talk === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'TALK_NOT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $guestModel = model(GuestModel::class);
+        $guestModel->deleteAllForTalk($talkId);
+
+        return $this
+            ->response
+            ->setJSON(['success' => 'ALL_GUESTS_REMOVED'])
+            ->setStatusCode(ResponseInterface::HTTP_OK);
+    }
 }
