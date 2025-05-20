@@ -11,6 +11,7 @@ use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\VerificationTokenModel;
 use Random\RandomException;
+use App\Config\Recaptcha;
 
 class Account extends BaseController
 {
@@ -28,6 +29,7 @@ class Account extends BaseController
         'password' => self::PASSWORD_RULE,
         'email' => self::EMAIL_RULE,
         'token' => 'permit_empty|trim|alpha_numeric|max_length[128]',
+        'recaptcha_token' => 'trim',
     ];
 
     private const VERIFICATION_RULES = [
@@ -73,6 +75,59 @@ class Account extends BaseController
                 ->response
                 ->setJSON($this->validator->getErrors())
                 ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        $recaptchaToken = $data['recaptcha_token'];
+
+        $recaptchaConfig = config(Recaptcha::class);
+        $isRecaptchaEnabled = $recaptchaConfig->enabled;
+        $siteKey = $recaptchaConfig->siteKey;
+        $secretKey = $recaptchaConfig->secretKey;
+
+        if ($isRecaptchaEnabled !== false) {
+            if (empty($siteKey) || empty($secretKey)) {
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'RECAPTCHA_NOT_CONFIGURED'])
+                    ->setStatusCode(ResponseInterface::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $client = service('curlrequest');
+            $response = $client
+                /*->setJson([
+                    'secret' => $secretKey,
+                    //'response' => $recaptchaToken,
+                    // optional: 'remoteip' => $this->request->getIPAddress(),
+                ])*/
+                ->setHeader('Content-Type', 'application/x-www-form-urlencoded')
+                //->setBody("secret=$secretKey&response=$recaptchaToken")
+                //->setBody("secret=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe&response=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI")
+                ->request(
+                    'POST',
+                    "https://www.google.com/recaptcha/api/siteverify",
+                    [
+                        'debug' => true,
+                    ],
+                );
+
+            $responseData = json_decode($response->getBody(), true);
+            if (isset($responseData['error-codes']) && count($responseData['error-codes']) > 0) {
+                return $this
+                    ->response
+                    ->setJSON([
+                        'error' => 'RECAPTCHA_VERIFICATION_FAILED',
+                        'error_codes' => $responseData['error-codes'],
+                    ])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+            }
+
+            if (!isset($responseData['success']) || $responseData['success'] === false) {
+                // This should never happen, because we already checked for error-codes. But we catch it anyway.
+                return $this
+                    ->response
+                    ->setJSON(['error' => 'RECAPTCHA_VERIFICATION_FAILED'])
+                    ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+            }
         }
 
         $validData = $this->validator->getValidated();
