@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Helpers\TimeSlotData;
 use App\Models\EventModel;
+use App\Models\TalkModel;
 use App\Models\TimeSlotModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -90,8 +91,16 @@ class TimeSlot extends BaseController
 
         $timeSlotModel = model(TimeSlotModel::class);
         $timeSlots = $timeSlotModel->getByEventId($eventId);
+
+        $talkModel = model(TalkModel::class);
         $timeSlotsArray = array_map(
-            fn($timeSlot) => $timeSlot->toArray(),
+            function($timeSlot) use ($talkModel) {
+                $data = $timeSlot->toArray();
+                // Check if the time slot is occupied by looking for a talk with this `time_slot_id`.
+                $talk = $talkModel->findByTimeSlot($timeSlot->id);
+                $data['is_occupied'] = ($talk !== null);
+                return $data;
+            },
             $timeSlots,
         );
         return $this->response->setJSON($timeSlotsArray);
