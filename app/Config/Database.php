@@ -162,10 +162,10 @@ class Database extends Config
      */
     public array $tests = [
         'DSN' => '',
-        'hostname' => 'localhost',
-        'username' => 'root',
-        'password' => '',
-        'database' => '',
+        'hostname' => '127.0.0.1',
+        'username' => 'test_conf_user',
+        'password' => '1234',
+        'database' => 'test_conf_test',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,

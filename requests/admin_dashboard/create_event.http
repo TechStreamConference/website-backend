@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/account/login
+POST http://localhost/api/account/login
 
 {
   "username_or_email": "coder2k",
@@ -7,7 +7,7 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-POST localhost:8080/api/dashboard/admin/event/new
+POST localhost/api/dashboard/admin/event/new
 
 {
     "title": "TECH STREAM CONFERENCE 2025",
@@ -18,7 +18,8 @@ POST localhost:8080/api/dashboard/admin/event/new
     "discord_url": "https://discord.gg/123456",
     "twitch_url": "https://twitch.tv/123456",
     "presskit_url": "https://presskit.com/123456",
-    "trailer_youtube_id": "123456",
+    "trailer_url": "https://www.youtube.com/watch?v=123456",
+    "trailer_poster_url": "https://img.youtube.com/vi/123456/maxresdefault.jpg",
     "description_headline": "New Event Description Headline",
     "schedule_visible_from": null,
     "publish_date": null,

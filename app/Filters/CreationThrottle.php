@@ -11,6 +11,9 @@ class CreationThrottle implements FilterInterface
 
     public function before(RequestInterface $request, $arguments = null)
     {
+        if (ENVIRONMENT === 'testing') {
+            return; // Skip throttling in tests
+        }
         $throttler = service('throttler');
         // We require the IP address to be in the `X-Real-IP` header.
         $ip = $request->header('x-real-ip')->getValue();

@@ -47,7 +47,12 @@ class AddEvent extends Migration
                 'constraint' => 200,
                 'null' => true,
             ],
-            'trailer_youtube_id' => [
+            'trailer_url' => [
+                'type' => 'VARCHAR',
+                'constraint' => 200,
+                'null' => true,
+            ],
+            'trailer_poster_url' => [
                 'type' => 'VARCHAR',
                 'constraint' => 200,
                 'null' => true,
