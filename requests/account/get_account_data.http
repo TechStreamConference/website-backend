@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/account/login
+POST http://localhost/api/account/login
 
 {
   "username_or_email": "coder2k",
@@ -7,4 +7,4 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-GET localhost:8080/api/account
+GET localhost/api/account/roles

@@ -24,7 +24,7 @@ class AddEventCallForPapersDates extends Migration
 
     public function down(): void
     {
-        $this->forge->dropColumn('event', 'call_for_papers_start');
-        $this->forge->dropColumn('event', 'call_for_papers_end');
+        $this->forge->dropColumn('Event', 'call_for_papers_start');
+        $this->forge->dropColumn('Event', 'call_for_papers_end');
     }
 }
