@@ -6,6 +6,23 @@ RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 FROM composer:2.2.25 AS dev_dependencies
 WORKDIR /app
+
+# Install shadow package to enable user/group creation with specific UID/GID
+RUN apk add --no-cache shadow
+
+# Create group and user only if they don't already exist
+RUN set -eux; \
+    if ! getent group "$HOST_GID" > /dev/null; then \
+        groupadd -g "$HOST_GID" appgroup; \
+    fi; \
+    if ! getent passwd "$HOST_UID" > /dev/null; then \
+        useradd -u "$HOST_UID" -g "$HOST_GID" -m appuser; \
+    fi
+
+RUN chown -R $HOST_UID:$HOST_GID /app
+
+USER ${HOST_UID}:${HOST_GID}
+
 COPY composer.json composer.lock ./
 RUN composer install --ignore-platform-reqs
 
