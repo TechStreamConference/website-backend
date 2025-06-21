@@ -1,3 +1,6 @@
+ARG HOST_UID=1000
+ARG HOST_GID=1000
+
 # --- Installation of dependencies for production ---
 FROM composer:2.2.25 AS prod_dependencies
 WORKDIR /app
@@ -5,6 +8,10 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 FROM composer:2.2.25 AS dev_dependencies
+
+ARG HOST_UID
+ARG HOST_GID
+
 WORKDIR /app
 
 # Install shadow package to enable user/group creation with specific UID/GID
@@ -45,12 +52,20 @@ RUN apt-get update && apt-get install -y \
        gd
 RUN a2enmod rewrite && a2enmod headers
 
-RUN echo 'alias ll="ls -la"' >> ~/.bashrc
-
 # --- Development stage ---
 FROM base AS dev
+
+ARG HOST_UID
+ARG HOST_GID
+
 WORKDIR /var/www/html
-COPY --from=dev_dependencies /app/vendor/ /vendor.bak/
+
+# Create user and group matching the host's
+# Avoid conflicts if the UID/GID already exist
+RUN getent group $HOST_GID || groupadd -g $HOST_GID appgroup && \
+    getent passwd $HOST_UID || useradd -u $HOST_UID -g $HOST_GID -m appuser
+RUN chown -R $HOST_UID:$HOST_GID /var/www/html
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
