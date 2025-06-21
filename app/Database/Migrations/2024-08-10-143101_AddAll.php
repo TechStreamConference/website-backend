@@ -250,15 +250,25 @@ class AddAll extends Migration
                 'type' => 'TEXT',
                 'null' => false,
             ],
-            'publish_date' => [
+            'call_for_papers_start' => [
                 'type' => 'DATETIME',
                 'null' => true,
                 'after' => 'description',
             ],
+            'call_for_papers_end' => [
+                'type' => 'DATETIME',
+                'null' => true,
+                'after' => 'call_for_papers_start',
+            ],
+            'publish_date' => [
+                'type' => 'DATETIME',
+                'null' => true,
+                'after' => 'call_for_papers_end',
+            ],
             'frontpage_date' => [
                 'type' => 'DATETIME',
                 'null' => true,
-                'after' => 'description',
+                'after' => 'publish_date',
             ],
             'schedule_visible_from' => [
                 'type' => 'DATETIME',
@@ -661,6 +671,98 @@ class AddAll extends Migration
         $this->forge->addForeignKey('tag_id', 'Tag', 'id');
         $this->forge->createTable('TalkHasTag');
 
+        // Create Globals table
+        $this->forge->addField([
+            'key' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false,
+            ],
+            'value' => [
+                'type' => 'TEXT',
+                'null' => false,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('key');
+        $this->forge->createTable('Globals');
+
+        // Create VerificationToken table
+        $this->forge->addField([
+            'token' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'expires_at' => [
+                'type' => 'DATETIME',
+            ],
+            'new_email' => [
+                'type' => 'VARCHAR',
+                'constraint' => 320,
+                'null' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('token');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->createTable('VerificationToken');
+
+        // Create PasswordResetToken table
+        $this->forge->addField([
+            'token' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'expires_at' => [
+                'type' => 'DATETIME',
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('token');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->createTable('PasswordResetToken');
+
         // Create Roles view
         $this->db->query("
             CREATE VIEW Roles AS
@@ -714,10 +816,13 @@ class AddAll extends Migration
         $this->forge->dropTable('TeamMember');
         $this->forge->dropTable('Speaker');
         $this->forge->dropTable('SocialMediaLink');
+        $this->forge->dropTable('VerificationToken');
+        $this->forge->dropTable('PasswordResetToken');
         $this->forge->dropTable('Event');
         $this->forge->dropTable('Admin');
         $this->forge->dropTable('Account');
         $this->forge->dropTable('User');
         $this->forge->dropTable('SocialMediaType');
+        $this->forge->dropTable('Globals');
     }
 }
