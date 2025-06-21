@@ -1,3 +1,6 @@
+ARG HOST_UID=1000
+ARG HOST_GID=1000
+
 # --- Installation of dependencies for production ---
 FROM composer:2.2.25 AS prod_dependencies
 WORKDIR /app
@@ -5,7 +8,28 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 FROM composer:2.2.25 AS dev_dependencies
+
+ARG HOST_UID
+ARG HOST_GID
+
 WORKDIR /app
+
+# Install shadow package to enable user/group creation with specific UID/GID
+RUN apk add --no-cache shadow
+
+# Create group and user only if they don't already exist
+RUN set -eux; \
+    if ! getent group "$HOST_GID" > /dev/null; then \
+        groupadd -g "$HOST_GID" appgroup; \
+    fi; \
+    if ! getent passwd "$HOST_UID" > /dev/null; then \
+        useradd -u "$HOST_UID" -g "$HOST_GID" -m appuser; \
+    fi
+
+RUN chown -R $HOST_UID:$HOST_GID /app
+
+USER ${HOST_UID}:${HOST_GID}
+
 COPY composer.json composer.lock ./
 RUN composer install --ignore-platform-reqs
 
@@ -28,15 +52,35 @@ RUN apt-get update && apt-get install -y \
        gd
 RUN a2enmod rewrite && a2enmod headers
 
-RUN echo 'alias ll="ls -la"' >> ~/.bashrc
-
 # --- Development stage ---
 FROM base AS dev
+
+ARG HOST_UID
+ARG HOST_GID
+
 WORKDIR /var/www/html
-COPY --from=dev_dependencies /app/vendor/ /vendor.bak/
+
+# Create group and user only if they don't already exist
+RUN set -eux; \
+    if ! getent group "$HOST_GID" > /dev/null; then \
+        groupadd -g "$HOST_GID" appgroup; \
+    fi; \
+    if ! getent passwd "$HOST_UID" > /dev/null; then \
+        useradd -u "$HOST_UID" -g "$HOST_GID" -m appuser; \
+    fi
+RUN chown -R $HOST_UID:$HOST_GID /var/www/html
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Switch user
+USER ${HOST_UID}:${HOST_GID}
+
 ENTRYPOINT ["/entrypoint.sh"]
+
+RUN echo 'alias ll="ls -la"' >> ~/.bashrc
+
+COPY --from=dev_dependencies /app/vendor/ /vendor.bak
 # Source code will be a mounted volume, so no need to copy it here.
 EXPOSE 80
 CMD ["apache2-foreground"]
