@@ -11,6 +11,35 @@ class AddAll extends Migration
      */
     public function up(): void
     {
+        // Create SocialMediaType table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'name' => [
+                'type' => 'VARCHAR',
+                'constraint' => 100,
+                'unique' => true,
+                'null' => false,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->createTable('SocialMediaType');
+
         // Create User table
         $this->forge->addField([
             'id' => [
@@ -85,6 +114,57 @@ class AddAll extends Migration
         $this->forge->addPrimaryKey('user_id');
         $this->forge->addForeignKey('user_id', 'User', 'id');
         $this->forge->createTable('Account');
+
+        // Create SocialMediaLink table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'social_media_type_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+            'url' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false,
+            ],
+            'approved' => [
+                'type' => 'BOOLEAN',
+                'null' => false,
+                'default' => false,
+                'after' => 'url',
+            ],
+            'requested_changes' => [
+                'type' => 'TEXT',
+                'null' => true,
+                'after' => 'approved',
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('social_media_type_id', 'SocialMediaType', 'id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->createTable('SocialMediaLink');
 
         // Create Event table
         $this->forge->addField([
@@ -246,6 +326,34 @@ class AddAll extends Migration
         $this->forge->addForeignKey('user_id', 'User', 'id');
         $this->forge->addForeignKey('event_id', 'Event', 'id');
         $this->forge->createTable('Speaker');
+
+        // Create TeamMember table (same structure as Speaker)
+        // The TeamMember table has the same structure as the Speaker table
+        $speakerTableFields = $this->db->getFieldData('Speaker');
+
+        $fields = [];
+        $fields['id'] = [
+            'type' => 'INT',
+            'unsigned' => true,
+            'auto_increment' => true,
+        ];
+
+        foreach ($speakerTableFields as $field) {
+            if ($field->name === 'id') {
+                continue;
+            }
+            $fields[$field->name] = [
+                'type' => $field->type,
+                'constraint' => $field->max_length ?? null,
+                'unsigned' => $field->unsigned ?? false,
+                'null' => $field->nullable ?? false,
+                'default' => $field->default ?? null,
+            ];
+        }
+
+        $this->forge->addField($fields);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->createTable('TeamMember');
     }
 
     /**
@@ -254,9 +362,12 @@ class AddAll extends Migration
     public function down(): void
     {
         // Drop tables in reverse order to avoid foreign key constraints
+        $this->forge->dropTable('TeamMember');
         $this->forge->dropTable('Speaker');
+        $this->forge->dropTable('SocialMediaLink');
         $this->forge->dropTable('Event');
         $this->forge->dropTable('Account');
         $this->forge->dropTable('User');
+        $this->forge->dropTable('SocialMediaType');
     }
 }
