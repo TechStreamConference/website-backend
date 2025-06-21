@@ -4,10 +4,37 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddAccount extends Migration
+class AddUserAndAccount extends Migration
 {
+    /**
+     * @inheritDoc
+     */
     public function up(): void
     {
+        // Create User table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->createTable('User');
+
+        // Create Account table
         $this->forge->addField([
             'user_id' => [
                 'type' => 'INT',
@@ -60,8 +87,13 @@ class AddAccount extends Migration
         $this->forge->createTable('Account');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function down(): void
     {
+        // Drop tables in reverse order to avoid foreign key constraints
         $this->forge->dropTable('Account');
+        $this->forge->dropTable('User');
     }
 }
