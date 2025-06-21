@@ -1017,5 +1017,122 @@ class SocialMediaLinkSeeder2024 extends Seeder
             'updated_at' => '2024-01-01 00:00:00',
         ]);
 
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 2, // Twitch
+            'user_id' => 21, // Bobo
+            'url' => 'https://www.twitch.tv/manasoupnetwork',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 3, // Discord
+            'user_id' => 21, // Bobo
+            'url' => 'https://www.manasoup.com/discord.html',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 1, // Web
+            'user_id' => 21, // Bobo
+            'url' => 'https://www.manasoup.com',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 4, // LinkedIn
+            'user_id' => 21, // Bobo
+            'url' => 'https://www.linkedin.com/in/manasoupbobo/',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 5, // YouTube
+            'user_id' => 21, // Bobo
+            'url' => 'https://www.youtube.com/c/manasoupinteractive',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 6, // Instagram
+            'user_id' => 21, // Bobo
+            'url' => 'https://www.instagram.com/manasoup_network',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 2, // Twitch
+            'user_id' => 22, // Andi
+            'url' => 'https://www.twitch.tv/manasoupnetwork',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 3, // Discord
+            'user_id' => 22, // Andi
+            'url' => 'https://www.manasoup.com/discord.html',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 9, // GitHub
+            'user_id' => 22, // Andi
+            'url' => 'https://github.com/Snackerony',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 1, // Web
+            'user_id' => 22, // Andi
+            'url' => 'https://www.manasoup.com/',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 4, // LinkedIn
+            'user_id' => 22, // Andi
+            'url' => 'https://www.linkedin.com/in/manasoupandi/',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 5, // YouTube
+            'user_id' => 22, // Andi
+            'url' => 'https://www.youtube.com/c/manasoupinteractive',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
+        $this->db->table('SocialMediaLink')->insert([
+            'social_media_type_id' => 6, // Instagram
+            'user_id' => 22, // Andi
+            'url' => 'https://www.instagram.com/manasoup_network',
+            'approved' => true,
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-01 00:00:00',
+        ]);
+
     }
 }
