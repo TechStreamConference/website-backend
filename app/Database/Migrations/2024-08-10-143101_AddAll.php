@@ -354,6 +354,104 @@ class AddAll extends Migration
         $this->forge->addField($fields);
         $this->forge->addPrimaryKey('id');
         $this->forge->createTable('TeamMember');
+
+        // Create Sponsor table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'event_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+            'url' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false,
+            ],
+            'logo' => [
+                'type' => 'VARCHAR',
+                'constraint' => 64,
+                'null' => false,
+            ],
+            'logo_mime_type' => [
+                'type' => 'VARCHAR',
+                'constraint' => 64,
+                'null' => false,
+            ],
+            'logo_alternative' => [
+                'type' => 'VARCHAR',
+                'constraint' => 64,
+                'null' => true,
+            ],
+            'logo_alternative_mime_type' => [
+                'type' => 'VARCHAR',
+                'constraint' => 64,
+                'null' => true,
+            ],
+            'name' => [
+                'type' => 'VARCHAR',
+                'constraint' => 100,
+                'null' => false,
+            ],
+            'alt_text' => [
+                'type' => 'TEXT',
+                'null' => false,
+            ],
+            'copyright' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],
+            'visible_from' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('event_id', 'Event', 'id');
+        $this->forge->createTable('Sponsor');
+
+        // Create MediaPartner table (same structure as Sponsor)
+        $sponsorTableFields = $this->db->getFieldData('Sponsor');
+
+        $fields = [];
+        $fields['id'] = [
+            'type' => 'INT',
+            'unsigned' => true,
+            'auto_increment' => true,
+        ];
+
+        foreach ($sponsorTableFields as $field) {
+            if ($field->name === 'id') {
+                continue;
+            }
+            $fields[$field->name] = [
+                'type' => $field->type,
+                'constraint' => $field->max_length ?? null,
+                'unsigned' => $field->unsigned ?? false,
+                'null' => $field->nullable ?? false,
+                'default' => $field->default ?? null,
+            ];
+        }
+
+        $this->forge->addField($fields);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->createTable('MediaPartner');
     }
 
     /**
@@ -362,6 +460,8 @@ class AddAll extends Migration
     public function down(): void
     {
         // Drop tables in reverse order to avoid foreign key constraints
+        $this->forge->dropTable('MediaPartner');
+        $this->forge->dropTable('Sponsor');
         $this->forge->dropTable('TeamMember');
         $this->forge->dropTable('Speaker');
         $this->forge->dropTable('SocialMediaLink');
