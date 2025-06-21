@@ -60,15 +60,27 @@ ARG HOST_GID
 
 WORKDIR /var/www/html
 
-# Create user and group matching the host's
-# Avoid conflicts if the UID/GID already exist
-RUN getent group $HOST_GID || groupadd -g $HOST_GID appgroup && \
-    getent passwd $HOST_UID || useradd -u $HOST_UID -g $HOST_GID -m appuser
+# Create group and user only if they don't already exist
+RUN set -eux; \
+    if ! getent group "$HOST_GID" > /dev/null; then \
+        groupadd -g "$HOST_GID" appgroup; \
+    fi; \
+    if ! getent passwd "$HOST_UID" > /dev/null; then \
+        useradd -u "$HOST_UID" -g "$HOST_GID" -m appuser; \
+    fi
 RUN chown -R $HOST_UID:$HOST_GID /var/www/html
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+# Switch user
+USER ${HOST_UID}:${HOST_GID}
+
 ENTRYPOINT ["/entrypoint.sh"]
+
+RUN echo 'alias ll="ls -la"' >> ~/.bashrc
+
+COPY --from=dev_dependencies /app/vendor/ /vendor.bak
 # Source code will be a mounted volume, so no need to copy it here.
 EXPOSE 80
 CMD ["apache2-foreground"]
