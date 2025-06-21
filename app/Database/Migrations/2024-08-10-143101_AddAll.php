@@ -763,6 +763,132 @@ class AddAll extends Migration
         $this->forge->addForeignKey('user_id', 'User', 'id');
         $this->forge->createTable('PasswordResetToken');
 
+        // Create ConnectedRegistrationToken table
+        $this->forge->addField([
+            'token' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('token');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->createTable('ConnectedRegistrationToken');
+
+        // Create PossibleTalkDuration table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'talk_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'duration' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('talk_id', 'Talk', 'id');
+        $this->forge->addForeignKey('duration', 'TalkDurationChoice', 'duration');
+        $this->forge->createTable('PossibleTalkDuration');
+
+        // Create Guest table
+        $this->forge->addField([
+            'talk_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey(['talk_id', 'user_id']);
+        $this->forge->addForeignKey('talk_id', 'Talk', 'id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->createTable('Guest');
+
+        // Create VideoRoom table
+        $this->forge->addField([
+            'event_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'base_url' => [
+                'type' => 'VARCHAR',
+                'null' => false,
+                'constraint' => 256,
+            ],
+            'room_id' => [
+                'type' => 'VARCHAR',
+                'null' => false,
+                'constraint' => 256,
+            ],
+            'password' => [
+                'type' => 'VARCHAR',
+                'null' => false,
+                'constraint' => 256,
+            ],
+            'visible_from' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('event_id');
+        $this->forge->addForeignKey('event_id', 'Event', 'id');
+        $this->forge->createTable('VideoRoom');
+
         // Create Roles view
         $this->db->query("
             CREATE VIEW Roles AS
@@ -806,16 +932,20 @@ class AddAll extends Migration
     {
         // Drop tables in reverse order to avoid foreign key constraints
         $this->db->query('DROP VIEW Roles');
+        $this->forge->dropTable('Guest');
+        $this->forge->dropTable('PossibleTalkDuration');
         $this->forge->dropTable('TalkHasTag');
         $this->forge->dropTable('Talk');
         $this->forge->dropTable('Tag');
         $this->forge->dropTable('TimeSlot');
         $this->forge->dropTable('TalkDurationChoice');
+        $this->forge->dropTable('VideoRoom');
         $this->forge->dropTable('MediaPartner');
         $this->forge->dropTable('Sponsor');
         $this->forge->dropTable('TeamMember');
         $this->forge->dropTable('Speaker');
         $this->forge->dropTable('SocialMediaLink');
+        $this->forge->dropTable('ConnectedRegistrationToken');
         $this->forge->dropTable('VerificationToken');
         $this->forge->dropTable('PasswordResetToken');
         $this->forge->dropTable('Event');
