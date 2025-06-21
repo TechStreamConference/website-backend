@@ -452,6 +452,95 @@ class AddAll extends Migration
         $this->forge->addField($fields);
         $this->forge->addPrimaryKey('id');
         $this->forge->createTable('MediaPartner');
+
+        // Create TalkDurationChoice table
+        $this->forge->addField([
+            'duration' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('duration');
+        $this->forge->createTable('TalkDurationChoice');
+
+        // Create TimeSlot table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'event_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'start_time' => [
+                'type' => 'DATETIME',
+            ],
+            'duration' => [
+                'type' => 'INT',
+                'unsigned' => true,
+            ],
+            'is_special' => [
+                'type' => 'BOOLEAN',
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('event_id', 'Event', 'id');
+        $this->forge->createTable('TimeSlot');
+
+        // Create Tag table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'text' => [
+                'type' => 'VARCHAR',
+                'constraint' => 100,
+                'null' => false,
+            ],
+            'color_index' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->createTable('Tag');
     }
 
     /**
@@ -460,6 +549,9 @@ class AddAll extends Migration
     public function down(): void
     {
         // Drop tables in reverse order to avoid foreign key constraints
+        $this->forge->dropTable('Tag');
+        $this->forge->dropTable('TimeSlot');
+        $this->forge->dropTable('TalkDurationChoice');
         $this->forge->dropTable('MediaPartner');
         $this->forge->dropTable('Sponsor');
         $this->forge->dropTable('TeamMember');
