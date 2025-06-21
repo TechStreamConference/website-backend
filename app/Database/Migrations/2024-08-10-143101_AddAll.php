@@ -115,6 +115,31 @@ class AddAll extends Migration
         $this->forge->addForeignKey('user_id', 'User', 'id');
         $this->forge->createTable('Account');
 
+        // Create Admin table
+        $this->forge->addField([
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'unique' => true,
+                'null' => false,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('user_id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->createTable('Admin');
+
         // Create SocialMediaLink table
         $this->forge->addField([
             'id' => [
@@ -541,6 +566,135 @@ class AddAll extends Migration
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->createTable('Tag');
+
+        // Create Talk table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'event_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+            'user_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+                'after' => 'event_id',
+            ],
+            'title' => [
+                'type' => 'VARCHAR',
+                'constraint' => 256,
+                'null' => false,
+            ],
+            'description' => [
+                'type' => 'TEXT',
+                'null' => false,
+            ],
+            'notes' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],
+            'requested_changes' => [
+                'type' => 'TEXT',
+                'null' => true,
+                'after' => 'is_special',
+            ],
+            'is_approved' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
+                'after' => 'requested_changes',
+            ],
+            'time_slot_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => true,
+                'after' => 'is_approved',
+            ],
+            'time_slot_accepted' => [
+                'type' => 'BOOLEAN',
+                'default' => false,
+                'after' => 'time_slot_id',
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
+            ],
+            'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('event_id', 'Event', 'id');
+        $this->forge->addForeignKey('user_id', 'User', 'id');
+        $this->forge->addForeignKey('time_slot_id', 'TimeSlot', 'id');
+        $this->forge->createTable('Talk');
+
+        // Create TalkHasTag table
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'talk_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+            'tag_id' => [
+                'type' => 'INT',
+                'unsigned' => true,
+                'null' => false,
+            ],
+        ]);
+        $this->forge->addPrimaryKey('id');
+        $this->forge->addForeignKey('talk_id', 'Talk', 'id');
+        $this->forge->addForeignKey('tag_id', 'Tag', 'id');
+        $this->forge->createTable('TalkHasTag');
+
+        // Create Roles view
+        $this->db->query("
+            CREATE VIEW Roles AS
+            SELECT
+                Account.user_id,
+                Account.email,
+                Account.username,
+                EXISTS (
+                    SELECT 1
+                    FROM Speaker
+                    WHERE Speaker.user_id = Account.user_id AND (
+                        Speaker.is_approved = TRUE
+                        OR Speaker.requested_changes IS NOT NULL
+                    )
+                ) AS is_speaker,
+                EXISTS (
+                    SELECT 1
+                    FROM TeamMember
+                    WHERE TeamMember.user_id = Account.user_id AND (
+                        TeamMember.is_approved = TRUE
+                        OR TeamMember.requested_changes IS NOT NULL
+                    )
+                ) AS is_team_member,
+                IF(Admin.user_id IS NOT NULL, TRUE, FALSE) AS is_admin
+            FROM
+                Account
+                    LEFT JOIN
+                Speaker ON Account.user_id = Speaker.user_id
+                    LEFT JOIN
+                TeamMember ON Account.user_id = TeamMember.user_id
+                    LEFT JOIN
+                Admin ON Account.user_id = Admin.user_id
+            GROUP BY user_id
+        ");
     }
 
     /**
@@ -549,6 +703,9 @@ class AddAll extends Migration
     public function down(): void
     {
         // Drop tables in reverse order to avoid foreign key constraints
+        $this->db->query('DROP VIEW Roles');
+        $this->forge->dropTable('TalkHasTag');
+        $this->forge->dropTable('Talk');
         $this->forge->dropTable('Tag');
         $this->forge->dropTable('TimeSlot');
         $this->forge->dropTable('TalkDurationChoice');
@@ -558,6 +715,7 @@ class AddAll extends Migration
         $this->forge->dropTable('Speaker');
         $this->forge->dropTable('SocialMediaLink');
         $this->forge->dropTable('Event');
+        $this->forge->dropTable('Admin');
         $this->forge->dropTable('Account');
         $this->forge->dropTable('User');
         $this->forge->dropTable('SocialMediaType');
