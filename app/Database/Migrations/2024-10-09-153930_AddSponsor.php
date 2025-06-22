@@ -34,6 +34,16 @@ class AddSponsor extends Migration
                 'constraint' => 64,
                 'null' => false,
             ],
+            'logo_alternative' => [
+                'type' => 'VARCHAR',
+                'constraint' => 64,
+                'null' => true,
+            ],
+            'logo_alternative_mime_type' => [
+                'type' => 'VARCHAR',
+                'constraint' => 64,
+                'null' => true,
+            ],
             'name' => [
                 'type' => 'VARCHAR',
                 'constraint' => 100,
