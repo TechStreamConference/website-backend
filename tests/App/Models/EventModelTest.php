@@ -99,6 +99,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
             discordUrl: 'https://discord.com/invite/tp4EnphfKb',
             twitchUrl: 'https://www.twitch.tv/coder2k',
             presskitUrl: 'https://test-conf.de/Test-Conf-Presskit.zip',
+            youtubeChannelUrl: 'https://www.youtube.com/@TECHSTREAMCONFERENCE',
             trailerUrl: 'https://www.youtube.com/watch?v=IW1vQAB6B18',
             trailerPosterUrl: 'https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg',
             descriptionHeadline: 'Test Event Description Headline',
@@ -171,6 +172,7 @@ Also sei gespannt!',
             discordUrl: 'https://discord.com/invite/tp4EnphfKb',
             twitchUrl: 'https://www.twitch.tv/coder2k',
             presskitUrl: 'https://test-conf.de/Test-Conf-Presskit.zip',
+            youtubeChannelUrl: 'https://www.youtube.com/@TECHSTREAMCONFERENCE',
             trailerUrl: 'https://www.youtube.com/watch?v=IW1vQAB6B18',
             trailerPosterUrl: 'https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg',
             descriptionHeadline: 'Updated Event Headline',
@@ -190,6 +192,7 @@ Also sei gespannt!',
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $events[1]['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $events[1]['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $events[1]['presskit_url']);
+        $this->assertEquals('https://www.youtube.com/@TECHSTREAMCONFERENCE', $events[1]['youtube_channel_url']);
         $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $events[1]['trailer_url']);
         $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $events[1]['trailer_poster_url']);
         $this->assertEquals('Updated Event Headline', $events[1]['description_headline']);
@@ -214,6 +217,7 @@ Also sei gespannt!',
             discordUrl: 'https://discord.com/invite/tp4EnphfKb',
             twitchUrl: 'https://www.twitch.tv/coder2k',
             presskitUrl: 'https://test-conf.de/Test-Conf-Presskit.zip',
+            youtubeChannelUrl: 'https://www.youtube.com/@TECHSTREAMCONFERENCE',
             trailerUrl: 'https://www.youtube.com/watch?v=IW1vQAB6B18',
             trailerPosterUrl: 'https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg',
             descriptionHeadline: 'Test Event Headline',
@@ -234,6 +238,7 @@ Also sei gespannt!',
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $events[0]['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $events[0]['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $events[0]['presskit_url']);
+        $this->assertEquals('https://www.youtube.com/@TECHSTREAMCONFERENCE', $events[0]['youtube_channel_url']);
         $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $events[0]['trailer_url']);
         $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $events[0]['trailer_poster_url']);
         $this->assertEquals('Test Event Headline', $events[0]['description_headline']);

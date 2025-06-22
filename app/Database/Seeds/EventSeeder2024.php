@@ -17,6 +17,7 @@ class EventSeeder2024 extends Seeder
                 'discord_url' => 'https://discord.com/invite/tp4EnphfKb',
                 'twitch_url' => 'https://www.twitch.tv/coder2k',
                 'presskit_url' => 'https://test-conf.de/Test-Conf-Presskit.zip',
+                'youtube_channel_url' => 'https://www.youtube.com/@TECHSTREAMCONFERENCE',
                 'publish_date' => '2024-01-01 12:00:00',
                 'frontpage_date' => '2024-01-01 12:00:00',
                 'schedule_visible_from' => '2024-06-10 12:00:00',
