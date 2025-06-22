@@ -634,6 +634,12 @@ class AddAll extends Migration
                 'default' => false,
                 'after' => 'time_slot_id',
             ],
+            'youtube_url' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => true,
+                'after' => 'time_slot_accepted',
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,
