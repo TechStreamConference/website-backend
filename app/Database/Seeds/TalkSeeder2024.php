@@ -19,6 +19,7 @@ class TalkSeeder2024 extends Seeder
             'is_approved' => true,
             'time_slot_id' => 1,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=S_2-KUA34q4',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -33,6 +34,7 @@ class TalkSeeder2024 extends Seeder
             'is_approved' => true,
             'time_slot_id' => 2,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=i5rRnURYl24',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -47,6 +49,7 @@ class TalkSeeder2024 extends Seeder
             'is_approved' => true,
             'time_slot_id' => 3,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=txyt4bGWbkA',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -61,6 +64,7 @@ class TalkSeeder2024 extends Seeder
             'is_approved' => true,
             'time_slot_id' => 4,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=txyt4bGWbkA',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -79,6 +83,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 5,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=i-Jz59VdsFg',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -93,6 +98,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 6,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=SyDVuZgKeBI',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -107,6 +113,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 7,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=FSegqFaRPd8',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -121,6 +128,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 8,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=hg_UHY98DdY',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -135,6 +143,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 9,
             'time_slot_accepted' => true,
+            'youtube_url' => null, // Did not happen.
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -149,6 +158,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 10,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=LaVJEwGWpy8',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -163,6 +173,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 11,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=EevAbkdPQNo',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -177,6 +188,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 12,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=953jacwMXFM',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -191,6 +203,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 13,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=H0_-X43fAfA',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -205,6 +218,7 @@ Wir werden auch die Herausforderungen und Fragestellungen diskutieren, die der Ã
             'is_approved' => true,
             'time_slot_id' => 14,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=Qixs_A_675c&pp=0gcJCb4JAYcqIYzv',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -223,6 +237,7 @@ Diese Talkrunde enthÃ¤lt also ein ganzes Potpourri an interessanten Themen und v
             'is_approved' => true,
             'time_slot_id' => 15,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=K-N9tm92sTY',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -237,6 +252,7 @@ Diese Talkrunde enthÃ¤lt also ein ganzes Potpourri an interessanten Themen und v
             'is_approved' => true,
             'time_slot_id' => 16,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=RBEl-OmtY-g',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -251,6 +267,7 @@ Diese Talkrunde enthÃ¤lt also ein ganzes Potpourri an interessanten Themen und v
             'is_approved' => true,
             'time_slot_id' => 17,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=fqT9V4OhmT0',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -265,6 +282,7 @@ Diese Talkrunde enthÃ¤lt also ein ganzes Potpourri an interessanten Themen und v
             'is_approved' => true,
             'time_slot_id' => 18,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=lh0BiOVHb_E',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -279,6 +297,7 @@ Diese Talkrunde enthÃ¤lt also ein ganzes Potpourri an interessanten Themen und v
             'is_approved' => true,
             'time_slot_id' => 19,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=_bZZ7Ioga0M',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -293,6 +312,7 @@ Diese Talkrunde enthÃ¤lt also ein ganzes Potpourri an interessanten Themen und v
             'is_approved' => true,
             'time_slot_id' => 20,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=0h4WcxMh9Ws',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);
@@ -307,6 +327,7 @@ Diese Talkrunde enthÃ¤lt also ein ganzes Potpourri an interessanten Themen und v
             'is_approved' => true,
             'time_slot_id' => 21,
             'time_slot_accepted' => true,
+            'youtube_url' => 'https://www.youtube.com/watch?v=7iHpRQ6NXVA',
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',
         ]);

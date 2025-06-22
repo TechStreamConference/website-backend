@@ -17,6 +17,7 @@ class TalkModel extends Model
         'is_approved',
         'time_slot_id',
         'time_slot_accepted',
+        'youtube_url',
     ];
     protected $useTimestamps = true;
     protected array $casts = [
@@ -31,7 +32,7 @@ class TalkModel extends Model
     public function getApprovedByEventId(int $eventId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, time_slot_id')
+            ->select('id, event_id, user_id, title, description, time_slot_id, youtube_url')
             ->where('event_id', $eventId)
             ->where('requested_changes IS NULL')
             ->where('is_approved', true)
@@ -106,7 +107,7 @@ class TalkModel extends Model
     public function getAllPending(): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at, youtube_url')
             ->where('is_approved', false)
             ->orderBy('created_at')
             ->findAll();
@@ -115,7 +116,7 @@ class TalkModel extends Model
     public function getPendingForSpeaker(int $userId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, created_at, youtube_url')
             ->where('user_id', $userId)
             ->where('is_approved', false)
             ->orderBy('created_at')
@@ -125,7 +126,7 @@ class TalkModel extends Model
     public function getTentativeOrAcceptedForSpeaker(int $userId, int $eventId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at, youtube_url')
             ->where('event_id', $eventId)
             ->where('user_id', $userId)
             ->where('is_approved', true)
@@ -136,7 +137,7 @@ class TalkModel extends Model
     public function getAllTentative(): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at, youtube_url')
             ->where('is_approved', true)
             ->where('time_slot_accepted', false)
             ->orderBy('created_at')
@@ -146,7 +147,7 @@ class TalkModel extends Model
     public function getAllWithAcceptedTimeSlot(int $eventId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at, youtube_url')
             ->where('event_id', $eventId)
             ->where('is_approved', true)
             ->where('time_slot_accepted', true)
@@ -157,7 +158,7 @@ class TalkModel extends Model
     public function getAllTentativeOrAccepted(int $eventId): array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, time_slot_id, time_slot_accepted, created_at, youtube_url')
             ->where('event_id', $eventId)
             ->where('is_approved', true)
             ->orderBy('created_at')
@@ -167,7 +168,7 @@ class TalkModel extends Model
     public function get(int $talkId): ?array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted, youtube_url')
             ->where('id', $talkId)
             ->first();
     }
@@ -199,7 +200,7 @@ class TalkModel extends Model
     public function findByTimeSlot(int $timeSlotId): ?array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted, youtube_url')
             ->where('time_slot_id', $timeSlotId)
             ->first();
     }
@@ -227,7 +228,7 @@ class TalkModel extends Model
     public function findByTitle(string $title, int $eventId): ?array
     {
         return $this
-            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted')
+            ->select('id, event_id, user_id, title, description, notes, requested_changes, is_approved, time_slot_id, time_slot_accepted, youtube_url')
             ->where('event_id', $eventId)
             ->where('title', $title)
             ->first();

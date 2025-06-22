@@ -231,6 +231,11 @@ class AddAll extends Migration
                 'constraint' => 200,
                 'null' => true,
             ],
+            'youtube_channel_url' => [
+                'type' => 'VARCHAR',
+                'constraint' => 200,
+                'null' => true,
+            ],
             'trailer_url' => [
                 'type' => 'VARCHAR',
                 'constraint' => 200,
@@ -628,6 +633,12 @@ class AddAll extends Migration
                 'type' => 'BOOLEAN',
                 'default' => false,
                 'after' => 'time_slot_id',
+            ],
+            'youtube_url' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => true,
+                'after' => 'time_slot_accepted',
             ],
             'created_at' => [
                 'type' => 'DATETIME',
