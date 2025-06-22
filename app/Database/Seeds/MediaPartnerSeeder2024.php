@@ -37,6 +37,8 @@ class MediaPartnerSeeder2024 extends Seeder
             'url' => 'https://manasoup.com/',
             'logo' => 'manasoup_network.png',
             'logo_mime_type' => 'image/png',
+            'logo_alternative' => 'manasoup_network_darkmode.png',
+            'logo_alternative_mime_type' => 'image/png',
             'name' => 'ManaSoup',
             'alt_text' => 'Das Logo von ManaSoup',
             'visible_from' => '2024-01-01 00:00:00',
