@@ -246,6 +246,11 @@ class AddAll extends Migration
                 'constraint' => 200,
                 'null' => true,
             ],
+            'trailer_subtitles_url' => [
+                'type' => 'VARCHAR',
+                'constraint' => 200,
+                'null' => true,
+            ],
             'description_headline' => [
                 'type' => 'VARCHAR',
                 'constraint' => 200,

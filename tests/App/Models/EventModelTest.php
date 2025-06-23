@@ -35,8 +35,9 @@ class EventModelTest extends CIUnitTestCase
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $event['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $event['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $event['presskit_url']);
-        $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $event['trailer_url']);
-        $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $event['trailer_poster_url']);
+        $this->assertNull($event['trailer_url']);
+        $this->assertNull($event['trailer_poster_url']);
+        $this->assertNull($event['trailer_subtitles_url']);
         $this->assertEquals('Sei dabei!', $event['description_headline']);
         $this->assertEquals(
             'Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.
@@ -68,8 +69,9 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $event['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $event['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $event['presskit_url']);
-        $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $event['trailer_url']);
-        $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $event['trailer_poster_url']);
+        $this->assertNull($event['trailer_url']);
+        $this->assertNull($event['trailer_poster_url']);
+        $this->assertNull($event['trailer_subtitles_url']);
         $this->assertEquals('Sei dabei!', $event['description_headline']);
         $this->assertEquals(
             'Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.
@@ -102,6 +104,7 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
             youtubeChannelUrl: 'https://www.youtube.com/@TECHSTREAMCONFERENCE',
             trailerUrl: 'https://www.youtube.com/watch?v=IW1vQAB6B18',
             trailerPosterUrl: 'https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg',
+            trailerSubtitlesUrl: 'https://example.com/subtitles.vtt',
             descriptionHeadline: 'Test Event Description Headline',
             description: 'Test Event Description',
             scheduleVisibleFrom: '2024-01-01 12:00:00',
@@ -131,8 +134,9 @@ Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzune
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $events[0]['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $events[0]['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $events[0]['presskit_url']);
-        $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $events[0]['trailer_url']);
-        $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $events[0]['trailer_poster_url']);
+        $this->assertNull($events[0]['trailer_url']);
+        $this->assertNull($events[0]['trailer_poster_url']);
+        $this->assertNull($events[0]['trailer_subtitles_url']);
         $this->assertEquals('Komm\' ran!', $events[0]['description_headline']);
         $this->assertEquals(
             'In einer weit, weit entfernten Galaxis...
@@ -151,8 +155,9 @@ Also sei gespannt!',
         $this->assertEquals('https://discord.com/invite/tp4EnphfKb', $events[1]['discord_url']);
         $this->assertEquals('https://www.twitch.tv/coder2k', $events[1]['twitch_url']);
         $this->assertEquals('https://test-conf.de/Test-Conf-Presskit.zip', $events[1]['presskit_url']);
-        $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $events[1]['trailer_url']);
-        $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $events[1]['trailer_poster_url']);
+        $this->assertNull($events[1]['trailer_url']);
+        $this->assertNull($events[1]['trailer_poster_url']);
+        $this->assertNull($events[1]['trailer_subtitles_url']);
         $this->assertEquals('Sei dabei!', $events[1]['description_headline']);
         $this->assertEquals('2024-01-01 12:00:00', $events[1]['publish_date']);
     }
@@ -175,6 +180,7 @@ Also sei gespannt!',
             youtubeChannelUrl: 'https://www.youtube.com/@TECHSTREAMCONFERENCE',
             trailerUrl: 'https://www.youtube.com/watch?v=IW1vQAB6B18',
             trailerPosterUrl: 'https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg',
+            trailerSubtitlesUrl: 'https://example.com/subtitles.vtt',
             descriptionHeadline: 'Updated Event Headline',
             description: 'Updated Event Description',
             scheduleVisibleFrom: '2024-01-01 12:00:00',
@@ -195,6 +201,7 @@ Also sei gespannt!',
         $this->assertEquals('https://www.youtube.com/@TECHSTREAMCONFERENCE', $events[1]['youtube_channel_url']);
         $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $events[1]['trailer_url']);
         $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $events[1]['trailer_poster_url']);
+        $this->assertEquals('https://example.com/subtitles.vtt', $events[1]['trailer_subtitles_url']);
         $this->assertEquals('Updated Event Headline', $events[1]['description_headline']);
         $this->assertEquals('Updated Event Description', $events[1]['description']);
         $this->assertEquals('2024-01-01 12:00:00', $events[1]['schedule_visible_from']);
@@ -220,6 +227,7 @@ Also sei gespannt!',
             youtubeChannelUrl: 'https://www.youtube.com/@TECHSTREAMCONFERENCE',
             trailerUrl: 'https://www.youtube.com/watch?v=IW1vQAB6B18',
             trailerPosterUrl: 'https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg',
+            trailerSubtitlesUrl: 'https://example.com/subtitles.vtt',
             descriptionHeadline: 'Test Event Headline',
             description: 'Test Event Description',
             scheduleVisibleFrom: '2026-01-01 12:00:00',
@@ -241,6 +249,7 @@ Also sei gespannt!',
         $this->assertEquals('https://www.youtube.com/@TECHSTREAMCONFERENCE', $events[0]['youtube_channel_url']);
         $this->assertEquals('https://www.youtube.com/watch?v=IW1vQAB6B18', $events[0]['trailer_url']);
         $this->assertEquals('https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg', $events[0]['trailer_poster_url']);
+        $this->assertEquals('https://example.com/subtitles.vtt', $events[0]['trailer_subtitles_url']);
         $this->assertEquals('Test Event Headline', $events[0]['description_headline']);
         $this->assertEquals('2026-01-01 12:00:00', $events[0]['schedule_visible_from']);
         $this->assertEquals('Test Event Description', $events[0]['description']);
