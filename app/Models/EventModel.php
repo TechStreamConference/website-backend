@@ -19,6 +19,7 @@ class EventModel extends Model
         'youtube_channel_url',
         'trailer_url',
         'trailer_poster_url',
+        'trailer_subtitles_url',
         'description_headline',
         'description',
         'schedule_visible_from',
@@ -35,7 +36,7 @@ class EventModel extends Model
     public function getPublished(int $eventId): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, description_headline, description, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, trailer_subtitles_url, description_headline, description, call_for_papers_start, call_for_papers_end')
             ->where('id', $eventId)
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->first();
@@ -44,7 +45,7 @@ class EventModel extends Model
     public function getPublishedByYear(int $year): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, trailer_subtitles_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('YEAR(start_date)', $year)
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->first();
@@ -53,7 +54,7 @@ class EventModel extends Model
     public function getAll(): array
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, trailer_subtitles_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->orderBy('start_date', 'DESC')
             ->findAll();
     }
@@ -61,7 +62,7 @@ class EventModel extends Model
     public function getAllPublished(): array
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, description_headline, description, frontpage_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, trailer_subtitles_url, description_headline, description, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->orderBy('start_date', 'DESC')
             ->findAll();
@@ -70,7 +71,7 @@ class EventModel extends Model
     public function getLatestPublished(): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, trailer_subtitles_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('publish_date <=', date('Y-m-d H:i:s'))
             ->orderBy('start_date', 'DESC')
             ->first();
@@ -79,7 +80,7 @@ class EventModel extends Model
     public function get(int $eventId): array|null
     {
         return $this
-            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, trailer_subtitles_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
             ->where('id', $eventId)
             ->first();
     }
@@ -101,6 +102,7 @@ class EventModel extends Model
         ?string $youtubeChannelUrl,
         ?string $trailerUrl,
         ?string $trailerPosterUrl,
+        ?string $trailerSubtitlesUrl,
         string  $descriptionHeadline,
         string  $description,
         ?string $scheduleVisibleFrom,
@@ -122,6 +124,7 @@ class EventModel extends Model
                 'youtube_channel_url' => $youtubeChannelUrl,
                 'trailer_url' => $trailerUrl,
                 'trailer_poster_url' => $trailerPosterUrl,
+                'trailer_subtitles_url' => $trailerSubtitlesUrl,
                 'description_headline' => $descriptionHeadline,
                 'description' => $description,
                 'schedule_visible_from' => $scheduleVisibleFrom,
@@ -144,6 +147,7 @@ class EventModel extends Model
         ?string $youtubeChannelUrl,
         ?string $trailerUrl,
         ?string $trailerPosterUrl,
+        ?string $trailerSubtitlesUrl,
         string  $descriptionHeadline,
         string  $description,
         ?string $scheduleVisibleFrom,
@@ -164,6 +168,7 @@ class EventModel extends Model
             'youtube_channel_url' => $youtubeChannelUrl,
             'trailer_url' => $trailerUrl,
             'trailer_poster_url' => $trailerPosterUrl,
+            'trailer_subtitles_url' => $trailerSubtitlesUrl,
             'description_headline' => $descriptionHeadline,
             'description' => $description,
             'schedule_visible_from' => $scheduleVisibleFrom,

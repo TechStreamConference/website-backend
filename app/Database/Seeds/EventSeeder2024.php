@@ -21,8 +21,9 @@ class EventSeeder2024 extends Seeder
                 'publish_date' => '2024-01-01 12:00:00',
                 'frontpage_date' => '2024-01-01 12:00:00',
                 'schedule_visible_from' => '2024-06-10 12:00:00',
-                'trailer_url' => 'https://www.youtube.com/watch?v=IW1vQAB6B18',
-                'trailer_poster_url' => 'https://img.youtube.com/vi/IW1vQAB6B18/maxresdefault.jpg',
+                'trailer_url' => null,
+                'trailer_poster_url' => null,
+                'trailer_subtitles_url' => null,
                 'description_headline' => 'Sei dabei!',
                 'description' => 'Spannende Vorträge aus den Bereichen Programmierung, Maker-Szene und Spieleentwicklung erwarten dich.
 Wir möchten dich herzlich einladen, an unserer ersten Online-Konferenz teilzunehmen. Freu dich auf unterhaltsame und interessante Vorträge – von der Community für die Community. Die Vortragenden stammen aus der Technik-Bubble von Twitch. Dazu gibt es noch "special guests" und Überraschungen. Also sei gespannt!',
