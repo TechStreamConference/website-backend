@@ -539,7 +539,7 @@ class TagSeeder2024 extends Seeder
 
         $this->db->table('Tag')->insert([
             'id' => 16,
-            'text' => 'Reverse Engeneering',
+            'text' => 'Reverse Engineering',
             'color_index' => 6,
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-01 00:00:00',

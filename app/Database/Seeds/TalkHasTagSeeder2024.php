@@ -18,7 +18,7 @@ class TalkHasTagSeeder2024 extends Seeder
 
         $this->db->table('TalkHasTag')->insert([
             'talk_id' => 1,
-            'tag_id' => 16, // Reverse Engeneering
+            'tag_id' => 16, // Reverse Engineering
         ]);
 
         $this->db->table('TalkHasTag')->insert([
