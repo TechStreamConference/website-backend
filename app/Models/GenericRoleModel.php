@@ -53,6 +53,7 @@ class GenericRoleModel extends Model
             ->join('Event', 'Event.id = event_id')
             ->where('user_id', $userId)
             ->groupBy('Event.id')
+            ->orderBy('Event.start_date', 'DESC')
             ->findAll();
     }
 
