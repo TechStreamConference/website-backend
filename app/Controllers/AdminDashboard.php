@@ -184,6 +184,10 @@ class AdminDashboard extends BaseController
 
         $speakerModel = model(SpeakerModel::class);
         $speakers = $speakerModel->getApproved($eventId);
+        // Sort speakers by name.
+        usort($speakers, function ($a, $b) {
+            return $a['name'] <=> $b['name'];
+        });
         return $this->response->setJSON($speakers);
     }
 
