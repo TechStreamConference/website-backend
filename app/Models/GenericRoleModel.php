@@ -133,6 +133,7 @@ class GenericRoleModel extends Model
             ->where("$this->table.user_id = outer_table.user_id")
             ->where('is_approved', true)
             ->where('visible_from <=', date('Y-m-d H:i:s'))
+            ->where('event_id', $eventId)
             ->orderBy('updated_at', 'DESC')
             ->limit(1)
             ->getCompiledSelect();
