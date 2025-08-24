@@ -223,11 +223,22 @@ class AdminDashboard extends BaseController
             }
         }
 
+        // When updating the `visible_from` field, we have to update *all* entries of the same user for the same event.
+        // This is a flaw in the data model: The visibility should be modelled in a separate table. As a workaround,
+        // we fetch all entries of the same user for the same event, and update them all.
+        // TODO: Fix the data model.
+
         foreach ($data as $speaker) {
-            $row = $speakers[array_search($speaker['id'], array_column($speakers, 'id'))];
-            $row['visible_from'] = $speaker['visible_from'];
-            $speakerModel->update($speaker['id'], $row);
+            // Get the ID of the user for the given speaker entry.
+            $userId = $speakerModel->get($speaker['id'])['user_id'];
+            // Update all entries of this user for the given event.
+            $allEntries = $speakerModel->getAllForUserAndEvent($userId, $eventId);
+            foreach ($allEntries as $entry) {
+                $entry['visible_from'] = $speaker['visible_from'];
+                $speakerModel->update($entry['id'], $entry);
+            }
         }
+
         return $this
             ->response
             ->setStatusCode(ResponseInterface::HTTP_NO_CONTENT);
