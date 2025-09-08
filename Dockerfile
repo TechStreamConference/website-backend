@@ -52,6 +52,13 @@ RUN apt-get update && apt-get install -y \
        gd
 RUN a2enmod rewrite && a2enmod headers
 
+# PHP runtime logs -> container stderr
+RUN set -eux; \
+  { \
+    echo 'log_errors=On'; \
+    echo 'error_log=/proc/self/fd/2'; \
+  } > /usr/local/etc/php/conf.d/docker-logger.ini
+
 # --- Development stage ---
 FROM base AS dev
 
