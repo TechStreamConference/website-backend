@@ -1,8 +1,8 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
-dein Social-Media-Link „<?= esc($url) ?>“ wurde nicht freigeschaltet. Bitte überarbeite die Daten anhand der folgenden Hinweise:
+dein Social-Media-Link „<?= $url ?>“ wurde nicht freigeschaltet. Bitte überarbeite die Daten anhand der folgenden Hinweise:
 
-<?= esc($requestedChanges) ?>
+<?= $requestedChanges ?>
 
 
 Viele Grüße,

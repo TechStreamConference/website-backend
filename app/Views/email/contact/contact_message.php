@@ -3,19 +3,19 @@ Liebe:r Tech Stream Conference Admin,
 es wurde eine Kontaktanfrage an die Tech Stream Conference gesendet.
 
 Name:
-<?= esc($name) ?>
+<?= $name ?>
 
 
 E-Mail-Adresse:
-<?= esc($email) ?>
+<?= $email ?>
 
 
 Betreff:
-<?= esc($subject) ?>
+<?= $subject ?>
 
 
 Nachricht:
-<?= esc($message) ?>
+<?= $message ?>
 
 
 

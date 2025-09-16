@@ -1,4 +1,4 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
 dein Datensatz wurde freigeschaltet. Du kannst deine aktuellen Daten jederzeit auf unserer Website einsehen.
 

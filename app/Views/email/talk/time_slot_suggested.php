@@ -1,6 +1,6 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
-wie wir dir ja bereits mitgeteilt haben, gefällt uns dein Vortragsthema "<?= esc($title) ?>" sehr gut.
+wie wir dir ja bereits mitgeteilt haben, gefällt uns dein Vortragsthema "<?= $title ?>" sehr gut.
 
 <?php if ($timeSlot->isSpecial): ?>
 Das Live-Programm ist bereits voll, aber wir würden deinen Vortrag gerne als Aufzeichnung veröffentlichen. Er würde dann als YouTube-Premiere laufen und im Zeitplan auf unserer Webseite erscheinen. Wir werden uns nochmals bei dir melden, um zu besprechen, wie und bis wann du deinen Vortrag aufzeichnen solltest. Die YouTube-Premiere würde stattfinden am:

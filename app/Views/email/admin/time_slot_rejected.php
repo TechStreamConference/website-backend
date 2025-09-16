@@ -1,6 +1,6 @@
 Liebe:r Tech Stream Conference Admin,
 
-<?= esc($username) ?> hat soeben den Zeit-Slot für den Talk "<?= esc($title) ?>" abgelehnt.
+<?= $username ?> hat soeben den Zeit-Slot für den Talk "<?= $title ?>" abgelehnt.
 
     Datum: <?= date('d.m.Y', strtotime($timeSlot->startTime)) ?>
 
@@ -9,9 +9,9 @@ Liebe:r Tech Stream Conference Admin,
 
 
 <?php if ($reason != null): ?>
-Als Grund hat <?= esc($username) ?> angegeben: <?= esc($reason) ?>
+Als Grund hat <?= $username ?> angegeben: <?= $reason ?>
 <?php else: ?>
-<?= esc($username) ?> hat keinen Grund angegeben.
+<?= $username ?> hat keinen Grund angegeben.
 <?php endif; ?>
 
 

@@ -1,4 +1,4 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
 du hast dein Passwort für die Tech Stream Conference vergessen? Kein Problem! Klicke auf den folgenden Link, um ein neues Passwort festzulegen:
 

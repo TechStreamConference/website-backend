@@ -1,8 +1,8 @@
 Liebe:r Tech Stream Conference Admin,
 
-<?= esc($admin) ?> hat gerade den Datensatz von <?= esc($username) ?> abgelehnt und die folgenden Änderungen angefordert:
+<?= $admin ?> hat gerade den Datensatz von <?= $username ?> abgelehnt und die folgenden Änderungen angefordert:
 
-<?= esc($requestedChanges) ?>
+<?= $requestedChanges ?>
 
 
 Viele Grüße,

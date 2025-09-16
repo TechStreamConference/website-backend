@@ -1,8 +1,8 @@
 Liebe:r Tech Stream Conference Admin,
 
-für den Talk "<?= esc($title) ?>" von <?= esc($username) ?> hat <?= esc($admin) ?> soeben Änderungen angefordert:
+für den Talk "<?= $title ?>" von <?= $username ?> hat <?= $admin ?> soeben Änderungen angefordert:
 
-<?= esc($requested_changes) ?>
+<?= $requested_changes ?>
 
 
 Viele Grüße,

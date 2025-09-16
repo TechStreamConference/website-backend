@@ -1,6 +1,6 @@
 Liebe:r Tech Stream Conference Admin,
 
-<?= esc($admin) ?> hat soeben den Talk "<?= esc($title) ?>" von <?= esc($username) ?> genehmigt.
+<?= $admin ?> hat soeben den Talk "<?= $title ?>" von <?= $username ?> genehmigt.
 
 Viele Grüße,
 das Tech Stream Conference Team
