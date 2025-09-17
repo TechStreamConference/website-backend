@@ -1,4 +1,4 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
 vielen Dank für deine Registrierung auf der Webseite der Tech Stream Conference. Bitte nutze den folgenden Link, um deine E-Mail-Adresse zu bestätigen:
 

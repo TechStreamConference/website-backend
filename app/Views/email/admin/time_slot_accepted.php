@@ -1,6 +1,6 @@
 Liebe:r Tech Stream Conference Admin,
 
-<?= esc($username) ?> hat soeben den Zeit-Slot für den Talk "<?= esc($title) ?>" bestätigt.
+<?= $username ?> hat soeben den Zeit-Slot für den Talk "<?= $title ?>" bestätigt.
 
     Datum: <?= date('d.m.Y', strtotime($timeSlot->startTime)) ?>
 

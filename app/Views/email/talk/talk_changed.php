@@ -1,12 +1,12 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
 du hast Änderungen an deinem Vortrag vorgenommen:
 
 <?php foreach ($differences as $difference): ?>
-<?= esc($difference->name) ?>:
-    Alter Wert: <?= esc($difference->old) ?>
+<?= $difference->name ?>:
+    Alter Wert: <?= $difference->old ?>
 
-    Neuer Wert: <?= esc($difference->new) ?>
+    Neuer Wert: <?= $difference->new ?>
 
 <?php endforeach; ?>
 

@@ -1,8 +1,8 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
 dein Datensatz wurde abgelehnt. Bitte überarbeite die Daten anhand der folgenden Hinweise:
 
-<?= esc($requestedChanges) ?>
+<?= $requestedChanges ?>
 
 
 Viele Grüße,

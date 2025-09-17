@@ -1,8 +1,8 @@
-Liebe:r <?= esc($username) ?>,
+Liebe:r <?= $username ?>,
 
 du hast den vorgeschlagenen Zeit-Slot akzeptiert. Wir freuen uns sehr, dass du bei der Tech Stream Conference dabei bist! Hier sind noch einmal alle Daten zusammengefasst:
 
-    Titel: <?= esc($title) ?>
+    Titel: <?= $title ?>
 
 <?php if ($timeSlot->isSpecial): ?>
     Zeitpunkt der YouTube-Premiere: <?= date('d.m.Y', strtotime($timeSlot->startTime)) ?>, <?= date('H:i', strtotime($timeSlot->startTime)) ?> Uhr

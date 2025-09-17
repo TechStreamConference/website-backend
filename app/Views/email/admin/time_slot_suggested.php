@@ -1,6 +1,6 @@
 Liebe:r Tech Stream Conference Admin,
 
-<?= esc($admin) ?> hat soeben einen Zeit-Slot für den Talk "<?= esc($title) ?>" von <?= esc($username) ?> vorgeschlagen. Der Termin lautet:
+<?= $admin ?> hat soeben einen Zeit-Slot für den Talk "<?= $title ?>" von <?= $username ?> vorgeschlagen. Der Termin lautet:
 
     Datum: <?= date('d.m.Y', strtotime($timeSlot->startTime)) ?>
 
