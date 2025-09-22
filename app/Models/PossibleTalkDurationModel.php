@@ -42,6 +42,6 @@ class PossibleTalkDurationModel extends Model
 
     public function get(int $talkId): array
     {
-        return $this->where('talk_id', $talkId)->findAll();
+        return $this->where('talk_id', $talkId)->orderBy('duration')->findAll();
     }
 }
