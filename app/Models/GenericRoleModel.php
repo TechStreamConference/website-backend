@@ -135,7 +135,7 @@ class GenericRoleModel extends Model
             ->where('is_approved', true)
             ->where('visible_from <=', date('Y-m-d H:i:s'))
             ->where('event_id', $eventId)
-            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')
             ->limit(1)
             ->getCompiledSelect();
 
@@ -162,7 +162,7 @@ class GenericRoleModel extends Model
             ->where("$this->table.user_id = outer_table.user_id")
             ->where('is_approved', true)
             ->where('event_id', $eventId)
-            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')
             ->limit(1)
             ->getCompiledSelect();
 
@@ -193,7 +193,7 @@ class GenericRoleModel extends Model
             ->select('id, user_id, name, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
             ->where('event_id', $eventId)
             ->where('user_id', $userId)
-            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')
             ->first();
     }
 
@@ -209,7 +209,7 @@ class GenericRoleModel extends Model
             ->where('event_id', $eventId)
             ->where('user_id', $userId)
             ->where('is_approved', true)
-            ->orderBy('updated_at', 'DESC')
+            ->orderBy('id', 'DESC')
             ->first();
     }
 
