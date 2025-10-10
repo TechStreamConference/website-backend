@@ -514,7 +514,7 @@ class AdminDashboard extends BaseController
      */
     private static function create_deterministic_uuids(int $count): array
     {
-        if ($count <= 0) {
+        if ($count < 0) {
             throw new InvalidArgumentException('count must be > 0');
         }
 
