@@ -15,6 +15,8 @@ use App\Models\SpeakerModel;
 use App\Models\TalkModel;
 use App\Models\VideoRoomModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use InvalidArgumentException;
+use Ramsey\Uuid\Uuid;
 
 class AdminDashboard extends BaseController
 {
@@ -319,6 +321,10 @@ class AdminDashboard extends BaseController
 
     public function getVideoRoom(int $eventId): ResponseInterface
     {
+        $numSpares = $this->request->getGet('num_spares', FILTER_VALIDATE_INT);
+        if ($numSpares === false || $numSpares === null) {
+            $numSpares = 0;
+        }
         $eventModel = model(EventModel::class);
         $events = $eventModel->get($eventId);
         if ($events === null) {
@@ -366,6 +372,28 @@ class AdminDashboard extends BaseController
                             $eventId,
                             $speaker['user_id'],
                             $speaker['name'],
+                            $linkType,
+                            $sourceType
+                        );
+
+                }
+            }
+            $speakerLinks[] = $links;
+        }
+
+        $spareUsernames = self::create_deterministic_uuids($numSpares);
+        foreach ($spareUsernames as $i => $spareUsername) {
+            $links = ['name' => "Spare" . $i];
+            foreach (VideoLinkType::cases() as $linkType) {
+                foreach (VideoSourceType::cases() as $sourceType) {
+                    $links["{$linkType->value}_{$sourceType->value}"] =
+                        VideoRoomHelper::createVideoLink(
+                            $baseUrl,
+                            $roomId,
+                            $password,
+                            $eventId,
+                            0, // The database never uses 0 as a user ID. Therefore, we can use it for the spares.
+                            $spareUsername,
                             $linkType,
                             $sourceType
                         );
@@ -476,5 +504,29 @@ class AdminDashboard extends BaseController
                 array_column($guests, 'user_id')
             )
         );
+    }
+
+    /**
+     * Deterministic, prefix-stable UUID list.
+     * The first N of create_deterministic_uuids(M) equal create_deterministic_uuids(N).
+     *
+     * @return string[] canonical UUIDs
+     */
+    private static function create_deterministic_uuids(int $count): array
+    {
+        if ($count <= 0) {
+            throw new InvalidArgumentException('count must be > 0');
+        }
+
+        // These MUST never be changed! Otherwise, we lost the determinism.
+        $SEQ_NAMESPACE = 'a0f0bbc9-f1be-41bf-bad6-1518808a5838';
+        $SEQ_PREFIX = 'tech-stream-conference/deterministic-seq/';
+
+        $out = [];
+        for ($i = 1; $i <= $count; ++$i) {
+            $name = $SEQ_PREFIX . $i; // Unique name based on the sequence number.
+            $out[] = Uuid::uuid5($SEQ_NAMESPACE, $name)->toString();
+        }
+        return $out;
     }
 }
