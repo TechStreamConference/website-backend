@@ -58,6 +58,13 @@ class TagModel extends Model
             }
         }
 
+        // For each talk, sort its tags by name.
+        foreach ($mapping as &$tags) {
+            usort($tags, function ($a, $b) {
+                return $a['text'] <=> $b['text'];
+            });
+        }
+
         return $mapping;
     }
 
