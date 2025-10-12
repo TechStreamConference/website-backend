@@ -1,4 +1,4 @@
-POST http://localhost:8080/api/account/login
+POST http://localhost/api/account/login
 
 {
   "username_or_email": "coder2k",
@@ -7,7 +7,7 @@ POST http://localhost:8080/api/account/login
 
 ###
 
-POST localhost:8080/api/dashboard/admin/video-room/event/1
+POST localhost/api/dashboard/admin/video-room/event/1
 
 {
   "base_url": "https://vdo.ninja"

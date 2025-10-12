@@ -11,8 +11,9 @@
     },
     "require": {
         "php": "^8.2",
+        "ext-mbstring": "*",
         "codeigniter4/framework": "^4.0",
-      "ext-mbstring": "*"
+        "ramsey/uuid": "^4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",
