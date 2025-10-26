@@ -126,8 +126,8 @@ class Talk extends BaseController
 
     /** Gets all speakers that are suitable as host for a new panel discussion to take place
      *  at the specified event.
-     *  @param int $eventId The event ID.
-     *  @return ResponseInterface The response to return to the client.
+     * @param int $eventId The event ID.
+     * @return ResponseInterface The response to return to the client.
      */
     public function getPossibleHosts(int $eventId): ResponseInterface
     {
@@ -1240,8 +1240,7 @@ class Talk extends BaseController
 
         $this->addGuestsToTalks($talks, $speakers);
 
-        foreach ($talks as &$talk)
-        {
+        foreach ($talks as &$talk) {
             unset($talk['user_id']);
         }
 
