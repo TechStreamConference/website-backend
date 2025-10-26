@@ -1225,7 +1225,16 @@ class Talk extends BaseController
             $speaker = $speakerModel->getLatestApprovedForEvent($talk['user_id'], $talk['event_id']);
             $speakers[] = $speaker;
             $talk['speaker'] = $speaker;
-            $talk['tags'] = $tagMapping[$talk['id']];
+            if (array_key_exists($talk['id'], $tagMapping)) {
+                $talk['tags'] = $tagMapping[$talk['id']];
+            } else {
+                log_message('warning', sprintf(
+                    'No tags found for talk ID %d while adding additional data to talks. '
+                    . 'Maybe you have manipulated the database manually?',
+                    $talk['id']
+                ));
+                $talk['tags'] = [];
+            }
             $talk['possible_durations'] = array_column(
                 $possibleTalkDurationModel->get($talk['id']),
                 'duration'
