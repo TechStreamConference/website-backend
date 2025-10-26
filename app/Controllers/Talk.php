@@ -126,8 +126,8 @@ class Talk extends BaseController
 
     /** Gets all speakers that are suitable as host for a new panel discussion to take place
      *  at the specified event.
-     *  @param int $eventId The event ID.
-     *  @return ResponseInterface The response to return to the client.
+     * @param int $eventId The event ID.
+     * @return ResponseInterface The response to return to the client.
      */
     public function getPossibleHosts(int $eventId): ResponseInterface
     {
@@ -1223,9 +1223,32 @@ class Talk extends BaseController
         $speakers = [];
         foreach ($talks as &$talk) {
             $speaker = $speakerModel->getLatestApprovedForEvent($talk['user_id'], $talk['event_id']);
+            if ($speaker === null) {
+                // There is no approved speaker entry for this user for this event. This should never
+                // happen. However, it *might* happen if we tinker with the database manually. So
+                // we'll just log an error here and ignore this talk.
+                log_message('error', sprintf(
+                    'No approved speaker entry found for user ID %d for event '
+                    . 'ID %d while adding additional data to talk ID %d. This indicates '
+                    . 'a data integrity issue.',
+                    $talk['user_id'],
+                    $talk['event_id'],
+                    $talk['id']
+                ));
+                continue;
+            }
             $speakers[] = $speaker;
             $talk['speaker'] = $speaker;
-            $talk['tags'] = $tagMapping[$talk['id']];
+            if (array_key_exists($talk['id'], $tagMapping)) {
+                $talk['tags'] = $tagMapping[$talk['id']];
+            } else {
+                log_message('warning', sprintf(
+                    'No tags found for talk ID %d while adding additional data to talks. '
+                    . 'Maybe you have manipulated the database manually?',
+                    $talk['id']
+                ));
+                $talk['tags'] = [];
+            }
             $talk['possible_durations'] = array_column(
                 $possibleTalkDurationModel->get($talk['id']),
                 'duration'
@@ -1240,8 +1263,7 @@ class Talk extends BaseController
 
         $this->addGuestsToTalks($talks, $speakers);
 
-        foreach ($talks as &$talk)
-        {
+        foreach ($talks as &$talk) {
             unset($talk['user_id']);
         }
 
