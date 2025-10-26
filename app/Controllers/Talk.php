@@ -1223,6 +1223,20 @@ class Talk extends BaseController
         $speakers = [];
         foreach ($talks as &$talk) {
             $speaker = $speakerModel->getLatestApprovedForEvent($talk['user_id'], $talk['event_id']);
+            if ($speaker === null) {
+                // There is no approved speaker entry for this user for this event. This should never
+                // happen. However, it *might* happen if we tinker with the database manually. So
+                // we'll just log an error here and ignore this talk.
+                log_message('error', sprintf(
+                    'No approved speaker entry found for user ID %d for event '
+                    . 'ID %d while adding additional data to talk ID %d. This indicates '
+                    . 'a data integrity issue.',
+                    $talk['user_id'],
+                    $talk['event_id'],
+                    $talk['id']
+                ));
+                continue;
+            }
             $speakers[] = $speaker;
             $talk['speaker'] = $speaker;
             if (array_key_exists($talk['id'], $tagMapping)) {
