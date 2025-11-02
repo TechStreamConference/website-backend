@@ -899,7 +899,10 @@ class Talk extends BaseController
         }
 
         $tagMapping = $tagModel->getTagMapping([$talkId]);
-        $oldTags = array_column($tagMapping[$talkId], 'text');
+
+        $oldTags = array_key_exists($talk['id'], $tagMapping)
+            ? array_column($tagMapping[$talkId], 'text')
+            : [];
         $newTags = array_column($tagModel->getByIds($validData['tag_ids']), 'text');
 
         sort($oldTags);
