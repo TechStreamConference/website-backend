@@ -97,7 +97,7 @@ abstract class BaseController extends Controller
         $socialMediaLinks = $socialMediaLinkModel->getLatestApprovedByUserIds(array_column($speakers, 'user_id'));
 
         foreach ($talks as &$talk) {
-            // Find the speaker for this talk based on their user_id.
+            // Find the speaker for this talk based on their `user_id`.
             $talk['speaker_id'] = null;
             unset($speaker);
             foreach ($speakers as $speaker) {
@@ -118,7 +118,10 @@ abstract class BaseController extends Controller
                 },
                 $guestIdsByTalkId[$talk['id']] ?? []
             );
-            usort($guestsForThisTalk, fn($a, $b) => $a['name'] <=> $b['name']);
+            usort(
+                $guestsForThisTalk,
+                fn($a, $b) => strtolower($a['name']) <=> strtolower($b['name']),
+            );
 
             // Add social media links of the guests.
             foreach ($guestsForThisTalk as &$guest) {
