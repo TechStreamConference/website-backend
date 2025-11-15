@@ -170,6 +170,7 @@ class GenericRoleModel extends Model
             ->select('id, user_id, name, short_bio, bio, photo, visible_from')
             ->where('event_id = ', $eventId)
             ->where("id = ($subQuery)", null, false)
+            ->orderBy('name', 'ASC')
             ->get()
             ->getResultArray();
 

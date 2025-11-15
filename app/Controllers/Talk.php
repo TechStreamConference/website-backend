@@ -143,8 +143,6 @@ class Talk extends BaseController
         $speakerModel = model(SpeakerModel::class);
         $possibleHosts = $speakerModel->getApproved($eventId);
 
-        usort($possibleHosts, fn($a, $b) => $a['name'] <=> $b['name']);
-
         return $this
             ->response
             ->setJSON($possibleHosts)
@@ -171,12 +169,18 @@ class Talk extends BaseController
         $speakerModel = model(SpeakerModel::class);
         $possibleSpeakers = $speakerModel->getApproved($talk['event_id']);
         $hostId = $talk['user_id'];
-        $possibleGuests = array_filter(
-            $possibleSpeakers,
-            fn($speaker) => $speaker['user_id'] !== $hostId
-        );
 
-        usort($possibleGuests, fn($a, $b) => $a['name'] <=> $b['name']);
+        // `$possibleSpeakers` is a non-associative array. However, technically
+        // PHP treats it as an associative array with integer keys. Using `array_filter`
+        // on it does preserve the keys and thus may lead to gaps in the keys. The
+        // frontend is not able to handle this, so we use `array_values` to build
+        // a new array with continuous integer keys.
+        $possibleGuests = array_values(
+                array_filter(
+                $possibleSpeakers,
+                fn($speaker) => $speaker['user_id'] !== $hostId
+            )
+        );
 
         return $this
             ->response
