@@ -128,9 +128,11 @@ abstract class BaseController extends Controller
             $talk['guests'] = $guestsForThisTalk;
         }
 
-        $talks = array_filter(
-            $talks,
-            fn($talk) => $talk['speaker_id'] !== null
+        $talks = array_values(
+                array_filter(
+                $talks,
+                fn($talk) => $talk['speaker_id'] !== null
+            )
         );
     }
 }
