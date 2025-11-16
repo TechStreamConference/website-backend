@@ -54,15 +54,16 @@ class SpeakerModelTest extends CIUnitTestCase
         $model = new SpeakerModel();
         $speakers = $model->getPublished(1);
         $this->assertIsArray($speakers);
-        $this->assertCount(2, $speakers);
-        $this->assertEquals('codingPurpurTentakel', $speakers[0]['name']);
-        $this->assertEquals('Test-Conf Host, Veranstaltungstechniker, Elektroniker, Hobby-Coder', $speakers[0]['short_bio']);
+        $this->assertCount(3, $speakers);
+        $this->assertEquals('coder2k', $speakers[0]['name']);
+        $this->assertEquals('codingPurpurTentakel', $speakers[1]['name']);
+        $this->assertEquals('Test-Conf Host, Veranstaltungstechniker, Elektroniker, Hobby-Coder', $speakers[1]['short_bio']);
         $this->assertEquals(
             'Martin (Purpur Tentakel) kommt aus Köln. Nach der Schule macht er eine Ausbildung zur Fachkraft für Veranstaltungstechnik. Durch Corona kann er nach der Ausbildung nicht in der Branche weiter arbeiten und macht eine 2. Ausbildung zum Elektroniker für Betriebstechnik. In der Zeit der 2. Ausblidung trifft er irgendwann mal auf den Kanal von coder2k. Tja nun muss er coden. Von Python über C# kommt er schließlich zu c++. Seither programmiert er an seinem Spiel \'Tentakels Attacking\'',
-            $speakers[0]['bio'],
+            $speakers[1]['bio'],
         );
-        $this->assertEquals('codingPurpurTentakel.jpg', $speakers[0]['photo']);
-        $this->assertEquals('GyrosGeier', $speakers[1]['name']);
+        $this->assertEquals('codingPurpurTentakel.jpg', $speakers[1]['photo']);
+        $this->assertEquals('GyrosGeier', $speakers[2]['name']);
     }
 
     // *************************************
