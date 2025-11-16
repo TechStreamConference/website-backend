@@ -9,6 +9,7 @@ use App\Helpers\VideoRoomHelper;
 use App\Helpers\VideoSourceType;
 use App\Models\AccountModel;
 use App\Models\EventModel;
+use App\Models\GuestModel;
 use App\Models\RolesModel;
 use App\Models\SpeakerModel;
 use App\Models\TalkModel;
@@ -193,6 +194,7 @@ class SpeakerDashboard extends ContributorDashboard
         });
 
         $talkModel = model(TalkModel::class);
+        $guestModel = model(GuestModel::class);
         $userId = $this->getLoggedInUserId();
         $videoRoomModel = model(VideoRoomModel::class);
         $room = null;
@@ -210,14 +212,19 @@ class SpeakerDashboard extends ContributorDashboard
             }
 
             $allAcceptedTalks = $talkModel->getAllWithAcceptedTimeSlot($upcomingOrOngoingEvent['id']);
-            $speakerHasTalks = false;
+            $speakerHasTalksOrIsGuest = false;
             foreach ($allAcceptedTalks as $talk) {
                 if ($talk['user_id'] === $userId) {
-                    $speakerHasTalks = true;
+                    $speakerHasTalksOrIsGuest = true;
+                    break;
+                }
+                $guests = $guestModel->getGuestsOfTalks([$talk['id']]);
+                if (in_array($userId, array_column($guests, 'user_id'))) {
+                    $speakerHasTalksOrIsGuest = true;
                     break;
                 }
             }
-            if (!$speakerHasTalks) {
+            if (!$speakerHasTalksOrIsGuest) {
                 // Speaker doesn't have any accepted talks for this event.
                 continue;
             }
