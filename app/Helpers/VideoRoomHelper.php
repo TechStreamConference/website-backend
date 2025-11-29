@@ -16,10 +16,10 @@ class VideoRoomHelper
     ): string
     {
         $data = [
+            'label' => "{$name}_{$sourceType->value}",
             $linkType->value => VideoRoomHelper::createId($eventId, $userId, $sourceType->value),
             'room' => $roomId,
             'password' => $password,
-            'label' => "{$name}_{$sourceType->value}",
         ];
         $queryString = http_build_query($data);
         if ($linkType == VideoLinkType::PUSH) {
