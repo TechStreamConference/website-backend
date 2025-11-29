@@ -16,7 +16,7 @@ class VideoRoomHelper
     ): string
     {
         $data = [
-            'label' => "{$name}_{$sourceType->value}",
+            'label' => "{$sourceType->value}_$name",
             $linkType->value => VideoRoomHelper::createId($eventId, $userId, $sourceType->value),
             'room' => $roomId,
             'password' => $password,
