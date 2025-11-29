@@ -106,13 +106,16 @@ class Event extends BaseController
             $icsContent .= "SUMMARY:{$speaker['name']} | {$talk['title']}\r\n";
             $icsContent .= "DTSTART:" . $this->germanToUtcTime($talk['starts_at']) . "\r\n";
             $icsContent .= "DTEND:" . $this->germanToUtcTime(date("Y-m-d H:i:s", strtotime($talk['starts_at']) + ($talk['duration'] * 60))) . "\r\n";
-            $icsContent .= "LOCATION:" . $event['twitch_url'] . "\r\n";
+            // Depending on whether the talk is special (i.e., it is held on YouTube) or not,
+            // we set the URL accordingly.
+            $url = $talk['is_special'] ? $event['youtube_channel_url'] : $event['twitch_url'];
+            $icsContent .= "LOCATION:" . $url . "\r\n";
             $icsContent .= "DESCRIPTION:" . str_replace("\r", '', str_replace("\n", '\n', $talk['description'])) . "\r\n";
             $icsContent .= "UID:" . md5($talk['id']) . "\r\n";
             $icsContent .= "DTSTAMP:" . $this->germanToUtcTime(date("Ymd\THis\Z")) . "\r\n";
             $icsContent .= "STATUS:CONFIRMED\r\n";
             $icsContent .= "TRANSP:OPAQUE\r\n";
-            $icsContent .= "URL:" . $event['twitch_url'] . "\r\n";
+            $icsContent .= "URL:" . $url . "\r\n";
             $icsContent .= "END:VEVENT\r\n";
         }
 
