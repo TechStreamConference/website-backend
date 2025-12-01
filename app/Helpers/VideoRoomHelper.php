@@ -15,9 +15,15 @@ class VideoRoomHelper
         VideoSourceType $sourceType,
     ): string
     {
+        $label = "{$sourceType->value}_$name";
         $data = [
-            'label' => "{$name}_{$sourceType->value}",
-            $linkType->value => VideoRoomHelper::createId($eventId, $userId, $sourceType->value),
+            'label' => $label,
+            $linkType->value => VideoRoomHelper::createId(
+                $eventId,
+                $userId,
+                $sourceType->value,
+                $label
+            ),
             'room' => $roomId,
             'password' => $password,
         ];
@@ -43,8 +49,8 @@ class VideoRoomHelper
         return $randomString;
     }
 
-    private static function createId(int $eventId, int $userId, string $type): string
+    private static function createId(int $eventId, int $userId, string $type, string $label): string
     {
-        return md5("{$eventId}-{$userId}-{$type}");
+        return md5("$eventId-$userId-$type-$label");
     }
 }
