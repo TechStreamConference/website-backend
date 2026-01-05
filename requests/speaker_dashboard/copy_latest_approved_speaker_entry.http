@@ -1,0 +1,10 @@
+POST http://localhost/api/account/login
+
+{
+  "username_or_email": "coder2k",
+  "password": "Coder2k123!"
+}
+
+###
+
+POST http://localhost/api/dashboard/speaker/copy-latest-approved-speaker-entry

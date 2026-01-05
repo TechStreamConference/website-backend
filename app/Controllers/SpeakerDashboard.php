@@ -286,4 +286,82 @@ class SpeakerDashboard extends ContributorDashboard
 
         return $latestPublishedEvent;
     }
+
+    /** This function is intended for speakers who are already approved for a past event.
+     * Performs a lookup for the latest approved speaker entry of the currently logged in user and for
+     * the most recent event that has already been published (according to its publish date). Then, it
+     * creates a new speaker entry for that event, based on the data of the found entry. If the speaker
+     * has no approved entry yet, or if there is no published event yet, or if there already is an entry
+     * for that speaker and event, an error response is returned.
+     * @return ResponseInterface
+     */
+    public function copyLatestApprovedSpeakerEntry(): ResponseInterface
+    {
+        $userId = $this->getLoggedInUserId();
+        $speakerModel = model(SpeakerModel::class);
+
+        // Get the most recent published event.
+        $eventModel = model(EventModel::class);
+        $latestPublishedEvent = $eventModel->getLatestPublished();
+
+        if ($latestPublishedEvent === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_PUBLISHED_EVENT_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        $latestEventId = $latestPublishedEvent['id'];
+
+        // Check if there's already an entry for this speaker and event.
+        if ($speakerModel->hasEntry($userId, $latestEventId)) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'SPEAKER_ENTRY_ALREADY_EXISTS'])
+                ->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        }
+
+        // Find the latest approved speaker entry for the current user across all events.
+        // We get all entries for the user and find the first approved one (they are already
+        // ordered by Event.start_date DESC, so the first approved entry is from the most recent event).
+        $allEntries = $speakerModel->getAllForUser($userId);
+        $latestApprovedEntry = null;
+
+        foreach ($allEntries as $entry) {
+            if ($entry['is_approved']) {
+                // getAllForUser returns entries grouped by event and doesn't include the 'id' field,
+                // so we need to get the full entry details.
+                $fullEntry = $speakerModel->getLatestApprovedForEvent($userId, $entry['event_id']);
+                if ($fullEntry !== null) {
+                    $latestApprovedEntry = $fullEntry;
+                    break; // Since getAllForUser orders by start_date DESC, first approved is the latest.
+                }
+            }
+        }
+
+        if ($latestApprovedEntry === null) {
+            return $this
+                ->response
+                ->setJSON(['error' => 'NO_APPROVED_SPEAKER_ENTRY_FOUND'])
+                ->setStatusCode(ResponseInterface::HTTP_NOT_FOUND);
+        }
+
+        // Create a new entry based on the latest approved entry.
+        $speakerModel->create(
+            name: $latestApprovedEntry['name'],
+            userId: $userId,
+            eventId: $latestEventId,
+            shortBio: $latestApprovedEntry['short_bio'],
+            bio: $latestApprovedEntry['bio'],
+            photo: $latestApprovedEntry['photo'],
+            photoMimeType: $latestApprovedEntry['photo_mime_type'],
+            isApproved: true,  // We consider it approved since it's copied from an approved entry.
+            visibleFrom: null,
+        );
+
+        return $this
+            ->response
+            ->setJSON(['message' => 'COPIED_LATEST_APPROVED_SPEAKER_ENTRY'])
+            ->setStatusCode(ResponseInterface::HTTP_CREATED);
+    }
 }

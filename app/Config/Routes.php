@@ -81,6 +81,7 @@ $routes->post('dashboard/admin/time-slots/(:num)', [TimeSlot::class, 'create_or_
 $routes->get('dashboard/speaker/all-events', [SpeakerDashboard::class, 'getAllPublished'], ['filter' => SpeakerAuthFilter::class]);
 $routes->get('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'getIfPublished'], ['filter' => SpeakerAuthFilter::class]);
 $routes->post('dashboard/speaker/event/(:num)', [SpeakerDashboard::class, 'createOrUpdateIfPublished'], ['filter' => SpeakerAuthFilter::class]);
+$routes->post('dashboard/speaker/copy-latest-approved-speaker-entry', [SpeakerDashboard::class, 'copyLatestApprovedSpeakerEntry'], ['filter' => SpeakerAuthFilter::class]);
 
 // For better organization, the following routes are defined in the Talk controller.
 $routes->get('dashboard/speaker/can-submit-talk', [Talk::class, 'canSubmit'], ['filter' => SpeakerAuthFilter::class]);
