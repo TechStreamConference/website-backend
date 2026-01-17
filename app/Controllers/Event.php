@@ -166,7 +166,7 @@ class Event extends BaseController
     private function addFrontpageVisibilityInformation(array &$event): void
     {
         $now = date('Y-m-d H:i:s');
-        $event['is_visible_on_frontpage'] = $event['frontpage_date'] <= $now;
+        $event['is_visible_on_frontpage'] = ($event['frontpage_date'] !== null && $event['frontpage_date'] <= $now);
     }
 
     /**
