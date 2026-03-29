@@ -324,18 +324,16 @@ class SpeakerDashboard extends ContributorDashboard
         // Find the latest approved speaker entry for the current user across all events.
         // We get all entries for the user and find the first approved one (they are already
         // ordered by Event.start_date DESC, so the first approved entry is from the most recent event).
-        $allEntries = $speakerModel->getAllForUser($userId);
+        $allEntries = $speakerModel->getAllForUserWithEventData($userId);
         $latestApprovedEntry = null;
 
+        // `getAllForUserWithEventData()` returns entries ordered by event ID (descending) and
+        // speaker ID (descending). That means the first approved entry is the newest entry for
+        // that user for the most recent event.
         foreach ($allEntries as $entry) {
             if ($entry['is_approved']) {
-                // getAllForUser returns entries grouped by event and doesn't include the 'id' field,
-                // so we need to get the full entry details.
-                $fullEntry = $speakerModel->getLatestApprovedForEvent($userId, $entry['event_id']);
-                if ($fullEntry !== null) {
-                    $latestApprovedEntry = $fullEntry;
-                    break; // Since getAllForUser orders by start_date DESC, first approved is the latest.
-                }
+                $latestApprovedEntry = $entry;
+                break;
             }
         }
 

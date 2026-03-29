@@ -48,12 +48,27 @@ class GenericRoleModel extends Model
 
     public function getAllForUser(int $userId): array
     {
+        // TODO: I guess this function should be removed. The `groupBy` doesn’t seem to be correct and thus
+        //       the whole function should not be used. However, I won’t to this right now because of ¯\_(ツ)_/¯.
         return $this
             ->select('Event.id as event_id, Event.title, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes')
             ->join('Event', 'Event.id = event_id')
             ->where('user_id', $userId)
             ->groupBy('Event.id')
             ->orderBy('Event.start_date', 'DESC')
+            ->findAll();
+    }
+
+    /**
+     * Returns all entries of a given user, ordered by event start date, descending, and then by ID, descending.
+     * */
+    public function getAllForUserWithEventData(int $userId): array
+    {
+        return $this
+            ->select('Speaker.id AS id, name, user_id, event_id, short_bio, bio, photo, photo_mime_type, is_approved, visible_from, requested_changes, Speaker.created_at, Speaker.updated_at, Event.title, Event.start_date, Event.end_date')
+            ->where('user_id', $userId)
+            ->join('Event', 'Event.id = event_id')
+            ->orderBy('Event.start_date desc, Speaker.id desc')
             ->findAll();
     }
 
