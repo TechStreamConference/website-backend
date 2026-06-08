@@ -13,5 +13,7 @@ class Dev2024Seeder extends Seeder
         $this->call('Dev2024SponsorSeeder');
         $this->call('Dev2024SpeakerSeeder');
         $this->call('Dev2024TeamMemberSeeder');
+        $this->call('Dev2024TimeSlotSeeder');
+        $this->call('Dev2024TalkSeeder');
     }
 }
