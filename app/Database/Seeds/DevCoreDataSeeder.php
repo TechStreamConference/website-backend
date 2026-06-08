@@ -8,6 +8,7 @@ class DevCoreDataSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call('DevPhotoSeeder');
         $this->call('DevGlobalsSeeder');
         $this->call('DevSocialMediaTypeSeeder');
         $this->call('DevTagSeeder');
