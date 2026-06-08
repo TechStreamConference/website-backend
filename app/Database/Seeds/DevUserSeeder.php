@@ -39,11 +39,11 @@ class DevUserSeeder extends Seeder
             ]);
         }
 
-        // "generic-event-1-speaker",
-        // "generic-event-2-speaker",
-        // "generic-event-1-team-member",
-        // "generic-event-2-team-member"
-        foreach (range(21, 24) as $userId) {
+        // "generic-event-1-speaker", 21-23
+        // "generic-event-2-speaker", 24-26
+        // "generic-event-1-team-member", 27
+        // "generic-event-2-team-member" 28
+        foreach (range(21, 28) as $userId) {
             $this->db->table('User')->insert([
                 'id' => $userId,
                 'created_at' => date('1985-10-21 07:28:00'),
@@ -53,7 +53,7 @@ class DevUserSeeder extends Seeder
 
         // "no-social-media-links"
         $this->db->table('User')->insert([
-            'id' => 25,
+            'id' => 29,
             'created_at' => date('1985-10-21 07:28:00'),
             'updated_at' => date('1985-10-21 07:28:00'),
         ]);

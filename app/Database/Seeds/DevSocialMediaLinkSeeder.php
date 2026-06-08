@@ -180,7 +180,7 @@ class DevSocialMediaLinkSeeder extends Seeder
         // "generic-event-2-speaker",
         // "generic-event-1-team-member",
         // "generic-event-2-team-member"
-        foreach (range(21,24) as $user_id){
+        foreach (range(21,28) as $user_id){
             $this->db->table('SocialMediaLink')->insert([
                 'social_media_type_id' => 1, // web
                 'user_id' => $user_id,
@@ -236,6 +236,6 @@ class DevSocialMediaLinkSeeder extends Seeder
             ]);
         }
 
-        // user-id 25 has no social media links
+        // user-id 29 has no social media links
     }
 }
