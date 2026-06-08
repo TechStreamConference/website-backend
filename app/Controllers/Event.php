@@ -155,7 +155,7 @@ class Event extends BaseController
             $talk['starts_at'] = $timeSlot->startTime;
             $talk['duration'] = $timeSlot->duration;
             $talk['is_special'] = $timeSlot->isSpecial;
-            $talk['tags'] = $tagMapping[$talk['id']];
+            $talk['tags'] = (count($tagMapping) > 0) ? $tagMapping[$talk['id']] : [];
         }
 
         usort($talks, fn($a, $b) => $a['starts_at'] <=> $b['starts_at']);
