@@ -10,5 +10,6 @@ class Dev2024Seeder extends Seeder
     {
         $this->call('Dev2024EventSeeder');
         $this->call('Dev2024SpeakerSeeder');
+        $this->call('Dev2024TeamMemberSeeder');
     }
 }

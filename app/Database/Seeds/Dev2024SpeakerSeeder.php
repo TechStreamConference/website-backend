@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Database\Seeds;
-include "DevBioEntry.php";
+include_once "DevBioEntry.php";
 
 use CodeIgniter\Database\Seeder;
 
