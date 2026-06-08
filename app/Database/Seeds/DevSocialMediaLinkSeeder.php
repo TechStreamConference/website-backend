@@ -20,7 +20,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 1, // web
                 'user_id' => $user_id,
                 'url' => 'https://coder2k.net',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -55,7 +55,7 @@ class DevSocialMediaLinkSeeder extends Seeder
             $this->db->table('SocialMediaLink')->insert([
                 'social_media_type_id' => 6, // Instagram
                 'user_id' => $user_id,
-                'url' => 'https://www.linkedin.com/in/michael-gerhold-b478b51b2/',
+                'url' => 'https://www.instagram.com/coder2k/',
                 'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
@@ -64,8 +64,8 @@ class DevSocialMediaLinkSeeder extends Seeder
             $this->db->table('SocialMediaLink')->insert([
                 'social_media_type_id' => 9, // GitHub
                 'user_id' => $user_id,
-                'url' => 'https://www.instagram.com/coder2k/',
-                'approved' => false,
+                'url' => 'https://github.com/mgerhold/',
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -77,7 +77,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 1, // web
                 'user_id' => $user_id,
                 'url' => 'https://google.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -86,7 +86,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 2, // Twitch
                 'user_id' => $user_id,
                 'url' => 'https://twitch.tv',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -95,7 +95,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 3, // Discord
                 'user_id' => $user_id,
                 'url' => 'https://discord.gg',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -104,7 +104,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 4, // LinkedIn
                 'user_id' => $user_id,
                 'url' => 'https://linkedIn.com',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -113,7 +113,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 5, // YouTube
                 'user_id' => $user_id,
                 'url' => 'https://youtube.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -122,7 +122,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 6, // Instagram
                 'user_id' => $user_id,
                 'url' => 'https://instagram.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -134,7 +134,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 7, // X
                 'user_id' => $user_id,
                 'url' => 'https://X.com',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -143,7 +143,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 8, // Git
                 'user_id' => $user_id,
                 'url' => 'https://google.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -152,7 +152,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 9, // GitHub
                 'user_id' => $user_id,
                 'url' => 'https://github.com',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -161,7 +161,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 10, // GitLab
                 'user_id' => $user_id,
                 'url' => 'https://gitlab.com',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -170,7 +170,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 11, // Facebook
                 'user_id' => $user_id,
                 'url' => 'https://facebook.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -185,7 +185,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 1, // web
                 'user_id' => $user_id,
                 'url' => 'https://google.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -194,7 +194,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 2, // Twitch
                 'user_id' => $user_id,
                 'url' => 'https://twitch.tv',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -203,7 +203,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 3, // Discord
                 'user_id' => $user_id,
                 'url' => 'https://discord.gg',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -212,7 +212,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 5, // YouTube
                 'user_id' => $user_id,
                 'url' => 'https://youtube.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -221,7 +221,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 6, // Instagram
                 'user_id' => $user_id,
                 'url' => 'https://instagram.de',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);
@@ -230,7 +230,7 @@ class DevSocialMediaLinkSeeder extends Seeder
                 'social_media_type_id' => 9, // GitHub
                 'user_id' => $user_id,
                 'url' => 'https://github.com',
-                'approved' => false,
+                'approved' => true,
                 'created_at' => date($date_format_string),
                 'updated_at' => date($date_format_string),
             ]);

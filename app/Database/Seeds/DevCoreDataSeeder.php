@@ -11,7 +11,7 @@ class DevCoreDataSeeder extends Seeder
         $this->call('DevGlobalsSeeder');
         $this->call('DevSocialMediaTypeSeeder');
         $this->call('DevTagSeeder');
-        $this->call('DevTalkDurationSeeder');
+        $this->call('DevTalkDurationChoiceSeeder');
         $this->call('DevUserSeeder');
         $this->call('DevAccountSeeder');
         $this->call('DevAdminSeeder');
