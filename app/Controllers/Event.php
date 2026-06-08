@@ -155,7 +155,12 @@ class Event extends BaseController
             $talk['starts_at'] = $timeSlot->startTime;
             $talk['duration'] = $timeSlot->duration;
             $talk['is_special'] = $timeSlot->isSpecial;
-            $talk['tags'] = (count($tagMapping) > 0) ? $tagMapping[$talk['id']] : [];
+            if (isset($tagMapping[$talk['id']])) {
+                $talk['tags'] = $tagMapping[$talk['id']];
+            } else {
+                $talk['tags'] = [];
+                error_log("Keine Tags für Talk-ID {$talk['id']} gefunden.");
+            }
         }
 
         usort($talks, fn($a, $b) => $a['starts_at'] <=> $b['starts_at']);
