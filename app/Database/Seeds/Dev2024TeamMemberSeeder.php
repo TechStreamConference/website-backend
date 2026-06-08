@@ -13,6 +13,22 @@ class Dev2024TeamMemberSeeder extends Seeder
         // admin
         $this->db->table('TeamMember')->insert(
             [
+                'name' => 'Admin',
+                'user_id' => 1,
+                'event_id' => 1,
+                'short_bio' => 'Test-Conf Admin, ' . get_sort_bio(4),
+                'bio' => 'Admin Description for 2024. '. get_bio_text(200),
+                'photo' => 'admin.jpg',
+                'photo_mime_type' => 'image/jpeg',
+                'is_approved' => true,
+                'visible_from' => date('2024-06-01 15:00:00'),
+                'updated_at' => date('2024-06-01 15:00:00'),
+            ]
+        );
+
+        // team member
+        $this->db->table('TeamMember')->insert(
+            [
                 'name' => 'Team Member',
                 'user_id' => 3,
                 'event_id' => 1,
