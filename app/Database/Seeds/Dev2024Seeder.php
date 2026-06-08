@@ -9,6 +9,8 @@ class Dev2024Seeder extends Seeder
     public function run(): void
     {
         $this->call('Dev2024EventSeeder');
+        $this->call('Dev2024MediaPartnerSeeder');
+        $this->call('Dev2024SponsorSeeder');
         $this->call('Dev2024SpeakerSeeder');
         $this->call('Dev2024TeamMemberSeeder');
     }
