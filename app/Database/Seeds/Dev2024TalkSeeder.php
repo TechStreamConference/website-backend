@@ -21,6 +21,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 1,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
         // ID 2
         $this->db->table('Talk')->insert([
@@ -33,6 +34,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 2,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
         // ID 3
         $this->db->table('Talk')->insert([
@@ -45,6 +47,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 3,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
 
         // Special talks day 1.
@@ -59,6 +62,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 4,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
 
         // Day 2.
@@ -73,6 +77,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 5,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
         // ID 6
         $this->db->table('Talk')->insert([
@@ -85,6 +90,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 6,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
         // ID 7
         $this->db->table('Talk')->insert([
@@ -97,6 +103,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 7,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
 
         // Special talks day 2.
@@ -111,6 +118,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 8,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
 
         // ID 9
@@ -124,6 +132,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 9,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
 
         // ID 10
@@ -137,6 +146,7 @@ class Dev2024TalkSeeder extends Seeder
             'time_slot_id' => 10,
             'time_slot_accepted' => true,
             'created_at' => '2024-03-10 19:19:55',
+            'youtube_url' => 'https://www.youtube.com',
         ]);
     }
 }
