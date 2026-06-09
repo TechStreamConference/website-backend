@@ -54,7 +54,7 @@ class Dev2025TalkSeeder extends Seeder
         // ID 14
         $this->db->table('Talk')->insert([
             'event_id' => 2,
-            'user_id' => 21,
+            'user_id' => 24,
             'title' => '2. Der Mythos „Diamond Problem“',
             'description' => get_bio_text(10) . 'Auch wenn es um Mehrfachvererbung geht, ist es nicht nur OOP. C++ ist eine Multiparadigmen-Sprache und auch hier verbinden wir Möglichkeiten der verschiedenen Paradigmen zu Lösungen.',
             'requested_changes' => null,
@@ -69,7 +69,7 @@ class Dev2025TalkSeeder extends Seeder
         // ID 15
         $this->db->table('Talk')->insert([
             'event_id' => 2,
-            'user_id' => 22,
+            'user_id' => 25,
             'title' => '2. Sei nicht wie RockStar Games – lerne parsen in O(N)',
             'description' => get_bio_text(20) . 'In diesem Talk geht es darum, effizient strukturierte Daten aus Textdateien zu holen – und zwar mit Werkzeugen, die älter sind als der durchschnittliche Zuschauer.',
             'requested_changes' => null,
@@ -82,7 +82,7 @@ class Dev2025TalkSeeder extends Seeder
         // ID 16
         $this->db->table('Talk')->insert([
             'event_id' => 2,
-            'user_id' => 23,
+            'user_id' => 26,
             'title' => '2. Webentwicklung mit Symfony und Vue.js',
             'description' => 'Wie man mit Symfony in der Webentwicklung startet und worauf man achten sollte.' . get_bio_text(400),
             'requested_changes' => null,
