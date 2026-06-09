@@ -8,6 +8,7 @@ class Dev2024EventSeeder extends Seeder
 {
     public function run(): void
     {
+        // ID 1
         $this->db->table('Event')->insert(
             [
                 'title' => 'Tech Stream Conference 2024',
