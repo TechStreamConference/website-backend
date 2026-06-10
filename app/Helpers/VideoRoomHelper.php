@@ -29,7 +29,7 @@ class VideoRoomHelper
         ];
         $queryString = http_build_query($data);
         if ($linkType == VideoLinkType::PUSH) {
-            $queryString .= '&maxframerate=30&g=0&ssid';
+            $queryString .= '&maxframerate=30&audiogain=0&ssid&deafen';
         } else if ($linkType == VideoLinkType::VIEW) {
             $queryString .= '&solo';
         }
