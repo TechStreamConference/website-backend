@@ -77,6 +77,15 @@ class EventModel extends Model
             ->first();
     }
 
+    public function getNextByStartDate(): array|null
+    {
+        return $this
+            ->select('id, title, subtitle, start_date, end_date, discord_url, twitch_url, presskit_url, youtube_channel_url, trailer_url, trailer_poster_url, trailer_subtitles_url, description_headline, description, schedule_visible_from, publish_date, frontpage_date, call_for_papers_start, call_for_papers_end')
+            ->where('start_date >=', date('Y-m-d H:i:s'))
+            ->orderBy('start_date', 'ASC')
+            ->first();
+    }
+
     public function get(int $eventId): array|null
     {
         return $this
