@@ -245,7 +245,7 @@ class SpeakerDashboard extends ContributorDashboard
         // - The user must not have a pending speaker application for that year (i.e. the user doesn't have a
         //   speaker entry for that year, that is not approved).
         $eventModel = model(EventModel::class);
-        $latestPublishedEvent = $eventModel->getNextByStartDate();
+        $latestPublishedEvent = $eventModel->getNextApplication();
         if ($latestPublishedEvent === null) {
             // No event to apply for.
             return $this
@@ -302,7 +302,7 @@ class SpeakerDashboard extends ContributorDashboard
 
         // Get the most recent published event.
         $eventModel = model(EventModel::class);
-        $latestPublishedEvent = $eventModel->getNextByStartDate();
+        $latestPublishedEvent = $eventModel->getNextApplication();
 
         if ($latestPublishedEvent === null) {
             return $this
