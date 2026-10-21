@@ -34,7 +34,7 @@ COPY composer.json composer.lock ./
 RUN composer install --ignore-platform-reqs
 
 # --- Base image for the final stages ---
-FROM php:8.2-apache AS base
+FROM php:8.2.35-apache AS base
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     libicu-dev \
